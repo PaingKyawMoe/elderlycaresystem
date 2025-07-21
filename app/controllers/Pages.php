@@ -19,7 +19,7 @@ class Pages extends Controller
     }
     
     public function dashboard(){
-        $this->view('pages/dashboard');
+        $this->view('pages/dash');
     }
 
     public function appointmentForm(){

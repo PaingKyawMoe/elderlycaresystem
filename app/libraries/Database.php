@@ -13,274 +13,251 @@ class Database
 
     public function __construct()
     {
-        $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->dbname;
-        $options = array(
+        $dsn = "mysql:host={$this->host};dbname={$this->dbname}";
+        $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES   => false // For General Error
-        );
+            PDO::ATTR_EMULATE_PREPARES => false
+        ];
 
         try {
             $this->pdo = new PDO($dsn, $this->user, $this->pass, $options);
-            // print_r($this->pdo);
-            // echo "Success";
         } catch (PDOException $e) {
-            $this->error = $e->getMessage();
-            echo $this->error;
+            die("DB Connection Failed: " . $e->getMessage());
         }
     }
 
+    // Generic Query Execution
+    public function query($sql)
+    {
+        $this->stmt = $this->pdo->prepare($sql);
+    }
+
+    public function bind($param, $value, $type = null)
+    {
+        if ($type === null) {
+            $type = match (true) {
+                is_int($value) => PDO::PARAM_INT,
+                is_bool($value) => PDO::PARAM_BOOL,
+                is_null($value) => PDO::PARAM_NULL,
+                default => PDO::PARAM_STR
+            };
+        }
+        $this->stmt->bindValue($param, $value, $type);
+    }
+
+    public function execute()
+    {
+        return $this->stmt->execute();
+    }
+
+    public function resultSet()
+    {
+        $this->execute();
+        return $this->stmt->fetchAll();
+    }
+
+    public function single()
+    {
+        $this->execute();
+        return $this->stmt->fetch();
+    }
+
+    public function rowCount()
+    {
+        return $this->stmt->rowCount();
+    }
+
+    // CRUD Operations
     public function create($table, $data)
     {
         try {
-            $column = array_keys($data);
-            $columnSql = implode(', ', $column);
-            $bindingSql = ':' . implode(',:', $column);
-            // echo $bindingSql;
-            $sql = "INSERT INTO $table ($columnSql) VALUES ($bindingSql)";
-            // echo $sql;
-            $stm = $this->pdo->prepare($sql);
+            $columns = implode(', ', array_keys($data));
+            $placeholders = ':' . implode(', :', array_keys($data));
+            $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
+            $stmt = $this->pdo->prepare($sql);
             foreach ($data as $key => $value) {
-                $stm->bindValue(':' . $key, $value);
+                $stmt->bindValue(":{$key}", $value);
             }
-            // print_r($stm);
-            $status = $stm->execute();
-            // echo $status;
-            return ($status) ? $this->pdo->lastInsertId() : false;
+            return $stmt->execute() ? $this->pdo->lastInsertId() : false;
         } catch (PDOException $e) {
-            echo $e;
+            error_log($e->getMessage());
+            return false;
         }
     }
-    
 
-    // public function create($table, $data)
-    // {
-    //     try {
-    //         $column = array_keys($data);
-    //         $columnSql = implode(', ', $column);
-    //         $bindingSql = ':' . implode(',:', $column);
-    //         // echo $bindingSql;
-    //             // $sql = "INSERT INTO $table ($columnSql) VALUES ($bindingSql)";
-    //         $sql = "INSERT INTO $table ($columnSql) VALUES ($bindingSql)";
-    //         $stm = $this->pdo->prepare($sql);
-    //         foreach ($data as $key => $value) {
-    //             $stm->bindValue(':' . $key, $value);
-    //         }
-    //         // print_r($stm);
-    //         for($i=0;$i < 1000; $i++){
-    //             $status = $stm->execute();
-    //         }
-    //         return ($status) ? $this->pdo->lastInsertId() : false;
-
-    //         // $query = "INSERT INTO isec_test(sms_id,status,msgid) values ('1','OK','123-123')";
-    //         // $query = mysql_query($sql);
-    //         //echo $sql;
-           
-    //         // echo $status;
-    //     } catch (PODException $e) {
-    //         echo $e;
-    //     }
-    // }
-
-    // Update Query
     public function update($table, $id, $data)
-    {   
-        // First, we don't want id from category table
-        if (isset($data['id'])) {
-            unset($data['id']);
-        }
-
+    {
+        unset($data['id']);
         try {
-            $columns = array_keys($data);
-            function map ($item) {
-                return $item . '=:' . $item;
-            }
-            $columns = array_map('map', $columns);
-            $bindingSql = implode(',', $columns);
-            // echo $bindingSql;
-            // exit;
-            $sql = 'UPDATE ' .  $table . ' SET ' . $bindingSql . ' WHERE `id` =:id';
-            $stm = $this->pdo->prepare($sql);
-
-            // Now, we assign id to bind
+            $setPart = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
+            $sql = "UPDATE {$table} SET {$setPart} WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
             $data['id'] = $id;
-
             foreach ($data as $key => $value) {
-                $stm->bindValue(':' . $key, $value);
+                $stmt->bindValue(":{$key}", $value);
             }
-            $status = $stm->execute();
-            // print_r($status);
-            return $status;
+            return $stmt->execute();
         } catch (PDOException $e) {
-            echo $e;
+            error_log($e->getMessage());
+            return false;
         }
     }
 
     public function delete($table, $id)
     {
-        $sql = 'DELETE FROM ' . $table . ' WHERE `id` = :id';
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':id', $id);
-        $success = $stm->execute();
-        return ($success);
+        try {
+            $sql = "DELETE FROM {$table} WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
+    public function readAll($table)
+    {
+        try {
+            $sql = "SELECT * FROM {$table}";
+            return $this->pdo->query($sql)->fetchAll();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+
+    public function getById($table, $id)
+    {
+        try {
+            $sql = "SELECT * FROM {$table} WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+
+    public function getByEmail($table, $email)
+    {
+        try {
+            $sql = "SELECT * FROM {$table} WHERE email = :email";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':email', $email);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
     }
 
     public function columnFilter($table, $column, $value)
     {
-        // $sql = 'SELECT * FROM ' . $table . ' WHERE `' . $column . '` = :value';
-        $sql = 'SELECT * FROM ' . $table . ' WHERE `' . str_replace('`', '', $column) . '` = :value';
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':value', $value);
-        $success = $stm->execute();
-        $row = $stm->fetch(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
+        try {
+            $sql = "SELECT * FROM {$table} WHERE {$column} = :value";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':value', $value);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
     }
 
+    // Authentication
     public function loginCheck($email, $password)
     {
-        $sql = 'SELECT * FROM users WHERE `email` = :email AND `password` = :password';
-        // echo $sql;
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':email', $email);
-        $stm->bindValue(':password', $password);
-        $success = $stm->execute();
-        $row = $stm->fetch(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
+        try {
+            $sql = "SELECT * FROM users WHERE email = :email AND password = :password";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':email', $email);
+            $stmt->bindValue(':password', $password);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
     }
 
     public function setLogin($id)
     {
-        $sql = 'UPDATE users SET `is_login` = :value WHERE `id` = :id';
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':value', 1);
-        $stm->bindValue(':id', $id);
-        $success = $stm->execute();
-        $stm->closeCursor();    // to solve PHP Unbuffered Queries
-        $row = $stm->fetch(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
+        return $this->toggleLoginState($id, 1);
     }
 
     public function unsetLogin($id)
     {
-       try{ 
-           $sql        = "UPDATE users SET is_login = :false WHERE id = :id";
-           $stm        = $this->pdo->prepare($sql);
-           $stm->bindValue(':false','0');
-           $stm->bindValue(':id',$id);
-           $success = $stm->execute();
-           $row     = $stm->fetch(PDO::FETCH_ASSOC);
-           return ($success) ? $row : [];
-        }
-        catch( Exception $e)
-        {
-            echo($e);
-        }
-    }
-    public function query($sql) {
-    $this->stmt = $this->pdo->prepare($sql);
-}
-public function resultSet() {
-    $this->stmt->execute();
-    return $this->stmt->fetchAll(PDO::FETCH_OBJ);
-}
-
-
-    public function readAll($table)
-    {
-        $sql = 'SELECT * FROM ' . $table;
-        // print_r($sql);
-        $stm = $this->pdo->prepare($sql);
-        $success = $stm->execute();
-        $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
+        return $this->toggleLoginState($id, 0);
     }
 
-    // public function categoryView()
-    // {
-    //     $sql = 'SELECT * FROM vw_categories_type';
-    //     $sql = 'SELECT categories.id, categories.name, categories.description, types.name AS type_name FROM categories LEFT JOIN types ON categories.type_id = types.id';
-    //     $stm = $this->pdo->prepare($sql);
-    //     $success = $stm->execute();
-    //     $row = $stm->fetchAll(PDO::FETCH_ASSOC);
-    //     return ($success) ? $row : [];
-    // }
-
-    public function getById($table, $id)
-    {
-        $sql = 'SELECT * FROM ' . $table . ' WHERE `id` =:id';
-        // print_r($sql);
-        $stm = $this->pdo->prepare($sql);
-        $stm->bindValue(':id', $id);
-        $success = $stm->execute();
-        $row = $stm->fetch(PDO::FETCH_ASSOC);
-        return ($success) ? $row : [];
-    }
-
-    public function getByCategoryId($table, $column)
-    {
-        $stm = $this->pdo->prepare('SELECT * FROM ' . $table . ' WHERE name =:column');
-        $stm->bindValue(':column', $column);
-        $success = $stm->execute();
-        $row = $stm->fetch(PDO::FETCH_ASSOC);
-       //  print_r($row);
-        return ($success) ? $row : [];
-    }
-
-    // For Dashboard
-    public function incomeTransition()
-    {
-       try{
-
-           $sql        = "SELECT *,SUM(amount) AS amount FROM incomes WHERE
-           (date = { fn CURDATE() }) ";
-           $stm = $this->pdo->prepare($sql);
-           $success = $stm->execute();
-
-           $row     = $stm->fetch(PDO::FETCH_ASSOC);
-           return ($success) ? $row : [];
-
-        }
-        catch( Exception $e)
-        {
-            echo($e);
-        }
-     
-    }
-    public function verify($id)
+    private function toggleLoginState($id, $state)
     {
         try {
-            $sql = 'UPDATE users SET is_confirmed = 1 WHERE id = :id';
-            $stm = $this->pdo->prepare($sql);
-            $stm->bindValue(':id', $id);
-            return $stm->execute();
+            $sql = "UPDATE users SET is_login = :state WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            $stmt->bindValue(':state', $state);
+            return $stmt->execute();
         } catch (PDOException $e) {
-            echo $e;
+            error_log($e->getMessage());
             return false;
         }
     }
-    
+
+    public function verify($id)
+    {
+        try {
+            $sql = "UPDATE users SET is_confirmed = 1 WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
+    // Dashboard Stats
+    public function incomeTransition()
+    {
+        return $this->sumQuery("SELECT *, SUM(amount) AS amount FROM incomes WHERE date = CURDATE()");
+    }
 
     public function expenseTransition()
     {
-       try{
+        return $this->sumQuery("SELECT *, SUM(amount * qty) AS amount FROM expenses WHERE date = CURDATE()");
+    }
 
-           $sql        = "SELECT * ,SUM(amount*qty) AS amount FROM expenses WHERE
-           (date = { fn CURDATE() }) ";
-           $stm = $this->pdo->prepare($sql);
-           $success = $stm->execute();
-
-           $row     = $stm->fetch(PDO::FETCH_ASSOC);
-           return ($success) ? $row : [];
-
+    private function sumQuery($sql)
+    {
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
         }
-        catch( Exception $e)
-        {
-            echo($e);
+    }
+
+    public function getByCategoryId($table, $name)
+    {
+        try {
+            $sql = "SELECT * FROM {$table} WHERE name = :name";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':name', $name);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
         }
-     
     }
 }
-
-
-
