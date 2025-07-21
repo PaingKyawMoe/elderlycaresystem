@@ -1,0 +1,226 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #fff;
+  color: #222;
+}
+
+/* Header */
+.header {
+  background: #44207a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 60px;
+}
+.header .logo {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.header .logo img {
+  width: 38px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #fff;
+}
+.header nav a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 18px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.header nav a:hover {
+  color: #a8e063;
+}
+.header .call-now {
+  background: #23d160;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 18px;
+  transition: background 0.2s;
+}
+.header .call-now:hover {
+  background: #18a34a;
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgb(255, 255, 255);
+  padding: 10px 74px 0 75px;
+  min-height: 400px;
+  position: relative;
+}
+.hero-content12 {
+  max-width: 520px;
+}
+.hero-content12 h1 {
+  font-size: 2.7rem;
+  font-weight: bold;
+  margin: 21px 0 18px 70px;
+  line-height: 1.1;
+  color: #222;
+  text-shadow: 3px 3px 0 #fff, 2px 2px 4px #00000020;
+}
+.hero-content12 p {
+  font-size: 1.45rem;
+  color: #555;
+  margin-bottom: 28px;
+  margin: 0 0 0 70px;
+  letter-spacing: 0.01em;
+}
+.hero-content12 .register-btn {
+  background: #23d160;
+  color: #fff;
+  padding: 12px 28px;
+  margin: 30px 0 0 70px;
+  border: none;
+  border-radius: 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.hero-content12 .register-btn:hover {
+  background: #18a34a;
+}
+.hero-image1 {
+  position: relative;
+  width: 350px;
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-image1 .main-img1 {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 32px;
+  box-shadow: 0 8px 32px #00000022;
+  background: #fff;
+}
+
+/* Footer */
+.footer {
+  position: relative;
+  background: #44207a;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 0px;
+  padding: 9px 43px 9px 70px;
+  flex-wrap: wrap;
+}
+.footer-section {
+  margin-right: 48px;
+  min-width: 160px;
+}
+.footer-section h4 {
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.footer-section ul li {
+  margin-bottom: 8px;
+}
+.footer-section ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.98rem;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+.footer-section ul li a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+.newsletter {
+  min-width: 270px;
+}
+.newsletter label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: block;
+}
+.newsletter-form {
+  display: flex;
+  margin-top: 8px;
+}
+.newsletter-form input[type="email"] {
+  padding: 10px 12px;
+  border: none;
+  /* border-radius: 6px 0 0 6px; */
+  outline: none;
+  font-size: 1rem;
+  width: 160px;
+}
+.newsletter-form button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  background: #e53e3e;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.newsletter-form button:hover {
+  background: #b32d2d;
+}
+.footer-social {
+  margin-top: 20px;
+  font-size: 1.3rem;
+}
+.footer-social a {
+  color: #fff;
+  margin-right: 16px;
+  transition: color 0.2s;
+}
+.footer-social a:hover {
+  color: #23d160;
+}
+@media (max-width: 800px) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 32px 12px 0 12px;
+  }
+  .hero-image {
+    width: 70vw;
+    max-width: 350px;
+    margin-top: 32px;
+  }
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px 12px 12px 12px;
+  }
+  .footer-section,
+  .newsletter {
+    margin-right: 0;
+    margin-bottom: 18px;
+  }
+}
