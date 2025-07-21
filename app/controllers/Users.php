@@ -86,7 +86,7 @@ class Users extends Controller
             $this->userModel->setName($name);
             $this->userModel->setEmail($email);
             $this->userModel->setPassword(password_hash($password, PASSWORD_DEFAULT));
-
+//paingkyawmoe
             $userData = $this->userModel->toArray();
 
             // Save to DB
