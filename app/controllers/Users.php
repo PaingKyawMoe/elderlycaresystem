@@ -1,5 +1,5 @@
 <?php
-
+// session_start();
 class Users extends Controller
 {
     private $db;
@@ -65,28 +65,47 @@ class Users extends Controller
     // Register a new user
     public function register()
     {
+        // var_dump('that');
+        // exit;
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'] ?? '';
             $email = $_POST['email'] ?? '';
             $password = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+
+            if ($password !== $confirmPassword) {
+                $data['password-doesnotmatch'] = 'Passwords do not match.';
+                $this->view('pages/signup', $data);
+                return;
+            }
+            // var_dump('that');
+            // exit;
 
             $emailExist = $this->db->columnFilter('users', 'email', $email);
             if ($emailExist) {
+                // var_dump('that naing');
+                // exit;
                 setMessage('error_email', 'This email is already registered !');
                 redirect('pages/register');
+                return;
             }
+            // var_dump('that naing');
+            // exit;
 
             $validation = new UserValidator($_POST);
             $data = $validation->validateForm();
 
             if (count($data) > 0) {
+                // var_dump('that');
+                // exit;
                 $this->view('pages/signup', $data);
+                return;
             }
 
             $this->userModel->setName($name);
             $this->userModel->setEmail($email);
-            $this->userModel->setPassword(password_hash($password, PASSWORD_DEFAULT));
-//paingkyawmoe
+            $this->userModel->setPassword(md5($password));
             $userData = $this->userModel->toArray();
 
             // Save to DB
@@ -94,6 +113,7 @@ class Users extends Controller
 
             if (!$result) {
                 echo "Something went wrong.";
+                return;
             }
             $this->view('pages/dash');
         }

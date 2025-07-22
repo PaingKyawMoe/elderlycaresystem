@@ -1,299 +1,100 @@
 <?php require_once APPROOT . '/views/inc/header.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>User List | Elderly Care System</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" />
-  <style>
-    /* === Base Styles === */
-    body {
-      font-family: "Roboto", sans-serif;
-      margin: 0;
-      padding: 30px 0;
-      background-color: #f4f7fa;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-      box-sizing: border-box;
-    }
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/userlist.css?v=<?= time(); ?>">
 
-    .container {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      max-width: 1200px;
-      width: 100%;
-      padding: 0 26px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    header h1 {
-      font-size: 2em;
-      color: #333;
-    }
-
-    .logout-btn {
-      padding: 8px 15px;
-      text-decoration: none;
-      color: #555;
-      font-weight: bold;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    .logout-btn:hover {
-      background-color: #f0f0f0;
-      color: #333;
-    }
-
-    /* === Table Styles === */
-    .table-responsive {
-      overflow-x: auto;
-      overflow-y: auto;
-      margin: 20px 0;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 10px 20px;
-      text-align: center;
-      border-bottom: 1px solid #eee;
-      white-space: nowrap;
-    }
-
-    th {
-      background-color: #f8f9fa;
-      color: #555;
-      text-transform: uppercase;
-      font-weight: 700;
-      font-size: 0.9em;
-    }
-
-    tbody tr:nth-child(even) {
-      background-color: #fdfefe;
-    }
-
-    tbody tr:hover {
-      background-color: #f0f8ff;
-    }
-
-    td:nth-child(4) {
-      font-family: monospace;
-      font-size: 0.8em;
-      color: #777;
-      max-width: 150px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .action-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .action-buttons button {
-      padding: 8px 12px;
-      font-size: 1em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      color: #fff;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-
-    .edit-btn {
-      background-color: #28a745;
-    }
-
-    .edit-btn:hover {
-      background-color: #218838;
-      transform: translateY(-2px);
-    }
-
-    .delete-btn {
-      background-color: #dc3545;
-    }
-
-    .delete-btn:hover {
-      background-color: #c82333;
-      transform: translateY(-2px);
-    }
-
-    /* === Modal === */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      visibility: hidden;
-      opacity: 0;
-      transition: all 0.3s ease;
-      z-index: 1000;
-    }
-
-    .modal-overlay.active {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .modal-content {
-      background: #fff;
-      border-radius: 8px;
-      padding: 30px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transform: translateY(-20px);
-      transition: transform 0.3s ease;
-    }
-
-    .modal-overlay.active .modal-content {
-      transform: translateY(0);
-    }
-
-    .modal-content h2 {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .modal-close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 1.5em;
-      background: none;
-      border: none;
-      color: #aaa;
-      cursor: pointer;
-    }
-
-    .modal-close-btn:hover {
-      color: #555;
-    }
-
-    .modal-form .form-group {
-      margin-bottom: 15px;
-    }
-
-    .modal-form label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #555;
-    }
-
-    .modal-form input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 25px;
-    }
-
-    .cancel-btn {
-      background-color: #6c757d;
-    }
-
-    .save-btn {
-      background-color: #007bff;
-    }
-
-    .cancel-btn:hover {
-      background-color: #5a6268;
-    }
-
-    .save-btn:hover {
-      background-color: #0056b3;
-    }
-
-    /* === Responsive === */
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .logout-btn {
-        width: 100%;
-        text-align: center;
-      }
-
-      th, td {
-        padding: 10px;
-        font-size: 0.9em;
-      }
-
-      .action-buttons button {
-        padding: 6px 10px;
-      }
-    }
-  </style>
 </head>
+
 <body>
   <div class="container">
-    <header>
-      <h1>Elderly Care System Users</h1>
-      <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">Logout</a>
-    </header>
+    <!-- Header -->
+    <div class="header">
+      <h1>
+        <i class="fas fa-users-cog header-icon"></i>
+        <span class="header-title">Elderly Care System</span>
+      </h1>
+      <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+      </a>
+    </div>
 
-    <div class="table-responsive">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th><th>Name</th><th>Email</th><th>Password</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="userTableBody"></tbody>
-      </table>
+    <!-- Table Container -->
+    <div class="table-container">
+
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <!-- Table content will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-container">
+        <div class="pagination-info" id="paginationInfo">
+          Showing 1-10 of 50 users
+        </div>
+        <div class="pagination" id="pagination">
+          <!-- Pagination buttons will be populated by JavaScript -->
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Edit Modal -->
   <div class="modal-overlay" id="editUserModal">
     <div class="modal-content">
-      <button class="modal-close-btn" id="closeModalBtn">&times;</button>
-      <h2>Edit User</h2>
-      <form id="editUserForm" class="modal-form">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit User</h2>
+        <button class="modal-close" id="closeModalBtn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="editUserForm">
         <input type="hidden" id="editUserId" />
+
         <div class="form-group">
-          <label for="editName">Name:</label>
-          <input type="text" id="editName" required />
+          <label class="form-label" for="editName">Full Name</label>
+          <input type="text" id="editName" class="form-input" required />
         </div>
+
         <div class="form-group">
-          <label for="editEmail">Email:</label>
-          <input type="email" id="editEmail" required />
+          <label class="form-label" for="editEmail">Email Address</label>
+          <input type="email" id="editEmail" class="form-input" required />
         </div>
+
         <div class="form-group">
-          <label for="editPassword">Password:</label>
-          <input type="text" id="editPassword" required />
+          <label class="form-label" for="editPassword">Password</label>
+          <input type="text" id="editPassword" class="form-input" required />
         </div>
+
         <div class="modal-actions">
-          <button type="button" class="cancel-btn" id="cancelEditBtn">Cancel</button>
-          <button type="submit" class="save-btn">Save</button>
+          <button type="button" class="btn btn-secondary" id="cancelEditBtn">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i>
+            Save Changes
+          </button>
         </div>
       </form>
     </div>
@@ -303,72 +104,206 @@
     (() => {
       const users = <?= json_encode($data['users'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
       let userList = [...users];
+      let currentPage = 1;
+      const usersPerPage = 10;
 
+      // DOM elements
       const modal = document.getElementById('editUserModal');
       const closeBtn = document.getElementById('closeModalBtn');
       const cancelBtn = document.getElementById('cancelEditBtn');
       const form = document.getElementById('editUserForm');
       const tbody = document.getElementById('userTableBody');
+      const paginationInfo = document.getElementById('paginationInfo');
+      const paginationContainer = document.getElementById('pagination');
 
       const userId = document.getElementById('editUserId');
       const name = document.getElementById('editName');
       const email = document.getElementById('editEmail');
       const password = document.getElementById('editPassword');
 
-      function renderTable() {
-        tbody.innerHTML = userList.length ? userList.map(user => `
-          <tr>
-            <td>${user.id}</td>
-            <td>${escapeHTML(user.name)}</td>
-            <td>${escapeHTML(user.email)}</td>
-            <td>${escapeHTML(user.password || '')}</td>
-            <td>
-              <div class="action-buttons">
-                <button class="edit-btn" data-id="${user.id}">Edit</button>
-                <button class="delete-btn" data-id="${user.id}">Delete</button>
-              </div>
-            </td>
-          </tr>`).join('') : `<tr><td colspan="5" style="text-align:center;">No users found.</td></tr>`;
-        attachListeners();
+      function getTotalPages() {
+        return Math.ceil(userList.length / usersPerPage);
       }
 
-      function attachListeners() {
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-          btn.onclick = () => {
+      function getCurrentPageUsers() {
+        const startIndex = (currentPage - 1) * usersPerPage;
+        const endIndex = startIndex + usersPerPage;
+        return userList.slice(startIndex, endIndex);
+      }
+
+      function renderTable() {
+        const currentUsers = getCurrentPageUsers();
+
+        if (currentUsers.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="4">
+                <div class="empty-state">
+                  <i class="fas fa-user-slash"></i>
+                  <h3>No users found</h3>
+                  <p>There are no users to display at the moment.</p>
+                </div>
+              </td>
+            </tr>
+          `;
+        } else {
+          tbody.innerHTML = currentUsers.map(user => `
+            <tr>
+              <td class="user-id">${user.id}</td>
+              <td class="user-name">${escapeHTML(user.name)}</td>
+              <td class="user-email">${escapeHTML(user.email)}</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-edit" data-id="${user.id}">
+                    <i class="fas fa-edit"></i>
+                    Edit
+                  </button>
+                  <button class="btn btn-delete" data-id="${user.id}">
+                    <i class="fas fa-trash"></i>
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        attachEventListeners();
+        updatePagination();
+      }
+
+      function updatePagination() {
+        const totalPages = getTotalPages();
+        const startIndex = (currentPage - 1) * usersPerPage + 1;
+        const endIndex = Math.min(currentPage * usersPerPage, userList.length);
+
+        // Update pagination info
+        paginationInfo.textContent = userList.length === 0 ?
+          'No users found' :
+          `Showing ${startIndex}-${endIndex} of ${userList.length} users`;
+
+        // Generate pagination buttons
+        let paginationHTML = '';
+
+        // Previous button
+        paginationHTML += `
+          <button class="pagination-btn pagination-nav ${currentPage === 1 ? 'disabled' : ''}" 
+                  onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        `;
+
+        // Page numbers
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage + 1 < maxVisiblePages) {
+          startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        if (startPage > 1) {
+          paginationHTML += `<button class="pagination-btn" onclick="changePage(1)">1</button>`;
+          if (startPage > 2) {
+            paginationHTML += `<span class="pagination-dots">...</span>`;
+          }
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                    onclick="changePage(${i})">${i}</button>
+          `;
+        }
+
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            paginationHTML += `<span class="pagination-dots">...</span>`;
+          }
+          paginationHTML += `<button class="pagination-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+        }
+
+        // Next button
+        paginationHTML += `
+          <button class="pagination-btn pagination-nav ${currentPage === totalPages ? 'disabled' : ''}" 
+                  onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        `;
+
+        paginationContainer.innerHTML = paginationHTML;
+      }
+
+      function changePage(page) {
+        const totalPages = getTotalPages();
+        if (page >= 1 && page <= totalPages && page !== currentPage) {
+          currentPage = page;
+          renderTable();
+          // Scroll to top of table
+          document.querySelector('.table-container').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }
+
+      // Make changePage globally available
+      window.changePage = changePage;
+
+      function attachEventListeners() {
+        // Edit buttons
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+          btn.onclick = (e) => {
+            e.preventDefault();
             const user = userList.find(u => u.id == btn.dataset.id);
             if (user) openModal(user);
           };
         });
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-  btn.onclick = () => {
-    const id = +btn.dataset.id;
 
-    if (confirm(`Are you sure you want to delete user ID ${id}?`)) {
-      // Call PHP backend via POST
-      fetch(`<?= URLROOT ?>/users/delete/${id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(res => res.json())
-      .then(response => {
-        if (response.status === 'success') {
-          // Remove from JS array
-          userList = userList.filter(u => u.id !== id);
-          renderTable();
-          alert("✅ User deleted from database and page.");
-        } else {
-          alert("❌ Failed to delete: " + response.message);
-        }
-      })
-      .catch(err => {
-        alert("❌ Error: " + err);
-      });
-    }
-  };
-});
+        // Delete buttons
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+          btn.onclick = (e) => {
+            e.preventDefault();
+            const id = +btn.dataset.id;
+            const user = userList.find(u => u.id === id);
 
+            if (user && confirm(`Are you sure you want to delete "${user.name}"?\n\nThis action cannot be undone.`)) {
+              deleteUser(id);
+            }
+          };
+        });
+      }
+
+      function deleteUser(id) {
+        fetch(`<?= URLROOT ?>/users/delete/${id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(res => res.json())
+          .then(response => {
+            if (response.status === 'success') {
+              userList = userList.filter(u => u.id !== id);
+
+              // Adjust current page if necessary
+              const totalPages = getTotalPages();
+              if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+              }
+
+              renderTable();
+
+              // Show success message
+              showNotification('User deleted successfully!', 'success');
+            } else {
+              showNotification('Failed to delete user: ' + response.message, 'error');
+            }
+          })
+          .catch(err => {
+            console.error('Delete error:', err);
+            showNotification('Error deleting user. Please try again.', 'error');
+          });
       }
 
       function openModal(user) {
@@ -377,6 +312,7 @@
         email.value = user.email;
         password.value = user.password || '';
         modal.classList.add('active');
+        name.focus();
       }
 
       function closeModal() {
@@ -384,55 +320,233 @@
         form.reset();
       }
 
-      form.onsubmit = e => {
-  e.preventDefault();
+      function showNotification(message, type = 'info') {
+        // Simple notification - you can enhance this with a proper notification system
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 16px 24px;
+          background: ${type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--danger-color)' : 'var(--primary-color)'};
+          color: white;
+          border-radius: 8px;
+          box-shadow: var(--shadow-lg);
+          z-index: 9999;
+          font-weight: 500;
+          max-width: 300px;
+          animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = message;
 
-  const updated = {
-    id: +userId.value,
-    name: name.value.trim(),
-    email: email.value.trim(),
-    password: password.value.trim()
-  };
+        document.body.appendChild(notification);
 
-  fetch(`<?= URLROOT ?>/users/update`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(updated)
-  })
-  .then(res => res.json())
-  .then(response => {
-    if (response.status === 'success') {
-      const index = userList.findIndex(u => u.id === updated.id);
-      if (index !== -1) {
-        userList[index] = updated;
-        renderTable();
+        setTimeout(() => {
+          notification.style.animation = 'slideOut 0.3s ease forwards';
+          setTimeout(() => notification.remove(), 300);
+        }, 3000);
       }
-      alert("✅ User updated in database and UI.");
-      closeModal();
-    } else {
-      alert("❌ Failed to update: " + response.message);
-    }
-  })
-  .catch(err => {
-    alert("❌ Error updating: " + err);
-  });
-};
 
+      // Form submission
+      form.onsubmit = (e) => {
+        e.preventDefault();
+
+        const updated = {
+          id: +userId.value,
+          name: name.value.trim(),
+          email: email.value.trim(),
+          password: password.value.trim()
+        };
+
+        if (!updated.name || !updated.email || !updated.password) {
+          showNotification('Please fill in all fields.', 'error');
+          return;
+        }
+
+        fetch(`<?= URLROOT ?>/users/update`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updated)
+          })
+          .then(res => res.json())
+          .then(response => {
+            if (response.status === 'success') {
+              const index = userList.findIndex(u => u.id === updated.id);
+              if (index !== -1) {
+                userList[index] = updated;
+                renderTable();
+              }
+              showNotification('User updated successfully!', 'success');
+              closeModal();
+            } else {
+              showNotification('Failed to update user: ' + response.message, 'error');
+            }
+          })
+          .catch(err => {
+            console.error('Update error:', err);
+            showNotification('Error updating user. Please try again.', 'error');
+          });
+      };
 
       function escapeHTML(str) {
-        return str?.replace(/[&<>"']/g, m => ({
-          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-        }[m])) || '';
+        if (!str) return '';
+        return str.replace(/[&<>"']/g, (match) => {
+          const escapeMap = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          };
+          return escapeMap[match];
+        });
       }
 
+      // Event listeners
       closeBtn.onclick = closeModal;
       cancelBtn.onclick = closeModal;
-      modal.onclick = e => { if (e.target === modal) closeModal(); };
 
+      modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+      };
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          closeModal();
+        }
+      });
+
+      // Add CSS animations
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+
+        @keyframes slideOut {
+          from {
+            transform: translateX(0);
+            opacity: 1;
+          }
+          to {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+        }
+
+        .fade-in {
+          animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Initialize the table
       renderTable();
+
+      // Add loading state for better UX
+      function showLoading(button) {
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        button.disabled = true;
+        return () => {
+          button.innerHTML = originalContent;
+          button.disabled = false;
+        };
+      }
+
+      // Enhanced error handling
+      window.addEventListener('unhandledrejection', (event) => {
+        console.error('Unhandled promise rejection:', event.reason);
+        showNotification('An unexpected error occurred. Please refresh the page.', 'error');
+      });
+
+      // Auto-refresh functionality (optional)
+      let autoRefreshInterval;
+
+      function startAutoRefresh(intervalMs = 300000) { // 5 minutes
+        autoRefreshInterval = setInterval(() => {
+          // Only refresh if modal is not open
+          if (!modal.classList.contains('active')) {
+            fetch(`<?= URLROOT ?>/users/list`)
+              .then(res => res.json())
+              .then(data => {
+                if (data.users && Array.isArray(data.users)) {
+                  userList = data.users;
+                  renderTable();
+                }
+              })
+              .catch(err => console.warn('Auto-refresh failed:', err));
+          }
+        }, intervalMs);
+      }
+
+      function stopAutoRefresh() {
+        if (autoRefreshInterval) {
+          clearInterval(autoRefreshInterval);
+          autoRefreshInterval = null;
+        }
+      }
+
+      // Uncomment to enable auto-refresh
+      // startAutoRefresh();
+
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', () => {
+        stopAutoRefresh();
+      });
+
+      // Add search functionality (if needed)
+      function addSearchFilter() {
+        const searchContainer = document.querySelector('.table-header');
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Search users...';
+        searchInput.className = 'form-input';
+        searchInput.style.marginTop = '12px';
+        searchInput.style.maxWidth = '300px';
+
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            if (searchTerm === '') {
+              userList = [...users];
+            } else {
+              userList = users.filter(user =>
+                user.name.toLowerCase().includes(searchTerm) ||
+                user.email.toLowerCase().includes(searchTerm) ||
+                user.id.toString().includes(searchTerm)
+              );
+            }
+            currentPage = 1;
+            renderTable();
+          }, 300);
+        });
+
+        searchContainer.appendChild(searchInput);
+      }
+
+      // Uncomment to add search functionality
+      // addSearchFilter();
+
     })();
   </script>
 </body>
+
 </html>
