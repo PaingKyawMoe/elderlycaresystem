@@ -14,15 +14,18 @@ class Pages extends Controller
         $this->view('pages/home');
     }
 
-    public function admin(){
-        $this->view('pages/userlist');
+    public function admin()
+    {
+        $this->view('Users/userlist');
     }
-    
-    public function dashboard(){
+
+    public function dashboard()
+    {
         $this->view('pages/dash');
     }
 
-    public function appointmentForm(){
+    public function appointmentForm()
+    {
         $this->view('pages/appointmentform');
     }
 
@@ -39,5 +42,25 @@ class Pages extends Controller
     public function about()
     {
         $this->view('pages/about');
+    }
+
+    public function donate()
+    {
+        $this->view('pages/donation');
+    }
+
+    public function activities()
+    {
+        $this->view('pages/activities');
+    }
+
+    public function Info()
+    {
+        $this->view('pages/appointmentInfo');
+    }
+
+    public function personal()
+    {
+        $this->view('pages/personaldetail');
     }
 }
