@@ -105,14 +105,16 @@ class Auth extends Controller
             if (isset($_POST['email']) && isset($_POST['password'])) {
                 $email = $_POST['email'];
                 $password = base64_encode($_POST['password']);
-
                 $isLogin = $this->db->loginCheck($email, $password);
+                // var_dump($isLogin);
+                // exit;
 
                 if ($isLogin) {
-                    setMessage('id', base64_encode($isLogin['id']));
-                    $id = $isLogin['id'];
-                    $setLogin = $this->db->setLogin($id);
-                    redirect('pages/dash');
+                    $checkData = $this->db->getById('users', $isLogin['id']);
+                    if ($checkData['role_id'] == 1) {
+                        redirect('pages/Info');
+                    }
+                    redirect('pages/dashboard');
                 } else {
                     setMessage('error', 'Login Fail!');
                     redirect('pages/login');
@@ -134,6 +136,30 @@ class Auth extends Controller
         }
     }
 
+
+    // public function login()
+    // {
+    //     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    //         $email = $_POST['email'];
+    //         $password = $_POST['password'];
+
+    //         // Admin table ကနေ ရှာမယ်
+    //         $admin = $this->db->getByEmail('admin', $email);
+
+    //         if ($admin && $admin['password'] === $password) {
+    //             session_start();
+    //             $_SESSION['admin_id'] = $admin['id'];
+    //             $_SESSION['admin_email'] = $admin['email'];
+
+    //             redirect('pages/about');
+    //         } else {
+    //             setMessage('error', 'Invalid login!');
+    //             redirect('pages/index');
+    //         }
+    //     }
+    // }
+
+
     function logout($id)
     {
         // session_start();
@@ -143,6 +169,4 @@ class Auth extends Controller
         $this->db->unsetLogin($id);
         redirect('pages/login');
     }
-    
 }
-

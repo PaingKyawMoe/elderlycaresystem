@@ -7,6 +7,7 @@ class UserModel
     private $name;
     private $email;
     private $password;
+    private $roleid;
 
     public function __construct()
     {
@@ -29,14 +30,14 @@ class UserModel
     }
 
     public function updateUser($data)
-{
-    $this->db->query("UPDATE users SET name = :name, email = :email, password = :password WHERE id = :id");
-    $this->db->bind(':name', $data['name']);
-    $this->db->bind(':email', $data['email']);
-    $this->db->bind(':password', $data['password']);
-    $this->db->bind(':id', $data['id']);
-    return $this->db->execute();
-}
+    {
+        $this->db->query("UPDATE users SET name = :name, email = :email, password = :password WHERE id = :id");
+        $this->db->bind(':name', $data['name']);
+        $this->db->bind(':email', $data['email']);
+        $this->db->bind(':password', $data['password']);
+        $this->db->bind(':id', $data['id']);
+        return $this->db->execute();
+    }
 
 
     // Setters
@@ -60,7 +61,16 @@ class UserModel
         $this->password = $password;
     }
 
+    public function setRoleid($id)
+    {
+        $this->roleid = $id;
+    }
+
     // Getters
+    public function getRoleid()
+    {
+        return $this->roleid;
+    }
     public function getId()
     {
         return $this->id;
@@ -88,7 +98,8 @@ class UserModel
             'id'       => $this->getId(),
             'name'     => $this->getName(),
             'email'    => $this->getEmail(),
-            'password' => $this->getPassword()
+            'password' => $this->getPassword(),
+            'role_id' => $this->getRoleid()
         ];
     }
 }
