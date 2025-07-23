@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/info.css?v=<?= time(); ?>">
+
 </head>
 
 <body>
@@ -19,9 +20,8 @@
                 <span class="header-title">Appointment Management</span>
             </h1>
             <div class="header-actions">
-                <button class="btn btn-primary" onclick="openAddModal()">
-                    <i class="fas fa-plus"></i>
-                    New Appointment
+                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Users/userlist'">
+                    ViewUsers
                 </button>
                 <a href="<?= URLROOT ?>/pages/dashboard" class="btn logout-btn">
                     <i class="fas fa-arrow-left"></i>
@@ -58,7 +58,11 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Patient Info</th>
+                            <th>Patient</th>
+                            <th>Date Of Birth</th>
+                            <th>Phone Contact</th>
+                            <th>Address</th>
+                            <th>Gender</th>
                             <th>Date & Time</th>
                             <th>Type</th>
                             <th>Doctor</th>
@@ -68,7 +72,87 @@
                         </tr>
                     </thead>
                     <tbody id="appointmentTableBody">
-                        <!-- Table content will be populated by JavaScript -->
+                        <?php if (!empty($data['appointmentData'])): ?>
+                            <?php foreach ($data['appointmentData'] as $appointment): ?>
+                                <tr>
+                                    <td class="appointment-id"><?= $appointment['id'] ?></td>
+                                    <td>
+                                        <div class="patient-info">
+                                            <div class="patient-name"><?= htmlspecialchars($appointment['name']) ?></div>
+                                        </div>
+                                    </td>
+                                    <td><?= date('M d, Y', strtotime($appointment['dob'])) ?></td>
+                                    <td>
+                                        <div class="patient-contact">
+                                            <i class="fas fa-phone"></i> <?= htmlspecialchars($appointment['phone']) ?>
+                                        </div>
+                                    </td>
+                                    <td><?= htmlspecialchars($appointment['address'] ?? 'N/A') ?></td>
+                                    <td><?= ucfirst($appointment['gender']) ?></td>
+                                    <td>
+                                        <div class="time-info">
+                                            <div class="appointment-date"><?= date('M d, Y', strtotime($appointment['preferred_date'])) ?></div>
+                                            <div class="appointment-time">
+                                                <i class="fas fa-clock"></i> <?= ucfirst($appointment['preferred_time']) ?>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="appointment-badge badge-<?= $appointment['appointment_type'] ?>">
+                                            <i class="fas fa-<?= $appointment['appointment_type'] == '' ? 'user-md' : ($appointment['appointment_type'] == 'VideoCall' ? 'InPerson' : 'HomeVisit') ?>"></i>
+                                            <?= ucfirst($appointment['appointment_type']) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="doctor-info">
+                                            <i class="fas fa-user-md"></i> <?= htmlspecialchars($appointment['doctor']) ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="reason-cell" title="<?= htmlspecialchars($appointment['reason'] ?? '') ?>">
+                                            <?= htmlspecialchars(strlen($appointment['reason'] ?? '') > 30 ? substr($appointment['reason'], 0, 30) . '...' : ($appointment['reason'] ?? 'N/A')) ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <?php if (!empty($appointment['photo'])): ?>
+                                            <img src="<?= URLROOT ?>/uploads/<?= $appointment['photo'] ?>"
+                                                alt="Patient Photo"
+                                                class="photo-thumbnail"
+                                                onclick="viewPhoto('<?= $appointment['photo'] ?>')"
+                                                onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\' viewBox=\'0 0 50 50\'%3E%3Crect width=\'50\' height=\'50\' fill=\'%23f3f4f6\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%239ca3af\' font-family=\'Arial\' font-size=\'20\'%3E👤%3C/text%3E%3C/svg%3E';">
+                                        <?php else: ?>
+                                            <div class="photo-placeholder"><i class="fas fa-user"></i></div>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-view" onclick="viewAppointment(<?= $appointment['id'] ?>)">
+                                                <i class="fas fa-eye"></i>
+                                                View
+                                            </button>
+                                            <button class="btn btn-small btn-edit" onclick="editAppointment(<?= $appointment['id'] ?>)">
+                                                <i class="fas fa-edit"></i>
+                                                Edit
+                                            </button>
+                                            <button class="btn btn-small btn-delete" onclick="deleteAppointment(<?= $appointment['id'] ?>)">
+                                                <i class="fas fa-trash"></i>
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="12">
+                                    <div class="empty-state">
+                                        <i class="fas fa-calendar-times"></i>
+                                        <h3>No appointments found</h3>
+                                        <p>There are no appointments to display.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -111,6 +195,21 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="form-label" for="patientDOB">Date of Birth</label>
+                            <input type="date" id="patientDOB" class="form-input" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="patientGender">Gender</label>
+                            <select id="patientGender" class="form-select" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label class="form-label" for="appointmentDate">Appointment Date</label>
                             <input type="date" id="appointmentDate" class="form-input" required />
                         </div>
@@ -139,26 +238,18 @@
                             <label class="form-label" for="selectDoctor">Select Doctor</label>
                             <select id="selectDoctor" class="form-select" required>
                                 <option value="">Choose Doctor</option>
-                                <option value="dr-smith">Dr. Smith</option>
-                                <option value="dr-jones">Dr. Jones</option>
-                                <option value="dr-davis">Dr. Davis</option>
+                                <option value="Dr. Paing">Dr. Paing</option>
+                                <option value="Dr. Kyaw">Dr. Kyaw</option>
+                                <option value="Dr. Moe">Dr. Moe</option>
+                                <option value="Dr. Phyoe">Dr. Phyoe</option>
+                                <option value="Dr. Mya">Dr. Mya</option>
                             </select>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="form-label" for="patientGender">Gender</label>
-                            <select id="patientGender" class="form-select" required>
-                                <option value="">Select Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="patientAddress">Address</label>
-                            <input type="text" id="patientAddress" class="form-input" />
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label" for="patientAddress">Address</label>
+                        <input type="text" id="patientAddress" class="form-input" />
                     </div>
 
                     <div class="form-group">
@@ -182,11 +273,16 @@
     </div>
 
     <script>
+        // Define URLROOT for JavaScript if not already defined
+        const URLROOT = '<?= URLROOT ?>';
+
         (() => {
-            // Sample data - replace with actual data from PHP
-            const appointments = <?= json_encode($data['appointments'] ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-            let appointmentList = [...appointments];
-            let filteredAppointments = [...appointments];
+            // Get appointments data from PHP - using appointmentData not appointments
+            const rawAppointments = <?= json_encode($data['appointmentData'] ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+            // Initialize appointment list with the PHP data
+            let appointmentList = [...rawAppointments];
+            let filteredAppointments = [...appointmentList];
             let currentPage = 1;
             const appointmentsPerPage = 10;
 
@@ -215,64 +311,66 @@
             const selectDoctor = document.getElementById('selectDoctor');
             const patientGender = document.getElementById('patientGender');
             const patientAddress = document.getElementById('patientAddress');
+            const patientDOB = document.getElementById('patientDOB');
             const reasonForAppointment = document.getElementById('reasonForAppointment');
 
             let isEditMode = false;
 
             function renderStats() {
+                // Use the snake_case property names from PHP data
                 const stats = {
                     total: appointmentList.length,
-                    consultation: appointmentList.filter(a => a.appointmentType === 'consultation').length,
-                    checkup: appointmentList.filter(a => a.appointmentType === 'checkup').length,
-                    followup: appointmentList.filter(a => a.appointmentType === 'followup').length
+                    consultation: appointmentList.filter(a => a.appointment_type === 'consultation').length,
+                    checkup: appointmentList.filter(a => a.appointment_type === 'checkup').length,
+                    followup: appointmentList.filter(a => a.appointment_type === 'followup').length
                 };
 
                 statsContainer.innerHTML = `
-          <div class="stat-card">
-            <div class="stat-card-header">
-              <div class="stat-icon total">
-                <i class="fas fa-calendar-alt"></i>
-              </div>
-              <div>
-                <div class="stat-value">${stats.total}</div>
-                <div class="stat-label">Total Appointments</div>
-              </div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-header">
-              <div class="stat-icon consultation">
-                <i class="fas fa-user-md"></i>
-              </div>
-              <div>
-                <div class="stat-value">${stats.consultation}</div>
-                <div class="stat-label">Consultations</div>
-              </div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-header">
-              <div class="stat-icon checkup">
-                <i class="fas fa-heartbeat"></i>
-              </div>
-              <div>
-                <div class="stat-value">${stats.checkup}</div>
-                <div class="stat-label">Check-ups</div>
-              </div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-header">
-              <div class="stat-icon followup">
-                <i class="fas fa-redo"></i>
-              </div>
-              <div>
-                <div class="stat-value">${stats.followup}</div>
-                <div class="stat-label">Follow-ups</div>
-              </div>
-            </div>
-          </div>
-        `;
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon total">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div>
+                                <div class="stat-value">${stats.total}</div>
+                                <div class="stat-label">Total Appointments</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon consultation">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div>
+                                <div class="stat-value">${stats.consultation}</div>
+                                <div class="stat-label">Consultations</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon checkup">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div>
+                                <div class="stat-value">${stats.checkup}</div>
+                                <div class="stat-label">Check-ups</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon followup">
+                                <i class="fas fa-redo"></i>
+                            </div>
+                            <div>
+                                <div class="stat-value">${stats.followup}</div>
+                                <div class="stat-label">Follow-ups</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
 
             function getTotalPages() {
@@ -299,80 +397,87 @@
 
                 if (currentAppointments.length === 0) {
                     tbody.innerHTML = `
-            <tr>
-              <td colspan="8">
-                <div class="empty-state">
-                  <i class="fas fa-calendar-times"></i>
-                  <h3>No appointments found</h3>
-                  <p>There are no appointments matching your criteria.</p>
-                </div>
-              </td>
-            </tr>
-          `;
+                        <tr>
+                            <td colspan="12">
+                                <div class="empty-state">
+                                    <i class="fas fa-calendar-times"></i>
+                                    <h3>No appointments found</h3>
+                                    <p>There are no appointments matching your criteria.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
                 } else {
                     tbody.innerHTML = currentAppointments.map(appointment => `
-            <tr>
-              <td class="appointment-id">#${appointment.id}</td>
-              <td>
-                <div class="patient-info">
-                  <div class="patient-name">${escapeHTML(appointment.name)}</div>
-                  <div class="patient-contact">
-                    <i class="fas fa-phone"></i> ${escapeHTML(appointment.phone)}
-                    ${appointment.address ? `<br><i class="fas fa-map-marker-alt"></i> ${escapeHTML(appointment.address)}` : ''}
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="time-info">
-                  <div class="appointment-date">${formatDate(appointment.preferredDate)}</div>
-                  <div class="appointment-time">
-                    <i class="fas fa-clock"></i> ${appointment.preferredTime}
-                  </div>
-                </div>
-              </td>
-              <td>
-                <span class="appointment-badge badge-${appointment.appointmentType}">
-                  <i class="fas fa-${getTypeIcon(appointment.appointmentType)}"></i>
-                  ${appointment.appointmentType}
-                </span>
-              </td>
-              <td>
-                <div class="doctor-info">
-                  <i class="fas fa-user-md"></i> ${appointment.selectDoctor}
-                </div>
-              </td>
-              <td>
-                <div class="reason-cell" title="${escapeHTML(appointment.reasonForAppointment)}">
-                  ${truncateText(appointment.reasonForAppointment, 30)}
-                </div>
-              </td>
-              <td>
-                ${appointment.photo ? 
-                  `<img src="${URLROOT}/uploads/${appointment.photo}" alt="Patient" class="photo-thumbnail" onclick="viewPhoto('${appointment.photo}')">` :
-                  `<div class="photo-placeholder"><i class="fas fa-user"></i></div>`
-                }
-              </td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn btn-small btn-view" onclick="viewAppointment(${appointment.id})">
-                    <i class="fas fa-eye"></i>
-                    View
-                  </button>
-                  <button class="btn btn-small btn-edit" onclick="editAppointment(${appointment.id})">
-                    <i class="fas fa-edit"></i>
-                    Edit
-                  </button>
-                  <button class="btn btn-small btn-delete" onclick="deleteAppointment(${appointment.id})">
-                    <i class="fas fa-trash"></i>
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-          `).join('');
+                        <tr>
+                            <td class="appointment-id">${appointment.id}</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">${escapeHTML(appointment.name)}</div>
+                                </div>
+                            </td>
+                            <td>${formatDate(appointment.dob)}</td>
+                            <td>
+                                <div class="patient-contact">
+                                    <i class="fas fa-phone"></i> ${escapeHTML(appointment.phone)}
+                                </div>
+                            </td>
+                            <td>${escapeHTML(appointment.address || 'N/A')}</td>
+                            <td>${appointment.gender ? appointment.gender.charAt(0).toUpperCase() + appointment.gender.slice(1) : 'N/A'}</td>
+                            <td>
+                                <div class="time-info">
+                                    <div class="appointment-date">${formatDate(appointment.preferred_date)}</div>
+                                    <div class="appointment-time">
+                                        <i class="fas fa-clock"></i> ${appointment.preferred_time ? appointment.preferred_time.charAt(0).toUpperCase() + appointment.preferred_time.slice(1) : 'N/A'}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="appointment-badge badge-${appointment.appointment_type}">
+                                    <i class="fas fa-${getTypeIcon(appointment.appointment_type)}"></i>
+                                    ${appointment.appointment_type ? appointment.appointment_type.charAt(0).toUpperCase() + appointment.appointment_type.slice(1) : 'N/A'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="doctor-info">
+                                    <i class="fas fa-user-md"></i> ${appointment.doctor}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="reason-cell" title="${escapeHTML(appointment.reason || '')}">
+                                    ${truncateText(appointment.reason || 'No reason provided', 30)}
+                                </div>
+                            </td>
+                            <td>
+                                ${appointment.photo ? 
+                                    `<img src="${URLROOT}/uploads/${appointment.photo}" 
+                                         alt="Patient Photo" 
+                                         class="photo-thumbnail" 
+                                         onclick="viewPhoto('${appointment.photo}')"
+                                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'><i class=\\'fas fa-user\\'></i></div>';">` :
+                                    `<div class="photo-placeholder"><i class="fas fa-user"></i></div>`
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-small btn-view" onclick="viewAppointment(${appointment.id})">
+                                        <i class="fas fa-eye"></i>
+                                        View
+                                    </button>
+                                    <button class="btn btn-small btn-edit" onclick="editAppointment(${appointment.id})">
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+                                    </button>
+                                    <button class="btn btn-small btn-delete" onclick="deleteAppointment(${appointment.id})">
+                                        <i class="fas fa-trash"></i>
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
                 }
 
-                attachEventListeners();
                 updatePagination();
             }
 
@@ -404,51 +509,53 @@
                 // Generate pagination buttons
                 let paginationHTML = '';
 
-                // Previous button
-                paginationHTML += `
-          <button class="pagination-btn pagination-nav ${currentPage === 1 ? 'disabled' : ''}" 
-                  onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-            <i class="fas fa-chevron-left"></i>
-          </button>
-        `;
-
-                // Page numbers
-                const maxVisiblePages = 5;
-                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-                if (endPage - startPage + 1 < maxVisiblePages) {
-                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
-                }
-
-                if (startPage > 1) {
-                    paginationHTML += `<button class="pagination-btn" onclick="changePage(1)">1</button>`;
-                    if (startPage > 2) {
-                        paginationHTML += `<span class="pagination-dots">...</span>`;
-                    }
-                }
-
-                for (let i = startPage; i <= endPage; i++) {
+                if (totalPages > 0) {
+                    // Previous button
                     paginationHTML += `
-            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
-                    onclick="changePage(${i})">${i}</button>
-          `;
-                }
+                        <button class="pagination-btn pagination-nav ${currentPage === 1 ? 'disabled' : ''}" 
+                                onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    `;
 
-                if (endPage < totalPages) {
-                    if (endPage < totalPages - 1) {
-                        paginationHTML += `<span class="pagination-dots">...</span>`;
+                    // Page numbers
+                    const maxVisiblePages = 5;
+                    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+                    if (endPage - startPage + 1 < maxVisiblePages) {
+                        startPage = Math.max(1, endPage - maxVisiblePages + 1);
                     }
-                    paginationHTML += `<button class="pagination-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
-                }
 
-                // Next button
-                paginationHTML += `
-          <button class="pagination-btn pagination-nav ${currentPage === totalPages ? 'disabled' : ''}" 
-                  onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        `;
+                    if (startPage > 1) {
+                        paginationHTML += `<button class="pagination-btn" onclick="changePage(1)">1</button>`;
+                        if (startPage > 2) {
+                            paginationHTML += `<span class="pagination-dots">...</span>`;
+                        }
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        paginationHTML += `
+                            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                                    onclick="changePage(${i})">${i}</button>
+                        `;
+                    }
+
+                    if (endPage < totalPages) {
+                        if (endPage < totalPages - 1) {
+                            paginationHTML += `<span class="pagination-dots">...</span>`;
+                        }
+                        paginationHTML += `<button class="pagination-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+                    }
+
+                    // Next button
+                    paginationHTML += `
+                        <button class="pagination-btn pagination-nav ${currentPage === totalPages ? 'disabled' : ''}" 
+                                onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    `;
+                }
 
                 paginationContainer.innerHTML = paginationHTML;
             }
@@ -458,10 +565,6 @@
                 if (page >= 1 && page <= totalPages && page !== currentPage) {
                     currentPage = page;
                     renderTable();
-                    document.querySelector('.table-container').scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
                 }
             }
 
@@ -474,27 +577,26 @@
                     const matchesSearch = !searchTerm ||
                         appointment.name.toLowerCase().includes(searchTerm) ||
                         appointment.phone.includes(searchTerm) ||
-                        appointment.reasonForAppointment.toLowerCase().includes(searchTerm) ||
+                        (appointment.reason && appointment.reason.toLowerCase().includes(searchTerm)) ||
                         appointment.id.toString().includes(searchTerm);
 
-                    const matchesType = !typeFilterValue || appointment.appointmentType === typeFilterValue;
-                    const matchesDoctor = !doctorFilterValue || appointment.selectDoctor === doctorFilterValue;
+                    const matchesType = !typeFilterValue || appointment.appointment_type === typeFilterValue;
+                    const matchesDoctor = !doctorFilterValue || appointment.doctor === doctorFilterValue;
 
                     return matchesSearch && matchesType && matchesDoctor;
                 });
 
                 currentPage = 1;
                 renderTable();
-                renderStats();
             }
 
             function populateDoctorFilter() {
-                const doctors = [...new Set(appointmentList.map(a => a.selectDoctor))].filter(Boolean);
+                const doctors = [...new Set(appointmentList.map(a => a.doctor))].filter(Boolean);
                 doctorFilter.innerHTML = '<option value="">All Doctors</option>' +
                     doctors.map(doctor => `<option value="${doctor}">${doctor}</option>`).join('');
             }
 
-            // Make changePage globally available
+            // Make functions globally available
             window.changePage = changePage;
 
             function attachEventListeners() {
@@ -537,6 +639,7 @@
                             if (response.status === 'success') {
                                 appointmentList = appointmentList.filter(a => a.id != id);
                                 filterAppointments();
+                                renderStats();
                                 showNotification('Appointment deleted successfully!', 'success');
                             } else {
                                 showNotification('Failed to delete appointment: ' + response.message, 'error');
@@ -560,13 +663,14 @@
                     appointmentId.value = appointment.id;
                     patientName.value = appointment.name;
                     patientPhone.value = appointment.phone;
-                    appointmentDate.value = appointment.preferredDate;
-                    appointmentTime.value = appointment.preferredTime;
-                    appointmentType.value = appointment.appointmentType;
-                    selectDoctor.value = appointment.selectDoctor;
+                    appointmentDate.value = appointment.preferred_date;
+                    appointmentTime.value = appointment.preferred_time;
+                    appointmentType.value = appointment.appointment_type;
+                    selectDoctor.value = appointment.doctor;
                     patientGender.value = appointment.gender;
                     patientAddress.value = appointment.address || '';
-                    reasonForAppointment.value = appointment.reasonForAppointment || '';
+                    patientDOB.value = appointment.dob || '';
+                    reasonForAppointment.value = appointment.reason || '';
 
                     modalTitle.textContent = editMode ? 'Edit Appointment' : 'View Appointment';
                     saveBtn.textContent = editMode ? 'Save Changes' : 'Close';
@@ -585,7 +689,9 @@
                 });
 
                 modal.classList.add('active');
-                patientName.focus();
+                if (editMode || !appointment) {
+                    patientName.focus();
+                }
             }
 
             function closeModal() {
@@ -596,20 +702,7 @@
 
             function showNotification(message, type = 'info') {
                 const notification = document.createElement('div');
-                notification.style.cssText = `
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          padding: 16px 24px;
-          background: ${type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--danger-color)' : 'var(--primary-color)'};
-          color: white;
-          border-radius: var(--radius-md);
-          box-shadow: var(--shadow-lg);
-          z-index: 9999;
-          font-weight: 500;
-          max-width: 300px;
-          animation: slideIn 0.3s ease;
-        `;
+                notification.className = `notification ${type}`;
                 notification.textContent = message;
 
                 document.body.appendChild(notification);
@@ -622,21 +715,24 @@
 
             function viewPhoto(photoName) {
                 const photoModal = document.createElement('div');
-                photoModal.className = 'modal-overlay';
+                photoModal.className = 'modal-overlay active';
                 photoModal.style.zIndex = '1001';
                 photoModal.innerHTML = `
-          <div class="modal-content" style="max-width: 800px;">
-            <div class="modal-header">
-              <h2 class="modal-title">Patient Photo</h2>
-              <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-              <img src="${URLROOT}/uploads/${photoName}" alt="Patient Photo" style="max-width: 100%; height: auto; border-radius: var(--radius-md);">
-            </div>
-          </div>
-        `;
+                    <div class="modal-content" style="max-width: 800px;">
+                        <div class="modal-header">
+                            <h2 class="modal-title">Patient Photo</h2>
+                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="text-align: center;">
+                            <img src="${URLROOT}/uploads/${photoName}" 
+                                 alt="Patient Photo" 
+                                 style="max-width: 100%; height: auto; border-radius: var(--border-radius);"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'400\\' height=\\'300\\' viewBox=\\'0 0 400 300\\'%3E%3Crect width=\\'400\\' height=\\'300\\' fill=\\'%23f3f4f6\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' text-anchor=\\'middle\\' dy=\\'.3em\\' fill=\\'%239ca3af\\' font-family=\\'Arial\\' font-size=\\'20\\'%3EImage not found%3C/text%3E%3C/svg%3E';">
+                        </div>
+                    </div>
+                `;
 
                 photoModal.addEventListener('click', (e) => {
                     if (e.target === photoModal) {
@@ -645,7 +741,6 @@
                 });
 
                 document.body.appendChild(photoModal);
-                setTimeout(() => photoModal.classList.add('active'), 10);
             }
 
             // Form submission
@@ -662,17 +757,18 @@
                     id: appointmentId.value,
                     name: patientName.value.trim(),
                     phone: patientPhone.value.trim(),
-                    preferredDate: appointmentDate.value,
-                    preferredTime: appointmentTime.value,
-                    appointmentType: appointmentType.value,
-                    selectDoctor: selectDoctor.value,
+                    dob: patientDOB.value,
                     gender: patientGender.value,
                     address: patientAddress.value.trim(),
-                    reasonForAppointment: reasonForAppointment.value.trim()
+                    preferred_date: appointmentDate.value,
+                    preferred_time: appointmentTime.value,
+                    appointment_type: appointmentType.value,
+                    doctor: selectDoctor.value,
+                    reason: reasonForAppointment.value.trim()
                 };
 
-                if (!appointmentData.name || !appointmentData.phone || !appointmentData.preferredDate ||
-                    !appointmentData.preferredTime || !appointmentData.appointmentType || !appointmentData.selectDoctor) {
+                if (!appointmentData.name || !appointmentData.phone || !appointmentData.preferred_date ||
+                    !appointmentData.preferred_time || !appointmentData.appointment_type || !appointmentData.doctor) {
                     showNotification('Please fill in all required fields.', 'error');
                     return;
                 }
@@ -703,13 +799,14 @@
                                 showNotification('Appointment updated successfully!', 'success');
                             } else {
                                 // Add new appointment
-                                appointmentData.id = response.id || Date.now(); // Use server ID or timestamp
+                                appointmentData.id = response.id || Date.now();
                                 appointmentList.push(appointmentData);
                                 showNotification('Appointment created successfully!', 'success');
                             }
 
                             filterAppointments();
                             populateDoctorFilter();
+                            renderStats();
                             closeModal();
                         } else {
                             showNotification('Failed to save appointment: ' + response.message, 'error');
@@ -757,101 +854,11 @@
             window.openAddModal = openAddModal;
             window.viewPhoto = viewPhoto;
 
-            // Add CSS animations
-            const style = document.createElement('style');
-            style.textContent = `
-        @keyframes slideIn {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-
-        @keyframes slideOut {
-          from {
-            transform: translateX(0);
-            opacity: 1;
-          }
-          to {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-        }
-
-        .fade-in {
-          animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 640px) {
-          .stats-container {
-            grid-template-columns: 1fr;
-          }
-          
-          .table-header {
-            flex-direction: column;
-            align-items: stretch;
-          }
-          
-          .search-container {
-            flex-direction: column;
-          }
-          
-          .search-input, .filter-select {
-            width: 100%;
-          }
-        }
-      `;
-            document.head.appendChild(style);
-
             // Initialize the page
             populateDoctorFilter();
             renderStats();
             renderTable();
             attachEventListeners();
-
-            // Auto-refresh functionality (optional)
-            let autoRefreshInterval;
-
-            function startAutoRefresh(intervalMs = 300000) { // 5 minutes
-                autoRefreshInterval = setInterval(() => {
-                    if (!modal.classList.contains('active')) {
-                        fetch(`<?= URLROOT ?>/appointments/list`)
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.appointments && Array.isArray(data.appointments)) {
-                                    appointmentList = data.appointments;
-                                    filterAppointments();
-                                    populateDoctorFilter();
-                                }
-                            })
-                            .catch(err => console.warn('Auto-refresh failed:', err));
-                    }
-                }, intervalMs);
-            }
-
-            function stopAutoRefresh() {
-                if (autoRefreshInterval) {
-                    clearInterval(autoRefreshInterval);
-                    autoRefreshInterval = null;
-                }
-            }
-
-            // Uncomment to enable auto-refresh
-            // startAutoRefresh();
-
-            // Cleanup on page unload
-            window.addEventListener('beforeunload', () => {
-                stopAutoRefresh();
-            });
 
         })();
     </script>
