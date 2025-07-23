@@ -1,0 +1,44 @@
+<table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>DOB</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Gender</th>
+                            <th>Preferred_Date</th>
+                            <th>Appointment_Type</th>
+                            <th>Peferred_Time</th>
+                            <th>Doctor</th>
+                            <th>Reason</th>
+                            <th>Photo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($data['appointmentData'])): ?>
+                            <?php foreach ($data['appointmentData'] as $appointment): ?>
+                                <tr>
+                                    <td><?= $appointment['id'] ?></td>
+                                    <td><?= $appointment['name'] ?></td>
+                                    <td><?= $appointment['dob'] ?></td>
+                                    <td><?= $appointment['phone'] ?></td>
+                                    <td><?= $appointment['address'] ?></td>
+                                    <td><?= $appointment['gender'] ?></td>
+                                    <td><?= $appointment['preferred_date'] ?></td>
+                                    <td><?= $appointment['appointment_type'] ?></td>
+                                    <td><?= $appointment['preferred_time'] ?></td>
+                                    <td><?= $appointment['doctor'] ?></td>
+                                    <td><?= $appointment['reason'] ?></td>
+                                    <td><?= $appointment['photo'] ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="8">No appointments found.</td>
+                            </tr>
+                        <?php endif; ?>
+
+                    </tbody>
+
+                </table>

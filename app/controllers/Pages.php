@@ -54,9 +54,14 @@ class Pages extends Controller
         $this->view('pages/activities');
     }
 
-    public function Info()
+    public function Info()  
     {
-        $this->view('pages/appointmentInfo');
+        $appointmentData = $this->db->readAll('appointments');
+        $data = [
+            'appointmentData' => $appointmentData
+        ];
+
+        $this->view('pages/appointmentInfo', $data);
     }
 
     public function personal()

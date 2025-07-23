@@ -49,9 +49,9 @@
                         <i class="fas fa-clipboard-list"></i>
                         <select name="appointmentType" id="appointmentType" required>
                             <option value="" disabled selected>Type Of Appointment</option>
-                            <option value="consultation">Video Call</option>
-                            <option value="checkup">In Person</option>
-                            <option value="followup">Home Visit</option>
+                            <option value="consultation">Consultation</option>
+                            <option value="checkup">Checkup</option>
+                            <option value="followup">followup</option>
                         </select>
                         <i class="fas fa-chevron-down select-arrow"></i>
                     </div>
@@ -73,9 +73,11 @@
                         <i class="fas fa-user-md"></i>
                         <select name="selectDoctor" id="selectDoctor" required>
                             <option value="" disabled selected>Select Doctor</option>
-                            <option value="dr-smith">Dr. John Smith</option>
-                            <option value="dr-jones">Dr. Emily Jones</option>
-                            <option value="dr-davis">Dr. Michael Davis</option>
+                            <option value="dr-paing">Dr. Paing</option>
+                            <option value="dr-kyaw">Dr. Kyaw</option>
+                            <option value="dr-moe">Dr. Moe</option>
+                            <option value="dr-phyoe">Dr. Phyoe</option>
+                            <option value="dr-mya">Dr. Mya</option>
                         </select>
                         <i class="fas fa-chevron-down select-arrow"></i>
                     </div>
@@ -103,8 +105,31 @@
     </div>
 
     <script>
-        // Form submission with loading state
+        // Form submission with loading state and age validation
         document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+            const dobInput = document.getElementById('dob').value;
+            const dob = new Date(dobInput);
+            const today = new Date();
+
+            if (!dobInput || isNaN(dob)) {
+                alert("Please enter a valid date of birth.");
+                e.preventDefault();
+                return;
+            }
+
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            const dayDiff = today.getDate() - dob.getDate();
+            if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                age--;
+            }
+
+            if (age < 60) {
+                alert("Appointments are only allowed for people aged 60 and above.");
+                e.preventDefault();
+                return;
+            }
+
             const container = document.querySelector('.form-container');
             const submitBtn = this.querySelector('.submit-btn');
 
@@ -138,7 +163,6 @@
                 label.style.fontSize = '0.9rem';
                 label.style.marginLeft = '0.5rem';
 
-                // Remove existing label if any
                 const existing = this.parentNode.querySelector('span');
                 if (existing) existing.remove();
 
@@ -155,6 +179,7 @@
         window.addEventListener('resize', adjustLayout);
         adjustLayout();
     </script>
+
 </body>
 
 </html>
