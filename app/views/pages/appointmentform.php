@@ -7,6 +7,7 @@
     <title>Appointment Form</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/appointmentform.css?v=<?= time(); ?>">
+
 </head>
 
 <body>
@@ -104,7 +105,66 @@
         </div>
     </div>
 
+    <!-- Modern Alert Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-alert">
+            <div class="modal-header" id="modalHeader">
+                <i class="fas fa-exclamation-circle"></i>
+                <h3 id="modalTitle">Age Requirement</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">
+                    Sorry, appointments are only available for people aged
+                    <span class="age-requirement" id="ageRequirement">50 and above</span>.
+                    Please check your date of birth and try again.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" id="modalBtn" onclick="closeModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Modern alert function
+        function showModal(title, message, type = 'error') {
+            const overlay = document.getElementById('modalOverlay');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalHeader = document.getElementById('modalHeader');
+            const modalBtn = document.getElementById('modalBtn');
+            const ageReq = document.getElementById('ageRequirement');
+
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = message;
+
+            if (type === 'success') {
+                modalHeader.classList.add('success');
+                modalBtn.classList.add('success');
+                if (ageReq) ageReq.classList.add('success');
+                modalHeader.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                modalHeader.classList.remove('success');
+                modalBtn.classList.remove('success');
+                if (ageReq) ageReq.classList.remove('success');
+                modalHeader.querySelector('i').className = 'fas fa-exclamation-circle';
+            }
+
+            overlay.classList.add('active');
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modalOverlay');
+            overlay.classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
         // Form submission with loading state and age validation
         document.getElementById('appointmentForm').addEventListener('submit', function(e) {
             const dobInput = document.getElementById('dob').value;
@@ -112,7 +172,10 @@
             const today = new Date();
 
             if (!dobInput || isNaN(dob)) {
-                alert("Please enter a valid date of birth.");
+                showModal(
+                    'Invalid Date',
+                    'Please enter a valid date of birth.'
+                );
                 e.preventDefault();
                 return;
             }
@@ -124,8 +187,11 @@
                 age--;
             }
 
-            if (age < 60) {
-                alert("Appointments are only allowed for people aged 60 and above.");
+            if (age < 50) {
+                showModal(
+                    'Age Requirement Not Met',
+                    'Sorry, appointments are only available for people aged <span class="age-requirement">50 and above</span>. Please check your date of birth and try again.'
+                );
                 e.preventDefault();
                 return;
             }
@@ -178,6 +244,13 @@
 
         window.addEventListener('resize', adjustLayout);
         adjustLayout();
+
+        // ESC key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('active')) {
+                closeModal();
+            }
+        });
     </script>
 
 </body>

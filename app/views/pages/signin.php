@@ -543,7 +543,7 @@
         <p>Welcome back! Please sign in to your account</p>
       </div>
 
-      <form method="POST" action="<?= URLROOT ?>/Users/login" id="loginForm">
+      <form method="POST" action="<?= URLROOT ?>/Auth/login" id="loginForm">
         <?php if (isset($_SESSION['success_message'])): ?>
           <div class="success-message">
             <?php echo $_SESSION['success_message'];
