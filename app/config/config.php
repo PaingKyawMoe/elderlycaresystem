@@ -17,3 +17,6 @@ define('SITENAME', 'Elderly Care');
 
 //Define Admin
 define('Admin', 1);
+
+//Define User
+define('User', 2);

@@ -7,6 +7,7 @@ class Auth extends Controller
     {
         $this->model('UserModel');
         $this->db = new Database();
+        $this->model('AppointmentModel');
     }
 
     public function formRegister()
@@ -159,7 +160,6 @@ class Auth extends Controller
     //     }
     // }
 
-
     function logout($id)
     {
         // session_start();
@@ -167,6 +167,8 @@ class Auth extends Controller
 
         //$this->db->unsetLogin($this->auth->getAuthId());
         $this->db->unsetLogin($id);
-        redirect('pages/login');
+        // session_start();
+        // session_destroy();
+        redirect('pages/dashboard');
     }
 }

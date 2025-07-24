@@ -2,7 +2,6 @@
 
 class AppointmentModel
 {
-    private $db;
     private $id;
     private $name;
     private $dob;
@@ -15,7 +14,6 @@ class AppointmentModel
     private $selectDoctor;
     private $reasonForAppointment;
     private $photo;
-
 
 
     public function setId($id)
