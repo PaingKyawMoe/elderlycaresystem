@@ -19,7 +19,7 @@
         <i class="fas fa-users-cog header-icon"></i>
         <span class="header-title">Elderly Care System</span>
       </h1>
-      <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
+      <a href=" <?= URLROOT ?>/pages/dashboard" class="logout-btn">
         <i class="fas fa-sign-out-alt"></i>
         Logout
       </a>

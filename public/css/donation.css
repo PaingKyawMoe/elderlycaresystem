@@ -5,8 +5,8 @@
 }
 
 :root {
-  --primary: #6366f1;
-  --primary-dark: #4f46e5;
+  --primary: #6ba1f1;
+  --primary-dark: #7498fab9;
   --secondary: #f59e0b;
   --success: #10b981;
   --error: #ef4444;
@@ -26,7 +26,11 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  background: radial-gradient(
+    rgb(219, 234, 254),
+    rgb(147, 197, 253),
+    rgb(59, 130, 246)
+  );
   min-height: 100vh;
   color: #ffffff;
   position: relative;
@@ -687,4 +691,150 @@ body::before {
   .submit-btn {
     font-size: 1.1rem;
   }
+}
+
+.success-message {
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 600px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+
+.success-message.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 30px;
+  background-color: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: checkmark 0.6s ease-out;
+}
+
+.success-icon svg {
+  width: 40px;
+  height: 40px;
+  stroke: white;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: draw 0.6s ease-out 0.3s forwards;
+}
+
+.success-title {
+  font-size: 28px;
+  color: #1f2937;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.success-text {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.btn-primary {
+  background-color: #4f46e5;
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #4338ca;
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.loading {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.form-input.error {
+  border-color: #ef4444;
+}
+
+.fee-row {
+  display: none;
+}
+
+.fee-row.show {
+  display: flex;
+}
+
+.fee-notice {
+  display: none;
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 15px;
+}
+
+.fee-notice.show {
+  display: block;
+}
+
+.custom-amount-container {
+  display: none;
+  margin-top: 15px;
+}
+
+.custom-amount-container.active {
+  display: block;
+}
+
+.card-details {
+  display: none;
+  margin-top: 20px;
+}
+
+.card-details.active {
+  display: block;
 }

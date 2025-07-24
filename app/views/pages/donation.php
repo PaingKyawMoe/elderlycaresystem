@@ -76,13 +76,14 @@
         </div>
 
         <!-- Donation Form -->
-        <div class="donation-form">
+        <div class="donation-form" id="donationFormContainer">
             <div class="form-header">
                 <h2>Make Your Impact Today</h2>
                 <p>Choose how you'd like to help</p>
             </div>
 
-            <form id="donationForm">
+            <form method="POST" action="<?= URLROOT ?>/Donations/donate" id="donationForm">
+
                 <!-- Amount Selection -->
                 <div class="form-section">
                     <h3 class="section-title">Select Donation Amount</h3>
@@ -113,7 +114,7 @@
                         </div>
                     </div>
                     <div class="custom-amount-container" id="customAmountContainer">
-                        <input type="number" class="custom-amount-input" id="customAmount" placeholder="Enter custom amount" min="1">
+                        <input type="number" class="custom-amount-input" id="customAmount" name="customAmount" placeholder="Enter custom amount" min="1">
                     </div>
                 </div>
 
@@ -200,19 +201,19 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label class="form-label" for="cardNumber">Card Number *</label>
-                                <input type="text" class="form-input" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                                <input type="text" class="form-input" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="cardName">Cardholder Name *</label>
-                                <input type="text" class="form-input" id="cardName" placeholder="John Doe">
+                                <input type="text" class="form-input" id="cardName" name="cardName" placeholder="John Doe">
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="expiry">Expiry Date *</label>
-                                <input type="text" class="form-input" id="expiry" placeholder="MM/YY" maxlength="5">
+                                <input type="text" class="form-input" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5">
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="cvv">CVV *</label>
-                                <input type="text" class="form-input" id="cvv" placeholder="123" maxlength="4">
+                                <input type="text" class="form-input" id="cvv" name="cvv" placeholder="123" maxlength="4">
                             </div>
                         </div>
                     </div>
@@ -253,7 +254,7 @@
         </div>
 
         <!-- Success Message -->
-        <div class="success-message" id="successMessage">
+        <div class="success-message" id="successMessage" style="display: none;">
             <div class="success-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                     <polyline points="20 6 9 17 4 12" />
@@ -261,8 +262,18 @@
             </div>
             <h2 class="success-title">Thank You for Your Generosity!</h2>
             <p class="success-text">Your donation has been successfully processed. You'll receive a confirmation email shortly with your receipt. Thank you for making a difference in the lives of our elderly community members.</p>
+            <button class="btn-primary" onclick="resetForm()">Make Another Donation</button>
         </div>
     </div>
+
+    <?php if (isset($_GET['success']) && $_GET['success'] == 'true'): ?>
+        <script>
+            // Show success message if redirected with success parameter
+            document.getElementById('donationFormContainer').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('successMessage').classList.add('active');
+        </script>
+    <?php endif; ?>
 
     <script>
         // State Management
@@ -283,9 +294,10 @@
             summaryTotal: document.getElementById('summaryTotal'),
             donationForm: document.getElementById('donationForm'),
             submitBtn: document.getElementById('submitBtn'),
-            successMessage: document.getElementById('successMessage'),
             feeRow: document.getElementById('feeRow'),
-            feeNotice: document.getElementById('feeNotice')
+            feeNotice: document.getElementById('feeNotice'),
+            donationFormContainer: document.getElementById('donationFormContainer'),
+            successMessage: document.getElementById('successMessage')
         };
 
         // Initialize
@@ -310,29 +322,19 @@
                 input.addEventListener('change', handlePaymentMethod);
             });
 
-            // Form submission
-            elements.donationForm.addEventListener('submit', handleSubmit);
+            // Form submission - AJAX
+            elements.donationForm.addEventListener('submit', handleAjaxSubmit);
 
-            // Add hover effects to cause cards
+            // Cause card clicks
             document.querySelectorAll('.cause-card').forEach(card => {
                 card.addEventListener('click', function() {
-                    const amounts = {
-                        '🍽️': 25,
-                        '⚕️': 100,
-                        '🏠': 250,
-                        '🛡️': 50
-                    };
                     const amount = parseInt(this.querySelector('.cause-amount').textContent.replace('$', ''));
-
-                    // Select corresponding amount
                     const amountInput = document.querySelector(`input[name="amount"][value="${amount}"]`);
                     if (amountInput) {
                         amountInput.checked = true;
                         handleAmountChange({
                             target: amountInput
                         });
-
-                        // Scroll to form
                         document.querySelector('.donation-form').scrollIntoView({
                             behavior: 'smooth',
                             block: 'start'
@@ -430,102 +432,89 @@
             });
         }
 
-        // Form Validation
-        function validateForm() {
-            const requiredFields = ['fullName', 'email', 'phone'];
-            let isValid = true;
-            let errorMessages = [];
-
-            // Check amount
-            if (state.amount <= 0) {
-                errorMessages.push('Please select a donation amount');
-                isValid = false;
-            }
-
-            // Check required fields
-            requiredFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (!field.value.trim()) {
-                    field.classList.add('error');
-                    isValid = false;
-                } else {
-                    field.classList.remove('error');
-                }
-            });
-
-            // Validate email
-            const email = document.getElementById('email').value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email && !emailRegex.test(email)) {
-                document.getElementById('email').classList.add('error');
-                errorMessages.push('Please enter a valid email address');
-                isValid = false;
-            }
-
-            // Validate card if selected
-            if (state.paymentMethod === 'card') {
-                const cardFields = ['cardNumber', 'cardName', 'expiry', 'cvv'];
-                cardFields.forEach(fieldId => {
-                    const field = document.getElementById(fieldId);
-                    if (!field.value.trim()) {
-                        field.classList.add('error');
-                        isValid = false;
-                    } else {
-                        field.classList.remove('error');
-                    }
-                });
-            }
-
-            if (!isValid) {
-                if (errorMessages.length > 0) {
-                    alert(errorMessages.join('\n'));
-                } else {
-                    alert('Please fill in all required fields');
-                }
-            }
-
-            return isValid;
-        }
-
-        // Form Submission
-        async function handleSubmit(e) {
-            e.preventDefault();
-
-            if (!validateForm()) {
-                return;
-            }
+        // AJAX Form Submission
+        function handleAjaxSubmit(e) {
+            e.preventDefault(); // Prevent normal form submission
 
             // Show loading state
             elements.submitBtn.disabled = true;
             elements.submitBtn.innerHTML = '<span class="loading"></span> Processing...';
 
-            // Simulate payment processing
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Get form data
+            const formData = new FormData(elements.donationForm);
 
-            // Hide form and show success
-            elements.donationForm.parentElement.style.display = 'none';
-            elements.successMessage.classList.add('active');
+            // Add final amount if custom
+            if (document.querySelector('input[name="amount"]:checked').value === 'custom') {
+                formData.append('finalAmount', elements.customAmount.value);
+            }
 
-            // Scroll to success message
-            elements.successMessage.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-
-            // Reset form after delay
-            setTimeout(() => {
-                elements.donationForm.reset();
-                elements.submitBtn.disabled = false;
-                elements.submitBtn.innerHTML = `
+            // Submit via AJAX
+            fetch(elements.donationForm.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    // Since your backend doesn't return JSON, we'll assume success if status is ok
+                    if (response.ok) {
+                        showSuccessMessage();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Reset button state
+                    elements.submitBtn.disabled = false;
+                    elements.submitBtn.innerHTML = `
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
                     Complete Donation
                 `;
-                state.amount = 100;
-                state.paymentMethod = 'card';
-                updateSummary();
-            }, 3000);
+                    alert('There was an error processing your donation. Please try again.');
+                });
+        }
+
+        // Show Success Message
+        function showSuccessMessage() {
+            elements.donationFormContainer.style.display = 'none';
+            elements.successMessage.style.display = 'block';
+
+            // Trigger animation
+            setTimeout(() => {
+                elements.successMessage.classList.add('active');
+            }, 100);
+        }
+
+        // Reset Form for Another Donation
+        function resetForm() {
+            elements.successMessage.style.display = 'none';
+            elements.successMessage.classList.remove('active');
+            elements.donationFormContainer.style.display = 'block';
+
+            // Reset form
+            elements.donationForm.reset();
+
+            // Reset state
+            state.amount = 100;
+            state.paymentMethod = 'card';
+
+            // Reset UI
+            document.getElementById('amount100').checked = true;
+            document.getElementById('payCard').checked = true;
+            elements.customAmountContainer.classList.remove('active');
+            elements.cardDetails.classList.add('active');
+
+            // Reset button
+            elements.submitBtn.disabled = false;
+            elements.submitBtn.innerHTML = `
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                Complete Donation
+            `;
+
+            updateSummary();
         }
     </script>
 </body>

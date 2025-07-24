@@ -53,8 +53,17 @@ class Pages extends Controller
     {
         $this->view('pages/activities');
     }
+    public function personal()
+    {
+        $this->view('pages/personaldetail');
+    }
 
-    public function Info()  
+    public function donationDash()
+    {
+        $this->view('pages/donationdashboard');
+    }
+
+    public function Info()
     {
         $appointmentData = $this->db->readAll('appointments');
         $data = [
@@ -62,10 +71,5 @@ class Pages extends Controller
         ];
 
         $this->view('pages/appointmentInfo', $data);
-    }
-
-    public function personal()
-    {
-        $this->view('pages/personaldetail');
     }
 }
