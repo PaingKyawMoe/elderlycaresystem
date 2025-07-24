@@ -215,6 +215,142 @@
       font-size: 1rem;
     }
 
+    /* New Fixed Message Container */
+    .message-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      max-width: 500px;
+      width: 90%;
+      pointer-events: none;
+    }
+
+    .message-box {
+      pointer-events: all;
+      margin-bottom: 10px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .message-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: currentColor;
+      opacity: 0.8;
+    }
+
+    .message-box.error {
+      background: linear-gradient(135deg, rgba(254, 226, 226, 0.95), rgba(254, 202, 202, 0.95));
+      color: #991b1b;
+      border: 1px solid rgba(220, 38, 38, 0.2);
+    }
+
+    .message-box.success {
+      background: linear-gradient(135deg, rgba(220, 252, 231, 0.95), rgba(187, 247, 208, 0.95));
+      color: #14532d;
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .message-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .message-text {
+      flex: 1;
+      line-height: 1.5;
+    }
+
+    .message-close {
+      background: none;
+      border: none;
+      color: currentColor;
+      opacity: 0.5;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .message-close:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+      }
+    }
+
+    .message-box.fade-out {
+      animation: slideOut 0.3s cubic-bezier(0.64, 0, 0.78, 0) forwards;
+    }
+
+    /* Form-specific error messages (inline) */
+    .field-error {
+      font-size: 0.8rem;
+      color: #dc2626;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .field-error::before {
+      content: '⚠';
+      font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .form-group {
       margin-bottom: 1.5rem;
       position: relative;
@@ -302,54 +438,6 @@
     .toggle-password:hover {
       color: #667eea;
       background: rgba(102, 126, 234, 0.1);
-    }
-
-    .error-message {
-      background: linear-gradient(135deg, #fed7d7, #feb2b2);
-      color: #c53030;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
-      border-left: 4px solid #f56565;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      animation: slideDown 0.3s ease-out;
-      box-shadow: 0 4px 12px rgba(245, 101, 101, 0.15);
-    }
-
-    .error-message::before {
-      content: "⚠️";
-      font-size: 1rem;
-    }
-
-    .error-message.fade-out {
-      animation: slideUp 0.3s ease-out forwards;
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      to {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
     }
 
     .forgot-password {
@@ -467,6 +555,11 @@
       .form-header h1 {
         font-size: 1.8rem;
       }
+
+      .message-container {
+        top: 10px;
+        max-width: calc(100% - 20px);
+      }
     }
 
     /* Loading animation */
@@ -495,30 +588,64 @@
       }
     }
 
-    /* Success message styling */
-    .success-message {
-      background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
-      color: #2f855a;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
-      border-left: 4px solid #38a169;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      animation: slideDown 0.3s ease-out;
-      box-shadow: 0 4px 12px rgba(56, 161, 105, 0.15);
-    }
-
-    .success-message::before {
-      content: "✅";
-      font-size: 1rem;
+    /* Hide old error message styles */
+    .error-message,
+    .success-message,
+    .alert-danger {
+      display: none !important;
     }
   </style>
 </head>
 
 <body>
+  <?php if (session_id() == '') session_start(); ?>
+
+  <!-- Fixed Message Container -->
+  <div class="message-container" id="messageContainer">
+    <?php if (isset($_SESSION['error'])): ?>
+      <div class="message-box error">
+        <span class="message-icon">⚠️</span>
+        <span class="message-text">
+          <?php
+          echo $_SESSION['error'];
+          unset($_SESSION['error']);
+          ?>
+        </span>
+        <button class="message-close" onclick="closeMessage(this)">×</button>
+      </div>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['success_message'])): ?>
+      <div class="message-box success">
+        <span class="message-icon">✅</span>
+        <span class="message-text">
+          <?php echo $_SESSION['success_message'];
+          unset($_SESSION['success_message']); ?>
+        </span>
+        <button class="message-close" onclick="closeMessage(this)">×</button>
+      </div>
+    <?php endif; ?>
+
+    <?php if (isset($data['login-err'])): ?>
+      <div class="message-box error">
+        <span class="message-icon">🔐</span>
+        <span class="message-text"><?php echo $data['login-err']; ?></span>
+        <button class="message-close" onclick="closeMessage(this)">×</button>
+      </div>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error_login'])): ?>
+      <div class="message-box error">
+        <span class="message-icon">❌</span>
+        <span class="message-text">
+          <?php echo $_SESSION['error_login'];
+          unset($_SESSION['error_login']); ?>
+        </span>
+        <button class="message-close" onclick="closeMessage(this)">×</button>
+      </div>
+    <?php endif; ?>
+  </div>
+
   <div class="bg-animation">
     <div class="particle"></div>
     <div class="particle"></div>
@@ -544,32 +671,7 @@
       </div>
 
       <form method="POST" action="<?= URLROOT ?>/Auth/login" id="loginForm">
-        <?php if (isset($_SESSION['success_message'])): ?>
-          <div class="success-message">
-            <?php echo $_SESSION['success_message'];
-            unset($_SESSION['success_message']); ?>
-          </div>
-        <?php endif; ?>
-
-        <?php if (isset($data['login-err'])): ?>
-          <div class="error-message">
-            <?php echo $data['login-err']; ?>
-          </div>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['error_login'])): ?>
-          <div class="error-message">
-            <?php echo $_SESSION['error_login'];
-            unset($_SESSION['error_login']); ?>
-          </div>
-        <?php endif; ?>
-
         <div class="form-group">
-          <?php if (isset($data['email-err'])): ?>
-            <div class="error-message" data-error-type="email">
-              <?php echo $data['email-err']; ?>
-            </div>
-          <?php endif; ?>
           <div class="input-container">
             <input type="email"
               name="email"
@@ -581,14 +683,14 @@
             <div class="input-icon">📧</div>
             <label class="floating-label">Email Address</label>
           </div>
+          <?php if (isset($data['email-err'])): ?>
+            <div class="field-error">
+              <?php echo $data['email-err']; ?>
+            </div>
+          <?php endif; ?>
         </div>
 
         <div class="form-group">
-          <?php if (isset($data['password-err'])): ?>
-            <div class="error-message" data-error-type="password">
-              <?php echo $data['password-err']; ?>
-            </div>
-          <?php endif; ?>
           <div class="input-container password-wrapper">
             <input type="password"
               name="password"
@@ -603,6 +705,11 @@
               <span id="eyeIcon">👁️</span>
             </span>
           </div>
+          <?php if (isset($data['password-err'])): ?>
+            <div class="field-error">
+              <?php echo $data['password-err']; ?>
+            </div>
+          <?php endif; ?>
         </div>
 
         <div class="forgot-password">
@@ -625,34 +732,20 @@
       const form = document.getElementById('loginForm');
       const submitBtn = document.getElementById('submitBtn');
 
-      // Auto-hide error and success messages after 5 seconds
-      function hideMessages() {
-        const messages = document.querySelectorAll('.error-message, .success-message');
-
-        messages.forEach(function(messageElement) {
+      // Auto-hide messages after 5 seconds
+      function autoHideMessages() {
+        const messages = document.querySelectorAll('.message-box');
+        messages.forEach(function(message) {
           setTimeout(function() {
-            messageElement.classList.add('fade-out');
-
-            setTimeout(function() {
-              if (messageElement.parentNode) {
-                messageElement.remove();
-
-                // Remove error class from input
-                const inputContainer = messageElement.parentNode.querySelector('.input-container');
-                if (inputContainer) {
-                  const input = inputContainer.querySelector('.form-input.error');
-                  if (input) {
-                    input.classList.remove('error');
-                  }
-                }
-              }
-            }, 300);
-          }, 4700);
+            if (message && message.parentNode) {
+              closeMessage(message.querySelector('.message-close'));
+            }
+          }, 5000);
         });
       }
 
-      // Initialize message hiding
-      hideMessages();
+      // Initialize auto-hide
+      autoHideMessages();
 
       // Input focus animations
       const inputs = document.querySelectorAll('.form-input');
@@ -706,13 +799,26 @@
       }
     });
 
+    function closeMessage(btn) {
+      const messageBox = btn.parentElement;
+      messageBox.classList.add('fade-out');
+      setTimeout(function() {
+        messageBox.remove();
+        // Check if message container is empty and hide it
+        const container = document.getElementById('messageContainer');
+        if (container && container.children.length === 0) {
+          container.style.display = 'none';
+        }
+      }, 300);
+    }
+
     function togglePassword() {
       const passwordField = document.getElementById('passwordInput');
       const eyeIcon = document.getElementById('eyeIcon');
 
       if (passwordField.type === 'password') {
         passwordField.type = 'text';
-        eyeIcon.textContent = '👁️';
+        eyeIcon.textContent = '👁️‍🗨️';
       } else {
         passwordField.type = 'password';
         eyeIcon.textContent = '👁️';
@@ -737,22 +843,28 @@
       }
     });
 
-    // Mutation observer for dynamic error handling
-    const observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        if (mutation.addedNodes.length > 0) {
-          const messages = document.querySelectorAll('.error-message, .success-message');
-          if (messages.length > 0) {
-            hideMessages();
-          }
-        }
-      });
-    });
+    // Handle dynamic message creation
+    function showMessage(text, type = 'error') {
+      const container = document.getElementById('messageContainer');
+      container.style.display = 'block';
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+      const messageBox = document.createElement('div');
+      messageBox.className = `message-box ${type}`;
+      messageBox.innerHTML = `
+        <span class="message-icon">${type === 'success' ? '✅' : '⚠️'}</span>
+        <span class="message-text">${text}</span>
+        <button class="message-close" onclick="closeMessage(this)">×</button>
+      `;
+
+      container.appendChild(messageBox);
+
+      // Auto-hide after 5 seconds
+      setTimeout(function() {
+        if (messageBox && messageBox.parentNode) {
+          closeMessage(messageBox.querySelector('.message-close'));
+        }
+      }, 5000);
+    }
   </script>
 </body>
 

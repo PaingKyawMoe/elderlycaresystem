@@ -7,10 +7,13 @@ define('DB_PASS', '');
 define('DB_NAME', 'mvcoop');
 
 // Define App Root
-define ('APPROOT', dirname(dirname(__FILE__)));
+define('APPROOT', dirname(dirname(__FILE__)));
 
 // Define RL Root
-define ('URLROOT', 'http://localhost/elderlyacaresystem/public');
+define('URLROOT', 'http://localhost/elderlyacaresystem/public');
 
 // Define SITENAME
 define('SITENAME', 'Elderly Care');
+
+//Define Admin
+define('Admin', 1);
