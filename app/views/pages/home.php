@@ -24,8 +24,8 @@
 
       <nav id="nav">
         <a href="<?php echo URLROOT; ?>/pages/home">Home</a>
-        <a href="dashboard.php">Service</a>
-        <a href="<?php echo URLROOT; ?>/pages/about">About Us</a>
+        <a href="<?php echo URLROOT; ?>/pages/donate"">Donate</a>
+        <a href=" <?php echo URLROOT; ?>/pages/about">About Us</a>
         <a href="<?php echo URLROOT; ?>/pages/dash">Admin</a>
         <button class="call-now">Call Now</button>
       </nav>
@@ -51,8 +51,7 @@
 
       <div class="hero-image">
         <div class="image-container">
-          <img src="https://images.pexels.com/photos/7345476/pexels-photo-7345476.jpeg?auto=compress&cs=tinysrgb&w=800"
-            alt="Professional caregiver providing quality care to elderly person"
+          <img src="https://images.unsplash.com/photo-1588991837648-9f380f70dde9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGVsZGVybHljYXJlfGVufDB8MXwwfHx8MA%3D%3D"
             loading="lazy">
           <div class="image-overlay"></div>
         </div>

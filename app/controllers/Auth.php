@@ -25,55 +25,55 @@ class Auth extends Controller
         }
     }
 
-    public function register()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Check user exist
-            $email = $_POST['email'];
-            // call columnFilter Method from Database.php
-            $isUserExist = $this->db->columnFilter('users', 'email', $email);
-            // print_r($isUserExist);
-            // exit;
-            if ($isUserExist) {
-                setMessage('error', 'This email is already registered !');
-                redirect('pages/register');
-            } else {
-                // Validate entries
-                $validation = new UserValidator($_POST);
-                $data = $validation->validateForm();
-                if (count($data) > 0) {
-                    $this->view('pages/register', $data);
-                } else {
-                    $name = $_POST['name'];
-                    $email = $_POST['email'];
-                    $password = $_POST['password'];
+    // public function register()
+    // {
+    //     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    //         // Check user exist
+    //         $email = $_POST['email'];
+    //         // call columnFilter Method from Database.php
+    //         $isUserExist = $this->db->columnFilter('users', 'email', $email);
+    //         // print_r($isUserExist);
+    //         // exit;
+    //         if ($isUserExist) {
+    //             setMessage('error', 'This email is already registered !');
+    //             redirect('pages/register');
+    //         } else {
+    //             // Validate entries
+    //             $validation = new UserValidator($_POST);
+    //             $data = $validation->validateForm();
+    //             if (count($data) > 0) {
+    //                 $this->view('pages/register', $data);
+    //             } else {
+    //                 $name = $_POST['name'];
+    //                 $email = $_POST['email'];
+    //                 $password = $_POST['password'];
 
-                    //Hash Password before saving
-                    $password = base64_encode($password);
+    //                 //Hash Password before saving
+    //                 $password = base64_encode($password);
 
-                    $user = new UserModel();
-                    $user->setName($name);
-                    $user->setEmail($email);
-                    $user->setPassword($password);
+    //                 $user = new UserModel();
+    //                 $user->setName($name);
+    //                 $user->setEmail($email);
+    //                 $user->setPassword($password);
 
-                    $userCreated = $this->db->create('users', $user->toArray());
-                    //$userCreated="true";
+    //                 $userCreated = $this->db->create('users', $user->toArray());
+    //                 //$userCreated="true";
 
-                    if ($userCreated) {
-                        //Instatiate mail
-                        $mail = new Mail();
+    //                 if ($userCreated) {
+    //                     //Instatiate mail
+    //                     $mail = new Mail();
 
-                        // $verify_token = URLROOT . '/auth/verify/' . $token;
-                        // $mail->verifyMail($email, $name, $verify_token);
+    //                     // $verify_token = URLROOT . '/auth/verify/' . $token;
+    //                     // $mail->verifyMail($email, $name, $verify_token);
 
-                        setMessage('success', 'Please check your Mail box !');
-                        redirect('pages/login');
-                    }
-                    redirect('pages/register');
-                } // end of validation check
-            } // end of user-exist
-        }
-    }
+    //                     setMessage('success', 'Please check your Mail box !');
+    //                     redirect('pages/login');
+    //                 }
+    //                 redirect('pages/register');
+    //             } // end of validation check
+    //         } // end of user-exist
+    //     }
+    // }
 
     public function verify($token)
     {
@@ -111,13 +111,13 @@ class Auth extends Controller
 
                 if ($isLogin) {
                     $checkData = $this->db->getById('users', $isLogin['id']);
-                    if ($checkData['role_id'] == 1) {
+                    if ($checkData['role_id'] == Admin) {
                         redirect('pages/Info');
                     }
                     redirect('pages/dashboard');
                 } else {
                     setMessage('error', 'Login Fail!');
-                    redirect('pages/login');
+                    redirect('pages/signin');
                 }
 
                 // $isEmailExist = $this->db->columnFilter('users', 'email', $email);

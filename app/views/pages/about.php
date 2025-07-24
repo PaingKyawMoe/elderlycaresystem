@@ -27,8 +27,8 @@
 
       <nav id="nav">
         <a href="<?php echo URLROOT; ?>/pages/home">Home</a>
-        <a href="<?php echo URLROOT; ?>/pages/services">Services</a>
-        <a href="<?php echo URLROOT; ?>/pages/about" class="active">About Us</a>
+        <a href="<?php echo URLROOT; ?>/pages/donate"">Donate</a>
+        <a href=" <?php echo URLROOT; ?>/pages/about" class="active">About Us</a>
         <a href="<?php echo URLROOT; ?>/pages/dashboard">Admin</a>
         <button class="call-now">Call Now</button>
       </nav>
