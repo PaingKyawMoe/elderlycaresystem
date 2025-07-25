@@ -11,7 +11,7 @@ class Pages extends Controller
 
     public function index()
     {
-        $this->view('pages/donationdashboard');
+        $this->view('pages/home');
     }
 
     public function admin()
