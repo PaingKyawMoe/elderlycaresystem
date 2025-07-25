@@ -5,10 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Support Elder Care - Make a Difference Today</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/donation.css?v=<?= time(); ?>">
 </head>
 
 <body>
+    <header class="header" id="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-heart-pulse"></i>
+                </div>
+                Elderly Care System
+            </a>
+
+            <nav id="nav">
+                <a href="<?php echo URLROOT; ?>/pages/home">Home</a>
+                <a href="<?php echo URLROOT; ?>/pages/donate" class="active">Donate</a>
+                <a href="<?php echo URLROOT; ?>/pages/about">About Us</a>
+                <a href="<?php echo URLROOT; ?>/pages/dash">Admin</a>
+                <button class="call-now">Call Now</button>
+            </nav>
+        </div>
+    </header>
     <header class="header1">
         <h1>Support Our Elders with Love</h1>
         <p>Your generosity brings comfort, dignity, and joy to elderly lives. Together, we create a caring community where every senior feels valued and supported.</p>
@@ -203,7 +223,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="cardName">Cardholder Name *</label>
-                            <input type="text" class="form-input" id="cardName" name="cardName" placeholder="John Doe">
+                            <input type="text" class="form-input" id="cardName" name="cardName" placeholder="Paing Kyaw Moe">
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="expiry">Expiry Date *</label>
