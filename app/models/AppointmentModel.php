@@ -140,8 +140,8 @@ class AppointmentModel
             'preferred_date' => $this->getpreferredDate(),
             'appointment_type' => $this->getappointmentType(),
             'preferred_time' => $this->getpreferredTime(),
-            'doctor' => $this->getselectDoctor(),
-            'reason' => $this->getreasonForAppointment(),
+            'selectDoctor' => $this->getselectDoctor(),
+            'reasonforappointment' => $this->getreasonForAppointment(),
             'photo' => $this->getphoto(),
         ];
     }

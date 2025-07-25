@@ -99,18 +99,18 @@
                                     </td>
                                     <td>
                                         <span class="appointment-badge badge-<?= $appointment['appointment_type'] ?>">
-                                            <i class="fas fa-<?= $appointment['appointment_type'] == '' ? 'user-md' : ($appointment['appointment_type'] == 'VideoCall' ? 'InPerson' : 'HomeVisit') ?>"></i>
+                                            <i class="fas fa-<?= $appointment['appointment_type'] == 'consultation' ? 'user-md' : ($appointment['appointment_type'] == 'checkup' ? 'heartbeat' : 'redo') ?>"></i>
                                             <?= ucfirst($appointment['appointment_type']) ?>
                                         </span>
                                     </td>
                                     <td>
                                         <div class="doctor-info">
-                                            <i class="fas fa-user-md"></i> <?= htmlspecialchars($appointment['doctor']) ?>
+                                            <i class="fas fa-user-md"></i> <?= htmlspecialchars($appointment['selectDoctor']) ?>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="reason-cell" title="<?= htmlspecialchars($appointment['reason'] ?? '') ?>">
-                                            <?= htmlspecialchars(strlen($appointment['reason'] ?? '') > 30 ? substr($appointment['reason'], 0, 30) . '...' : ($appointment['reason'] ?? 'N/A')) ?>
+                                        <div class="reason-cell" title="<?= htmlspecialchars($appointment['reasonForAppointment'] ?? '') ?>">
+                                            <?= htmlspecialchars(strlen($appointment['reasonForAppointment'] ?? '') > 30 ? substr($appointment['reasonForAppointment'], 0, 30) . '...' : ($appointment['reasonForAppointment'] ?? 'N/A')) ?>
                                         </div>
                                     </td>
                                     <td>
@@ -277,7 +277,7 @@
         const URLROOT = '<?= URLROOT ?>';
 
         (() => {
-            // Get appointments data from PHP - using appointmentData not appointments
+            // Get appointments data from PHP
             const rawAppointments = <?= json_encode($data['appointmentData'] ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
             // Initialize appointment list with the PHP data
@@ -317,7 +317,6 @@
             let isEditMode = false;
 
             function renderStats() {
-                // Use the snake_case property names from PHP data
                 const stats = {
                     total: appointmentList.length,
                     consultation: appointmentList.filter(a => a.appointment_type === 'consultation').length,
@@ -384,6 +383,7 @@
             }
 
             function formatDate(dateString) {
+                if (!dateString) return 'N/A';
                 const date = new Date(dateString);
                 return date.toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -440,12 +440,12 @@
                             </td>
                             <td>
                                 <div class="doctor-info">
-                                    <i class="fas fa-user-md"></i> ${appointment.doctor}
+                                    <i class="fas fa-user-md"></i> ${escapeHTML(appointment.selectDoctor || 'N/A')}
                                 </div>
                             </td>
                             <td>
-                                <div class="reason-cell" title="${escapeHTML(appointment.reason || '')}">
-                                    ${truncateText(appointment.reason || 'No reason provided', 30)}
+                                <div class="reason-cell" title="${escapeHTML(appointment.reasonForAppointment || '')}">
+                                    ${truncateText(appointment.reasonForAppointment || 'No reason provided', 30)}
                                 </div>
                             </td>
                             <td>
@@ -577,11 +577,11 @@
                     const matchesSearch = !searchTerm ||
                         appointment.name.toLowerCase().includes(searchTerm) ||
                         appointment.phone.includes(searchTerm) ||
-                        (appointment.reason && appointment.reason.toLowerCase().includes(searchTerm)) ||
+                        (appointment.reasonForAppointment && appointment.reasonForAppointment.toLowerCase().includes(searchTerm)) ||
                         appointment.id.toString().includes(searchTerm);
 
                     const matchesType = !typeFilterValue || appointment.appointment_type === typeFilterValue;
-                    const matchesDoctor = !doctorFilterValue || appointment.doctor === doctorFilterValue;
+                    const matchesDoctor = !doctorFilterValue || appointment.selectDoctor === doctorFilterValue;
 
                     return matchesSearch && matchesType && matchesDoctor;
                 });
@@ -591,7 +591,7 @@
             }
 
             function populateDoctorFilter() {
-                const doctors = [...new Set(appointmentList.map(a => a.doctor))].filter(Boolean);
+                const doctors = [...new Set(appointmentList.map(a => a.selectDoctor))].filter(Boolean);
                 doctorFilter.innerHTML = '<option value="">All Doctors</option>' +
                     doctors.map(doctor => `<option value="${doctor}">${doctor}</option>`).join('');
             }
@@ -628,7 +628,7 @@
             function deleteAppointment(id) {
                 const appointment = appointmentList.find(a => a.id == id);
                 if (appointment && confirm(`Are you sure you want to delete the appointment for "${appointment.name}"?\n\nThis action cannot be undone.`)) {
-                    fetch(`<?= URLROOT ?>/appointments/delete/${id}`, {
+                    fetch(`${URLROOT}/appointments/delete/${id}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -666,11 +666,11 @@
                     appointmentDate.value = appointment.preferred_date;
                     appointmentTime.value = appointment.preferred_time;
                     appointmentType.value = appointment.appointment_type;
-                    selectDoctor.value = appointment.doctor;
+                    selectDoctor.value = appointment.selectDoctor;
                     patientGender.value = appointment.gender;
                     patientAddress.value = appointment.address || '';
                     patientDOB.value = appointment.dob || '';
-                    reasonForAppointment.value = appointment.reason || '';
+                    reasonForAppointment.value = appointment.reasonForAppointment || '';
 
                     modalTitle.textContent = editMode ? 'Edit Appointment' : 'View Appointment';
                     saveBtn.textContent = editMode ? 'Save Changes' : 'Close';
@@ -763,19 +763,19 @@
                     preferred_date: appointmentDate.value,
                     preferred_time: appointmentTime.value,
                     appointment_type: appointmentType.value,
-                    doctor: selectDoctor.value,
-                    reason: reasonForAppointment.value.trim()
+                    selectDoctor: selectDoctor.value,
+                    reasonForAppointment: reasonForAppointment.value.trim()
                 };
 
                 if (!appointmentData.name || !appointmentData.phone || !appointmentData.preferred_date ||
-                    !appointmentData.preferred_time || !appointmentData.appointment_type || !appointmentData.doctor) {
+                    !appointmentData.preferred_time || !appointmentData.appointment_type || !appointmentData.selectDoctor) {
                     showNotification('Please fill in all required fields.', 'error');
                     return;
                 }
 
                 const url = appointmentData.id ?
-                    `<?= URLROOT ?>/appointments/update` :
-                    `<?= URLROOT ?>/appointments/create`;
+                    `${URLROOT}/appointments/update` :
+                    `${URLROOT}/appointments/create`;
 
                 fetch(url, {
                         method: 'POST',

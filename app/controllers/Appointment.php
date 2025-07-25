@@ -44,7 +44,7 @@ class Appointment extends Controller
             $appointment_type = $_POST['appointmentType'] ?? '';
             $preferred_time = $_POST['preferredTime'] ?? '';
             $selectDoctor = $_POST['selectDoctor'] ?? '';
-            $reasonForAppointment = $_POST['reasonForAppointment'] ?? '';
+            $reasonForAppointment = $_POST['reasonforappointment'] ?? '';
 
             // For file upload
             $photo = $_FILES['photo']['name'];
