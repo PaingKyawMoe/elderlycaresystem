@@ -1,22 +1,20 @@
 <?php
 
-// DB Params
-define('DB_HOST', 'localhost');
+// DB Params (match docker-compose environment)
+define('DB_HOST', 'db'); // use service name of MySQL container
 define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_PASS', 'root');
 define('DB_NAME', 'mvcoop');
 
 // Define App Root
 define('APPROOT', dirname(dirname(__FILE__)));
 
-// Define RL Root
-define('URLROOT', 'http://localhost/elderlyacaresystem/public');
+// Define URL Root for Docker
+define('URLROOT', 'http://localhost:8000');
 
 // Define SITENAME
 define('SITENAME', 'Elderly Care');
 
-//Define Admin
+// Define Roles
 define('Admin', 1);
-
-//Define User
 define('User', 2);

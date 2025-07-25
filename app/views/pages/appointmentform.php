@@ -86,7 +86,7 @@
                 <div class="form-group">
                     <div class="custom-select-wrapper">
                         <i class="fas fa-notes-medical"></i>
-                        <select name="reasonForAppointment" id="reasonForAppointment" required>
+                        <select name="reasonforappointment" id="reasonForAppointment" required>
                             <option value="" disabled selected>Reason For Appointment</option>
                             <option value="general-checkup">General Check-up</option>
                             <option value="symptoms">Discuss Symptoms</option>

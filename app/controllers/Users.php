@@ -97,8 +97,6 @@ class Users extends Controller
             $data = $validation->validateForm();
 
             if (count($data) > 0) {
-                // var_dump('that');
-                // exit;
                 $this->view('pages/signup', $data);
                 return;
             }
