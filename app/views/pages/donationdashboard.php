@@ -1,13 +1,10 @@
-<?php
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donation Dashboard - Elder Care Support</title>
+    <title>Donation Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -15,896 +12,573 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #4f46e5;
-            --primary-dark: #3730a3;
-            --secondary: #06b6d4;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            --white: #ffffff;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            --radius: 12px;
-            --radius-lg: 16px;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--gray-50) 0%, #e0e7ff 100%);
-            color: var(--gray-800);
-            line-height: 1.6;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
         }
 
-        .dashboard {
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem 1rem;
+            padding: 2rem;
         }
 
         .header {
             text-align: center;
             margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 2px;
+            color: white;
         }
 
         .header h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, #fff, #f0f0f0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 0.5rem;
         }
 
         .header p {
-            font-size: 1.1rem;
-            color: var(--gray-600);
-            max-width: 600px;
-            margin: 0 auto;
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
         }
 
-        .stats-grid {
+        .stats-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+            gap: 2rem;
             margin-bottom: 3rem;
         }
 
         .stat-card {
-            background: var(--white);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
             padding: 2rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-        }
-
-        .stat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
+            transform: translateY(-8px);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.3);
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius);
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .stat-icon.primary {
-            background: rgba(79, 70, 229, 0.1);
-            color: var(--primary);
-        }
-
-        .stat-icon.success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .stat-icon.warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .stat-icon.secondary {
-            background: rgba(6, 182, 212, 0.1);
-            color: var(--secondary);
         }
 
         .stat-value {
             font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .stat-trend {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--gray-100);
-        }
-
-        .trend-positive {
-            color: var(--success);
-        }
-
-        .trend-negative {
-            color: var(--danger);
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        @media (min-width: 1024px) {
-            .content-grid {
-                grid-template-columns: 2fr 1fr;
-            }
-        }
-
-        .donations-table {
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .table-header {
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid var(--gray-200);
-            background: var(--gray-50);
-        }
-
-        .table-title {
-            font-size: 1.25rem;
             font-weight: 700;
-            color: var(--gray-800);
+            color: #2d3748;
             margin-bottom: 0.5rem;
         }
 
-        .table-subtitle {
-            color: var(--gray-600);
-            font-size: 0.875rem;
+        .stat-label {
+            font-size: 1rem;
+            color: #718096;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .table-container {
+        .donations-table-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .table-wrapper {
             overflow-x: auto;
         }
 
-        .table {
+        .donations-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .table th {
+        .donations-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem 1rem;
             text-align: left;
-            padding: 1rem 1.5rem;
             font-weight: 600;
-            color: var(--gray-700);
-            background: var(--gray-50);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 1px;
         }
 
-        .table td {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--gray-100);
-            font-size: 0.875rem;
+        .donations-table td {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            color: #2d3748;
+            vertical-align: middle;
         }
 
-        .table tbody tr:hover {
-            background: var(--gray-50);
+        .donations-table tbody tr {
+            transition: all 0.3s ease;
         }
 
-        .donation-amount {
+        .donations-table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .id-cell {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .name-cell {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .email-cell {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .phone-cell {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .amount-cell {
             font-weight: 700;
-            color: var(--primary);
+            color: #38a169;
+            font-size: 1.1rem;
         }
 
-        .payment-method {
+        .payment-cell {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
-        .payment-card {
-            background: rgba(79, 70, 229, 0.1);
-            color: var(--primary);
-        }
-
-        .payment-paypal {
-            background: rgba(6, 182, 212, 0.1);
-            color: var(--secondary);
-        }
-
-        .payment-kpay {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .payment-wave {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .status-completed {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .status-pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .status-failed {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .chart-card {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-        }
-
-        .chart-title {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--gray-800);
-            margin-bottom: 1.5rem;
-        }
-
-        .chart-placeholder {
-            height: 200px;
-            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-50) 100%);
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray-600);
-            font-weight: 500;
-        }
-
-        .recent-donors {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-        }
-
-        .donor-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--gray-100);
-        }
-
-        .donor-item:last-child {
-            border-bottom: none;
-        }
-
-        .donor-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        .donor-info {
-            flex: 1;
-        }
-
-        .donor-name {
-            font-weight: 600;
-            color: var(--gray-800);
-            font-size: 0.875rem;
-        }
-
-        .donor-date {
-            color: var(--gray-600);
-            font-size: 0.75rem;
-        }
-
-        .donor-amount {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 0.875rem;
-        }
-
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .filter-label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--gray-700);
-        }
-
-        .filter-select {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
             padding: 0.5rem 1rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius);
-            background: var(--white);
-            font-size: 0.875rem;
-            min-width: 140px;
-            transition: border-color 0.2s;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #718096;
+            font-style: italic;
         }
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--gray-300);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s linear infinite;
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            opacity: 0.5;
         }
 
-        @keyframes spin {
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            gap: 0.5rem;
+        }
+
+        .pagination-btn {
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-btn.active {
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination-info {
+            color: white;
+            font-size: 0.9rem;
+            margin: 0 1rem;
+            opacity: 0.9;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
             to {
-                transform: rotate(360deg);
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
         @media (max-width: 768px) {
-            .dashboard {
+            .container {
                 padding: 1rem;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+            .header h1 {
+                font-size: 2rem;
             }
 
             .stat-card {
                 padding: 1.5rem;
             }
 
-            .table th,
-            .table td {
-                padding: 0.75rem 1rem;
+            .donations-table th,
+            .donations-table td {
+                padding: 1rem 0.5rem;
+                font-size: 0.8rem;
             }
 
-            .filters {
-                flex-direction: column;
+            .pagination {
+                flex-wrap: wrap;
+            }
+
+            .pagination-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="dashboard">
-        <header class="header">
+    <div class="background-overlay"></div>
+
+    <div class="container">
+        <div class="header">
             <h1>Donation Dashboard</h1>
-            <p>Monitor and analyze donations for Elder Care Support with real-time insights and comprehensive reporting</p>
-        </header>
+            <p>Celebrating generosity and making impact together</p>
+        </div>
 
-        <!-- Statistics Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value" id="totalDonations"><?php echo $data['total_amount'] ?></div>
-                        <div class="stat-label">Total Donations</div>
-                    </div>
-                    <div class="stat-icon primary">💰</div>
+        <div class="stats-row">
+            <div class="stat-card fade-in">
+                <div class="stat-icon">
+                    <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
                 </div>
-                <div class="stat-trend">
-                    <span class="trend-positive">↗ +12.5%</span>
-                    <span>vs last month</span>
+                <div class="stat-value">
+                    <?php
+                    echo !empty($data['donationData']) ? count($data['donationData']) : 0;
+                    ?>
                 </div>
+                <div class="stat-label">Total Donations</div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value" id="totalDonors">847</div>
-                        <div class="stat-label">Total Donors</div>
-                    </div>
-                    <div class="stat-icon success">👥</div>
+            <div class="stat-card fade-in" style="animation-delay: 0.1s">
+                <div class="stat-icon">
+                    <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
                 </div>
-                <div class="stat-trend">
-                    <span class="trend-positive">↗ +8.3%</span>
-                    <span>vs last month</span>
+                <div class="stat-value">
+                    <?php
+                    if (!empty($data['donationData'])) {
+                        $total = array_sum(array_column($data['donationData'], 'amount'));
+                        echo '$' . number_format($total, 2);
+                    } else {
+                        echo '$0';
+                    }
+                    ?>
                 </div>
+                <div class="stat-label">Total Amount</div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value" id="avgDonation">$127</div>
-                        <div class="stat-label">Average Donation</div>
-                    </div>
-                    <div class="stat-icon warning">📊</div>
+            <div class="stat-card fade-in" style="animation-delay: 0.2s">
+                <div class="stat-icon">
+                    <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                        <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
+                    </svg>
                 </div>
-                <div class="stat-trend">
-                    <span class="trend-positive">↗ +3.7%</span>
-                    <span>vs last month</span>
+                <div class="stat-value">
+                    <?php
+                    if (!empty($data['donationData'])) {
+                        $total = array_sum(array_column($data['donationData'], 'amount'));
+                        $count = count($data['donationData']);
+                        $average = $total / $count;
+                        echo '$' . number_format($average, 2);
+                    } else {
+                        echo '$0';
+                    }
+                    ?>
                 </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value" id="thisMonth">$3,421</div>
-                        <div class="stat-label">This Month</div>
-                    </div>
-                    <div class="stat-icon secondary">📈</div>
-                </div>
-                <div class="stat-trend">
-                    <span class="trend-positive">↗ +15.2%</span>
-                    <span>vs last month</span>
-                </div>
+                <div class="stat-label">Average Donation</div>
             </div>
         </div>
 
-        <!-- Filters -->
-        <div class="filters">
-            <div class="filter-group">
-                <label class="filter-label">Date Range</label>
-                <select class="filter-select" id="dateFilter">
-                    <option value="7">Last 7 days</option>
-                    <option value="30" selected>Last 30 days</option>
-                    <option value="90">Last 90 days</option>
-                    <option value="365">Last year</option>
-                    <option value="all">All time</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label class="filter-label">Payment Method</label>
-                <select class="filter-select" id="paymentFilter">
-                    <option value="all">All Methods</option>
-                    <option value="card">Card</option>
-                    <option value="paypal">PayPal</option>
-                    <option value="kpay">KBZ Pay</option>
-                    <option value="wave">Wave Pay</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label class="filter-label">Amount Range</label>
-                <select class="filter-select" id="amountFilter">
-                    <option value="all">All Amounts</option>
-                    <option value="0-50">$0 - $50</option>
-                    <option value="51-100">$51 - $100</option>
-                    <option value="101-250">$101 - $250</option>
-                    <option value="251+">$251+</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label class="filter-label">Status</label>
-                <select class="filter-select" id="statusFilter">
-                    <option value="all">All Status</option>
-                    <option value="completed">Completed</option>
-                    <option value="pending">Pending</option>
-                    <option value="failed">Failed</option>
-                </select>
+        <div class="donations-table-container">
+            <div class="table-wrapper">
+                <table class="donations-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Amount</th>
+                            <th>Payment Method</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Main Content Grid -->
-        <div class="content-grid">
-            <!-- Donations Table -->
-            <div class="donations-table">
-                <div class="table-header">
-                    <h2 class="table-title">Recent Donations</h2>
-                    <p class="table-subtitle">Latest donation transactions and their details</p>
-                </div>
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Donor</th>
-                                <th>Amount</th>
-                                <th>Payment</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($data['donationData'])): ?>
-                                <?php foreach ($data['donationData'] as $donation): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($donation['id']) ?></td>
-                                        <td><?= htmlspecialchars($donation['full_name']) ?></td>
-                                        <td><?= htmlspecialchars($donation['email']) ?></td>
-                                        <td><?= htmlspecialchars($donation['phone']) ?></td>
-                                        <td><?= htmlspecialchars($donation['amount']) ?></td>
-                                        <td><?= htmlspecialchars($donation['payment_method']) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="6" style="text-align:center;">No donations found</td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-
-                    </table>
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Chart -->
-                <div class="chart-card">
-                    <h3 class="chart-title">Monthly Donation Trends</h3>
-                    <div class="chart-placeholder">
-                        📊 Chart visualization would be integrated here
-                    </div>
-                </div>
-
-                <!-- Recent Donors -->
-                <div class="recent-donors">
-                    <h3 class="chart-title">Top Donors</h3>
-                    <div id="topDonors">
-                        <!-- Top donors will be populated by JavaScript -->
-                    </div>
-                </div>
-            </div>
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be populated by JavaScript -->
         </div>
     </div>
 
     <script>
-        // Sample donation data - replace with actual database calls
-        // const sampleDonations = [{
-        //         id: 1,
-        //         name: 'Sarah Johnson',
-        //         email: 'sarah@email.com',
-        //         amount: 250,
-        //         payment: 'card',
-        //         date: '2025-07-24',
-        //         status: 'completed'
-        //     },
-        //     {
-        //         id: 2,
-        //         name: 'Michael Chen',
-        //         email: 'michael@email.com',
-        //         amount: 100,
-        //         payment: 'paypal',
-        //         date: '2025-07-24',
-        //         status: 'completed'
-        //     },
-        //     {
-        //         id: 3,
-        //         name: 'Emily Davis',
-        //         email: 'emily@email.com',
-        //         amount: 75,
-        //         payment: 'kpay',
-        //         date: '2025-07-23',
-        //         status: 'pending'
-        //     },
-        //     {
-        //         id: 4,
-        //         name: 'David Wilson',
-        //         email: 'david@email.com',
-        //         amount: 500,
-        //         payment: 'card',
-        //         date: '2025-07-23',
-        //         status: 'completed'
-        //     },
-        //     {
-        //         id: 5,
-        //         name: 'Lisa Anderson',
-        //         email: 'lisa@email.com',
-        //         amount: 125,
-        //         payment: 'wave',
-        //         date: '2025-07-22',
-        //         status: 'completed'
-        //     },
-        //     {
-        //         id: 6,
-        //         name: 'James Miller',
-        //         email: 'james@email.com',
-        //         amount: 200,
-        //         payment: 'card',
-        //         date: '2025-07-22',
-        //         status: 'failed'
-        //     },
-        //     {
-        //         id: 7,
-        //         name: 'Anna Thompson',
-        //         email: 'anna@email.com',
-        //         amount: 85,
-        //         payment: 'paypal',
-        //         date: '2025-07-21',
-        //         status: 'completed'
-        //     },
-        //     {
-        //         id: 8,
-        //         name: 'Robert Garcia',
-        //         email: 'robert@email.com',
-        //         amount: 300,
-        //         payment: 'card',
-        //         date: '2025-07-21',
-        //         status: 'completed'
-        //     },
-        //     {
-        //         id: 9,
-        //         name: 'Jessica White',
-        //         email: 'jessica@email.com',
-        //         amount: 150,
-        //         payment: 'kpay',
-        //         date: '2025-07-20',
-        //         status: 'completed'
-        //     },
-        //     {
-        //         id: 10,
-        //         name: 'Christopher Lee',
-        //         email: 'chris@email.com',
-        //         amount: 175,
-        //         payment: 'wave',
-        //         date: '2025-07-20',
-        //         status: 'completed'
-        //     }
-        // ];
+        // PHP data passed to JavaScript
+        const donationData = <?php echo json_encode(!empty($data['donationData']) ? $data['donationData'] : []); ?>;
 
-        let filteredDonations = [...sampleDonations];
+        // Pagination variables
+        const itemsPerPage = 10;
+        let currentPage = 1;
+        const totalPages = Math.ceil(donationData.length / itemsPerPage);
 
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            updateDashboard();
-            setupFilters();
-        });
+        function displayTable(page) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
 
-        function updateDashboard() {
-            updateStats();
-            updateTable();
-            updateTopDonors();
-        }
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = donationData.slice(start, end);
 
-        function updateStats() {
-            const total = filteredDonations.reduce((sum, d) => sum + d.amount, 0);
-            const donors = new Set(filteredDonations.map(d => d.email)).size;
-            const average = total / filteredDonations.length || 0;
+            if (pageData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div>
+                                <svg class="empty-state-icon" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                </svg>
+                                <div>No donations found</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
 
-            document.getElementById('totalDonations').textContent = `$${total.toLocaleString()}`;
-            document.getElementById('totalDonors').textContent = donors.toLocaleString();
-            document.getElementById('avgDonation').textContent = `$${Math.round(average)}`;
-        }
-
-        function updateTable() {
-            const tbody = document.getElementById('donationsTableBody');
-            tbody.innerHTML = '';
-
-            filteredDonations.slice(0, 10).forEach(donation => {
+            pageData.forEach(donation => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>
-                        <div style="font-weight: 600;">${donation.name}</div>
-                        <div style="color: var(--gray-600); font-size: 0.75rem;">${donation.email}</div>
+                    <td><span class="id-cell">${escapeHtml(donation.id)}</span></td>
+                    <td><span class="name-cell">${escapeHtml(donation.full_name)}</span></td>
+                    <td><span class="email-cell">${escapeHtml(donation.email)}</span></td>
+                    <td><span class="phone-cell">${escapeHtml(donation.phone)}</span></td>
+                    <td><span class="amount-cell">$${parseFloat(donation.amount).toFixed(2)}</span></td>
+                    <td><span class="payment-cell">${escapeHtml(donation.payment_method)}</span></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function displayPagination() {
+            const paginationDiv = document.getElementById('pagination');
+            paginationDiv.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'pagination-btn';
+            prevBtn.innerHTML = '‹';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayTable(currentPage);
+                    displayPagination();
+                }
+            };
+            paginationDiv.appendChild(prevBtn);
+
+            // Page numbers
+            const maxButtons = 7; // Maximum number of page buttons to show
+            let startPage = 1;
+            let endPage = totalPages;
+
+            if (totalPages > maxButtons) {
+                const halfButtons = Math.floor(maxButtons / 2);
+                if (currentPage <= halfButtons) {
+                    endPage = maxButtons;
+                } else if (currentPage >= totalPages - halfButtons) {
+                    startPage = totalPages - maxButtons + 1;
+                } else {
+                    startPage = currentPage - halfButtons;
+                    endPage = currentPage + halfButtons;
+                }
+            }
+
+            // First page + ellipsis
+            if (startPage > 1) {
+                const firstBtn = createPageButton(1);
+                paginationDiv.appendChild(firstBtn);
+
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'pagination-info';
+                    ellipsis.textContent = '...';
+                    paginationDiv.appendChild(ellipsis);
+                }
+            }
+
+            // Page buttons
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = createPageButton(i);
+                paginationDiv.appendChild(pageBtn);
+            }
+
+            // Ellipsis + last page
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'pagination-info';
+                    ellipsis.textContent = '...';
+                    paginationDiv.appendChild(ellipsis);
+                }
+
+                const lastBtn = createPageButton(totalPages);
+                paginationDiv.appendChild(lastBtn);
+            }
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'pagination-btn';
+            nextBtn.innerHTML = '›';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayTable(currentPage);
+                    displayPagination();
+                }
+            };
+            paginationDiv.appendChild(nextBtn);
+
+            // Page info
+            const pageInfo = document.createElement('span');
+            pageInfo.className = 'pagination-info';
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            paginationDiv.appendChild(pageInfo);
+        }
+
+        function createPageButton(pageNum) {
+            const btn = document.createElement('button');
+            btn.className = 'pagination-btn';
+            if (pageNum === currentPage) {
+                btn.classList.add('active');
+            }
+            btn.textContent = pageNum;
+            btn.onclick = () => {
+                currentPage = pageNum;
+                displayTable(currentPage);
+                displayPagination();
+            };
+            return btn;
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Initialize table and pagination
+        if (donationData.length > 0) {
+            displayTable(currentPage);
+            displayPagination();
+        } else {
+            // Show empty state
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <div>
+                            <svg class="empty-state-icon" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                            <div>No donations found</div>
+                        </div>
                     </td>
-                    <td><span class="donation-amount">$${donation.amount}</span></td>
-                    <td><span class="payment-method payment-${donation.payment}">${getPaymentIcon(donation.payment)} ${donation.payment.toUpperCase()}</span></td>
-                    <td>${formatDate(donation.date)}</td>
-                    <td><span class="status status-${donation.status}">${getStatusIcon(donation.status)} ${donation.status.toUpperCase()}</span></td>
-                `;
-                tbody.appendChild(row);
-            });
+                </tr>
+            `;
         }
-
-        function updateTopDonors() {
-            const donorTotals = {};
-            filteredDonations.forEach(donation => {
-                if (!donorTotals[donation.email]) {
-                    donorTotals[donation.email] = {
-                        name: donation.name,
-                        total: 0,
-                        count: 0
-                    };
-                }
-                donorTotals[donation.email].total += donation.amount;
-                donorTotals[donation.email].count++;
-            });
-
-            const topDonors = Object.values(donorTotals)
-                .sort((a, b) => b.total - a.total)
-                .slice(0, 5);
-
-            const container = document.getElementById('topDonors');
-            container.innerHTML = '';
-
-            topDonors.forEach(donor => {
-                const item = document.createElement('div');
-                item.className = 'donor-item';
-                item.innerHTML = `
-                    <div class="donor-avatar">${donor.name.split(' ').map(n => n[0]).join('')}</div>
-                    <div class="donor-info">
-                        <div class="donor-name">${donor.name}</div>
-                        <div class="donor-date">${donor.count} donation${donor.count > 1 ? 's' : ''}</div>
-                    </div>
-                    <div class="donor-amount">$${donor.total}</div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function setupFilters() {
-            const filters = ['dateFilter', 'paymentFilter', 'amountFilter', 'statusFilter'];
-            filters.forEach(filterId => {
-                document.getElementById(filterId).addEventListener('change', applyFilters);
-            });
-        }
-
-        function applyFilters() {
-            const dateFilter = document.getElementById('dateFilter').value;
-            const paymentFilter = document.getElementById('paymentFilter').value;
-            const amountFilter = document.getElementById('amountFilter').value;
-            const statusFilter = document.getElementById('statusFilter').value;
-
-            filteredDonations = sampleDonations.filter(donation => {
-                // Date filter
-                if (dateFilter !== 'all') {
-                    const donationDate = new Date(donation.date);
-                    const daysDiff = Math.floor((new Date() - donationDate) / (1000 * 60 * 60 * 24));
-                    if (daysDiff > parseInt(dateFilter)) return false;
-                }
-
-                // Payment filter
-                if (paymentFilter !== 'all' && donation.payment !== paymentFilter) return false;
-
-                // Amount filter
-                if (amountFilter !== 'all') {
-                    const [min, max] = amountFilter.split('-').map(v => v.replace('+', ''));
-                    if (max) {
-                        if (donation.amount < parseInt(min) || donation.amount > parseInt(max)) return false;
-                    } else {
-                        if (donation.amount < parseInt(min)) return false;
-                    }
-                }
-
-                // Status filter
-                if (statusFilter !== 'all' && donation.status !== statusFilter) return false;
-
-                return true;
-            });
-
-            updateDashboard();
-        }
-
-        function getPaymentIcon(method) {
-            const icons = {
-                card: '💳',
-                paypal: '🅿️',
-                kpay: '🏦',
-                wave: '🌊'
-            };
-            return icons[method] || '💳';
-        }
-
-        function getStatusIcon(status) {
-            const icons = {
-                completed: '✅',
-                pending: '⏳',
-                failed: '❌'
-            };
-            return icons[status] || '⏳';
-        }
-
-        function formatDate(dateStr) {
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        }
-
-        // Auto-refresh data every 30 seconds (uncomment when connected to real database)
-        // setInterval(() => {
-        //     // Fetch fresh data from your database
-        //     // updateDashboard();
-        // }, 30000);
     </script>
 </body>
 

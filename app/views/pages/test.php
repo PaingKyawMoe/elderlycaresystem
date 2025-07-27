@@ -1,25 +1,37 @@
 <?php
-function missingNum($arr)
+
+function findMissandRepeat($arr)
 {
-    $n = count($arr) + 1;
+
+    $freq = [];
+    $repeating = null;
+    $missing = [];
 
 
-    for ($i = 1; $i <= $n; $i++) {
-        $found = false;
+    $minVal = min($arr);
+    $maxVal = max($arr);
 
-        for ($j = 0; $j < $n - 1; $j++) {
-            if ($arr[$j] == $i) {
-                $found = true;
-                break;
-            }
+    foreach ($arr as $num) {
+        if (!isset($freq[$num])) {
+            $freq[$num] = 0;
         }
+        $freq[$num]++;
+    }
 
-        if (!$found) {
-            return $i;
+    for ($i = $minVal; $i <= $maxVal; $i++) {
+        if (!isset($freq[$i])) {
+            $missing[] = $i;
+        } elseif ($freq[$i] > 1) {
+            $repeating = $i;
         }
     }
+
+    return [$repeating, $missing];
 }
 
+// Driver Code (dynamic test)
+$arr = [0, 1, 2, 2, 4, 9, 6];  // 3 and 5 are missing, 2 is repeating
+list($repeating, $missing) = findMissandRepeat($arr);
 
-$arr = [8, 2, 4, 6, 3, 7, 1];
-echo "Missing Nmber is : " . missingNum($arr);
+echo "Repeating: " . $repeating . "\n";
+echo "Missing: " . implode(', ', $missing) . "\n";
