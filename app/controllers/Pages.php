@@ -60,7 +60,13 @@ class Pages extends Controller
 
     public function donationDash()
     {
-        $this->view('pages/donationdashboard');
+        $donationData = $this->db->readAll('donations');
+        // $total = $this->db->getDonationTotal();
+        $data = [
+            'donationData' => $donationData
+            // 'total_amount' => $total['total_amount']
+        ];
+        $this->view('pages/donationdashboard', $data);
     }
 
     public function Info()

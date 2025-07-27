@@ -1,3 +1,6 @@
+<?php
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -489,7 +492,7 @@
             <div class="stat-card">
                 <div class="stat-header">
                     <div>
-                        <div class="stat-value" id="totalDonations">$24,847</div>
+                        <div class="stat-value" id="totalDonations"><?php echo $data['total_amount'] ?></div>
                         <div class="stat-label">Total Donations</div>
                     </div>
                     <div class="stat-icon primary">💰</div>
@@ -608,9 +611,25 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody id="donationsTableBody">
-                            <!-- Table content will be populated by JavaScript -->
+                        <tbody>
+                            <?php if (!empty($data['donationData'])): ?>
+                                <?php foreach ($data['donationData'] as $donation): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($donation['id']) ?></td>
+                                        <td><?= htmlspecialchars($donation['full_name']) ?></td>
+                                        <td><?= htmlspecialchars($donation['email']) ?></td>
+                                        <td><?= htmlspecialchars($donation['phone']) ?></td>
+                                        <td><?= htmlspecialchars($donation['amount']) ?></td>
+                                        <td><?= htmlspecialchars($donation['payment_method']) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="6" style="text-align:center;">No donations found</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -638,97 +657,97 @@
 
     <script>
         // Sample donation data - replace with actual database calls
-        const sampleDonations = [{
-                id: 1,
-                name: 'Sarah Johnson',
-                email: 'sarah@email.com',
-                amount: 250,
-                payment: 'card',
-                date: '2025-07-24',
-                status: 'completed'
-            },
-            {
-                id: 2,
-                name: 'Michael Chen',
-                email: 'michael@email.com',
-                amount: 100,
-                payment: 'paypal',
-                date: '2025-07-24',
-                status: 'completed'
-            },
-            {
-                id: 3,
-                name: 'Emily Davis',
-                email: 'emily@email.com',
-                amount: 75,
-                payment: 'kpay',
-                date: '2025-07-23',
-                status: 'pending'
-            },
-            {
-                id: 4,
-                name: 'David Wilson',
-                email: 'david@email.com',
-                amount: 500,
-                payment: 'card',
-                date: '2025-07-23',
-                status: 'completed'
-            },
-            {
-                id: 5,
-                name: 'Lisa Anderson',
-                email: 'lisa@email.com',
-                amount: 125,
-                payment: 'wave',
-                date: '2025-07-22',
-                status: 'completed'
-            },
-            {
-                id: 6,
-                name: 'James Miller',
-                email: 'james@email.com',
-                amount: 200,
-                payment: 'card',
-                date: '2025-07-22',
-                status: 'failed'
-            },
-            {
-                id: 7,
-                name: 'Anna Thompson',
-                email: 'anna@email.com',
-                amount: 85,
-                payment: 'paypal',
-                date: '2025-07-21',
-                status: 'completed'
-            },
-            {
-                id: 8,
-                name: 'Robert Garcia',
-                email: 'robert@email.com',
-                amount: 300,
-                payment: 'card',
-                date: '2025-07-21',
-                status: 'completed'
-            },
-            {
-                id: 9,
-                name: 'Jessica White',
-                email: 'jessica@email.com',
-                amount: 150,
-                payment: 'kpay',
-                date: '2025-07-20',
-                status: 'completed'
-            },
-            {
-                id: 10,
-                name: 'Christopher Lee',
-                email: 'chris@email.com',
-                amount: 175,
-                payment: 'wave',
-                date: '2025-07-20',
-                status: 'completed'
-            }
-        ];
+        // const sampleDonations = [{
+        //         id: 1,
+        //         name: 'Sarah Johnson',
+        //         email: 'sarah@email.com',
+        //         amount: 250,
+        //         payment: 'card',
+        //         date: '2025-07-24',
+        //         status: 'completed'
+        //     },
+        //     {
+        //         id: 2,
+        //         name: 'Michael Chen',
+        //         email: 'michael@email.com',
+        //         amount: 100,
+        //         payment: 'paypal',
+        //         date: '2025-07-24',
+        //         status: 'completed'
+        //     },
+        //     {
+        //         id: 3,
+        //         name: 'Emily Davis',
+        //         email: 'emily@email.com',
+        //         amount: 75,
+        //         payment: 'kpay',
+        //         date: '2025-07-23',
+        //         status: 'pending'
+        //     },
+        //     {
+        //         id: 4,
+        //         name: 'David Wilson',
+        //         email: 'david@email.com',
+        //         amount: 500,
+        //         payment: 'card',
+        //         date: '2025-07-23',
+        //         status: 'completed'
+        //     },
+        //     {
+        //         id: 5,
+        //         name: 'Lisa Anderson',
+        //         email: 'lisa@email.com',
+        //         amount: 125,
+        //         payment: 'wave',
+        //         date: '2025-07-22',
+        //         status: 'completed'
+        //     },
+        //     {
+        //         id: 6,
+        //         name: 'James Miller',
+        //         email: 'james@email.com',
+        //         amount: 200,
+        //         payment: 'card',
+        //         date: '2025-07-22',
+        //         status: 'failed'
+        //     },
+        //     {
+        //         id: 7,
+        //         name: 'Anna Thompson',
+        //         email: 'anna@email.com',
+        //         amount: 85,
+        //         payment: 'paypal',
+        //         date: '2025-07-21',
+        //         status: 'completed'
+        //     },
+        //     {
+        //         id: 8,
+        //         name: 'Robert Garcia',
+        //         email: 'robert@email.com',
+        //         amount: 300,
+        //         payment: 'card',
+        //         date: '2025-07-21',
+        //         status: 'completed'
+        //     },
+        //     {
+        //         id: 9,
+        //         name: 'Jessica White',
+        //         email: 'jessica@email.com',
+        //         amount: 150,
+        //         payment: 'kpay',
+        //         date: '2025-07-20',
+        //         status: 'completed'
+        //     },
+        //     {
+        //         id: 10,
+        //         name: 'Christopher Lee',
+        //         email: 'chris@email.com',
+        //         amount: 175,
+        //         payment: 'wave',
+        //         date: '2025-07-20',
+        //         status: 'completed'
+        //     }
+        // ];
 
         let filteredDonations = [...sampleDonations];
 

@@ -143,6 +143,20 @@ class Database
         }
     }
 
+    // public function getDonationTotal()
+    // {
+    //     try {
+    //         $sql = "SELECT SUM(amount) AS total_amount FROM donations";
+    //         $stmt = $this->pdo->prepare($sql);
+    //         $stmt->execute();
+    //         return $stmt->fetch(); // returns ['total_amount' => value]
+    //     } catch (PDOException $e) {
+    //         error_log($e->getMessage());
+    //         return ['total_amount' => 0];
+    //     }
+    // }
+
+
     public function getByEmail($table, $email)
     {
         try {
