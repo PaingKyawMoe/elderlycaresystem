@@ -17,7 +17,7 @@
         <div class="header">
             <h1>
                 <i class="fas fa-calendar-check header-icon"></i>
-                <span class="header-title">Appointment Management</span>
+                <span class="header-title">Donation Data</span>
             </h1>
             <div class="header-actions">
                 <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Users/userlist'">
