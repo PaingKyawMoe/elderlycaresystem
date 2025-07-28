@@ -16,17 +16,21 @@
     <!-- Header -->
     <div class="header">
       <h1>
-        <i class="fas fa-users-cog header-icon"></i>
+        <i class="fas fa-calendar-check header-icon"></i>
         <span class="header-title">Register Users</span>
       </h1>
-      <a href=" <?= URLROOT ?>/pages/donationDash" class="logout-btn">
-        <!-- <i class="fas fa-sign-out-alt"></i> -->
-        DonationData
-      </a>
-      <a href=" <?= URLROOT ?>/pages/Info" class="logout-btn">
-        <!-- <i class="fas fa-sign-out-alt"></i> -->
-        AppointmentData
-      </a>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/Info'">
+          AppointmentData
+        </button>
+        <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/donationDash'">
+          DonationData
+        </button>
+        <a href="<?= URLROOT ?>/pages/dashboard" class="btn logout-btn">
+          Back to Dashboard
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
     </div>
 
     <!-- Table Container -->

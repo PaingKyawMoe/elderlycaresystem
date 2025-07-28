@@ -2,6 +2,7 @@
 
 class AppointmentModel
 {
+    private $db;
     private $id;
     private $name;
     private $dob;
@@ -14,6 +15,11 @@ class AppointmentModel
     private $selectDoctor;
     private $reasonForAppointment;
     private $photo;
+
+    public function __construct()
+    {
+        $this->db = new Database(); // You already have a Database class
+    }
 
 
     public function setId($id)
@@ -144,5 +150,14 @@ class AppointmentModel
             'reasonforappointment' => $this->getreasonForAppointment(),
             'photo' => $this->getphoto(),
         ];
+    }
+
+    public function findAppointment($name, $dob, $phone)
+    {
+        $this->db->query("SELECT * FROM appointments WHERE name = :name AND dob = :dob AND phone = :phone");
+        $this->db->bind(':name', $name);
+        $this->db->bind(':dob', $dob);
+        $this->db->bind(':phone', $phone);
+        return $this->db->single(); // return single row or false
     }
 }

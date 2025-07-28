@@ -58,6 +58,11 @@ class Pages extends Controller
         $this->view('pages/personaldetail');
     }
 
+    public function search()
+    {
+        $this->view('pages/searchappointment');
+    }
+
     public function donationDash()
     {
         $donationData = $this->db->readAll('donations');
