@@ -17,11 +17,15 @@
     <div class="header">
       <h1>
         <i class="fas fa-users-cog header-icon"></i>
-        <span class="header-title">Elderly Care System</span>
+        <span class="header-title">Register Users</span>
       </h1>
-      <a href=" <?= URLROOT ?>/pages/dashboard" class="logout-btn">
-        <i class="fas fa-sign-out-alt"></i>
-        Logout
+      <a href=" <?= URLROOT ?>/pages/donationDash" class="logout-btn">
+        <!-- <i class="fas fa-sign-out-alt"></i> -->
+        DonationData
+      </a>
+      <a href=" <?= URLROOT ?>/pages/Info" class="logout-btn">
+        <!-- <i class="fas fa-sign-out-alt"></i> -->
+        AppointmentData
       </a>
     </div>
 

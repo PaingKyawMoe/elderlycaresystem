@@ -1,3 +1,187 @@
+:root {
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --secondary-color: #6b7280;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  --info-color: #3b82f6;
+
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+
+  --border-color: #e5e7eb;
+  --border-radius: 0.5rem;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  --transition: all 0.2s ease;
+}
+
+/* Additional CSS for status buttons */
+.status-buttons {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.status-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-btn.complete {
+  background: #27ae60;
+  color: white;
+}
+
+.status-btn.complete.active {
+  background: #1e8449;
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.4);
+}
+
+.status-btn.pending {
+  background: #f39c12;
+  color: white;
+}
+
+.status-btn.pending.active {
+  background: #d68910;
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.4);
+}
+
+.status-btn.not {
+  background: #e74c3c;
+  color: white;
+}
+
+.status-btn.not.active {
+  background: #c0392b;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+}
+
+.status-btn:not(.active) {
+  opacity: 0.6;
+}
+
+.status-btn:hover {
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+/* Payment method icons styles */
+.payment-method-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.payment-icon {
+  width: 32px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.payment-icon svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.payment-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* PayPal icon styling */
+.payment-icon.paypal {
+  background: #ffffff;
+  border: 1px solid #e1e8ed;
+}
+
+/* Credit Card icon styling */
+.payment-icon.credit-card {
+  background: #1a1a1a;
+  color: white;
+}
+
+/* Bank Transfer icon styling */
+.payment-icon.bank-transfer {
+  background: #0066cc;
+  color: white;
+}
+
+/* Wave Pay icon styling */
+.payment-icon.wave-pay {
+  background: #ffd500;
+  color: #0099cc;
+}
+
+/* KBZ Pay icon styling */
+.payment-icon.kbz-pay {
+  background: #1e5aa8;
+  color: white;
+}
+
+/* Cash icon styling */
+.payment-icon.cash {
+  background: #28a745;
+  color: white;
+}
+
+/* Default payment icon styling */
+.payment-icon.default {
+  background: #6c757d;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .status-buttons {
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .status-btn {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+
+  .payment-method-container {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .payment-icon {
+    width: 28px;
+    height: 20px;
+  }
+
+  .payment-text {
+    font-size: 0.75rem;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -46,7 +230,7 @@ body {
   margin: 0 auto;
   padding: 2rem;
 }
-
+/* 
 .header {
   text-align: center;
   margin-bottom: 3rem;
@@ -68,6 +252,85 @@ body {
   font-size: 1.2rem;
   opacity: 0.9;
   font-weight: 300;
+} */
+.header {
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.header-icon {
+  color: var(--primary-color);
+  font-size: 2rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-secondary);
+}
+
+.logout-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.logout-btn:hover {
+  background: var(--bg-secondary);
 }
 
 .stats-row {

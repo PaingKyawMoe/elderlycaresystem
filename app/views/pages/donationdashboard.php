@@ -9,172 +9,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/donationdash.css?v=<?= time(); ?>">
 </head>
-<style>
-    /* Additional CSS for status buttons */
-    .status-buttons {
-        display: flex;
-        gap: 5px;
-        flex-wrap: wrap;
-    }
-
-    .status-btn {
-        padding: 6px 12px;
-        border: none;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .status-btn.complete {
-        background: #27ae60;
-        color: white;
-    }
-
-    .status-btn.complete.active {
-        background: #1e8449;
-        box-shadow: 0 2px 8px rgba(39, 174, 96, 0.4);
-    }
-
-    .status-btn.pending {
-        background: #f39c12;
-        color: white;
-    }
-
-    .status-btn.pending.active {
-        background: #d68910;
-        box-shadow: 0 2px 8px rgba(243, 156, 18, 0.4);
-    }
-
-    .status-btn.not {
-        background: #e74c3c;
-        color: white;
-    }
-
-    .status-btn.not.active {
-        background: #c0392b;
-        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
-    }
-
-    .status-btn:not(.active) {
-        opacity: 0.6;
-    }
-
-    .status-btn:hover {
-        transform: translateY(-1px);
-        opacity: 1;
-    }
-
-    /* Payment method icons styles */
-    .payment-method-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 4px 0;
-    }
-
-    .payment-icon {
-        width: 32px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 4px;
-        flex-shrink: 0;
-    }
-
-    .payment-icon svg {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .payment-text {
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: #333;
-    }
-
-    /* PayPal icon styling */
-    .payment-icon.paypal {
-        background: #ffffff;
-        border: 1px solid #e1e8ed;
-    }
-
-    /* Credit Card icon styling */
-    .payment-icon.credit-card {
-        background: #1a1a1a;
-        color: white;
-    }
-
-    /* Bank Transfer icon styling */
-    .payment-icon.bank-transfer {
-        background: #0066cc;
-        color: white;
-    }
-
-    /* Wave Pay icon styling */
-    .payment-icon.wave-pay {
-        background: #FFD500;
-        color: #0099CC;
-    }
-
-    /* KBZ Pay icon styling */
-    .payment-icon.kbz-pay {
-        background: #1e5aa8;
-        color: white;
-    }
-
-    /* Cash icon styling */
-    .payment-icon.cash {
-        background: #28a745;
-        color: white;
-    }
-
-    /* Default payment icon styling */
-    .payment-icon.default {
-        background: #6c757d;
-        color: white;
-    }
-
-    @media (max-width: 768px) {
-        .status-buttons {
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .status-btn {
-            font-size: 0.7rem;
-            padding: 4px 8px;
-        }
-
-        .payment-method-container {
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .payment-icon {
-            width: 28px;
-            height: 20px;
-        }
-
-        .payment-text {
-            font-size: 0.75rem;
-        }
-    }
-</style>
 
 <body>
     <div class="background-overlay"></div>
 
     <div class="container">
         <div class="header">
-            <h1>Donation Dashboard</h1>
-            <p>Celebrating generosity and making impact together</p>
+            <h1>
+                <i class="fas fa-calendar-check header-icon"></i>
+                <span class="header-title">Appointment Management</span>
+            </h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Users/userlist'">
+                    ViewUsers
+                </button>
+                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/Info'">
+                    AppointmentData
+                </button>
+                <a href="<?= URLROOT ?>/pages/dashboard" class="btn logout-btn">
+                    Back to Dashboard
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
         </div>
 
         <div class="stats-row">
