@@ -70,6 +70,15 @@ class DonationModel
         return $this->payment_method;
     }
 
+    public function updateStatus($donationId, $status)
+    {
+        $this->db->query('UPDATE donations SET status = :status WHERE id = :id');
+        $this->db->bind(':status', $status);
+        $this->db->bind(':id', $donationId);
+
+        return $this->db->execute();
+    }
+
     public function toArray()
     {
         return [

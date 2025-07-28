@@ -3,11 +3,42 @@
 class Donations extends Controller
 {
     private $db;
+    private $DonationModel;
 
     public function __construct()
     {
         $this->model('DonationModel');
         $this->db = new Database();
+    }
+
+    // In your controller method updateStatus()
+    public function updateStatus()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $input = json_decode(file_get_contents('php://input'), true);
+
+            $donationId = $input['donation_id'];
+            $status = $input['status'];
+
+            // Validate status
+            $allowedStatuses = ['complete', 'pending', 'not'];
+            if (!in_array($status, $allowedStatuses)) {
+                echo json_encode(['success' => false, 'message' => 'Invalid status']);
+                return;
+            }
+
+            // Use your existing Database class
+            $db = new Database();
+
+            // Update using the existing update method
+            $updateData = ['status' => $status];
+
+            if ($db->update('donations', $donationId, $updateData)) {
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Database update failed']);
+            }
+        }
     }
 
     public function donate()
