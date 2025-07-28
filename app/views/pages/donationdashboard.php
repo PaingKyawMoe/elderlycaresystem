@@ -5,307 +5,168 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donation Dashboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-            overflow-x: hidden;
-        }
-
-        .background-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
-            z-index: -1;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            color: white;
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(45deg, #fff, #f0f0f0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow:
-                0 8px 32px rgba(0, 0, 0, 0.1),
-                0 0 0 1px rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow:
-                0 20px 40px rgba(0, 0, 0, 0.15),
-                0 0 0 1px rgba(255, 255, 255, 0.3);
-        }
-
-        .stat-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 1rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            color: #718096;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .donations-table-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            box-shadow:
-                0 8px 32px rgba(0, 0, 0, 0.1),
-                0 0 0 1px rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            overflow: hidden;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        .donations-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .donations-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 1.5rem 1rem;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .donations-table td {
-            padding: 1.5rem 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-            color: #2d3748;
-            vertical-align: middle;
-        }
-
-        .donations-table tbody tr {
-            transition: all 0.3s ease;
-        }
-
-        .donations-table tbody tr:hover {
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .id-cell {
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        .name-cell {
-            font-weight: 600;
-            color: #2d3748;
-        }
-
-        .email-cell {
-            color: #718096;
-            font-size: 0.9rem;
-        }
-
-        .phone-cell {
-            color: #4a5568;
-            font-size: 0.9rem;
-        }
-
-        .amount-cell {
-            font-weight: 700;
-            color: #38a169;
-            font-size: 1.1rem;
-        }
-
-        .payment-cell {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: #718096;
-            font-style: italic;
-        }
-
-        .empty-state-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 1rem;
-            opacity: 0.5;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            gap: 0.5rem;
-        }
-
-        .pagination-btn {
-            padding: 0.75rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            min-width: 45px;
-            text-align: center;
-        }
-
-        .pagination-btn:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .pagination-btn.active {
-            background: rgba(255, 255, 255, 0.95);
-            color: #667eea;
-            border-color: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .pagination-info {
-            color: white;
-            font-size: 0.9rem;
-            margin: 0 1rem;
-            opacity: 0.9;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.6s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .stat-card {
-                padding: 1.5rem;
-            }
-
-            .donations-table th,
-            .donations-table td {
-                padding: 1rem 0.5rem;
-                font-size: 0.8rem;
-            }
-
-            .pagination {
-                flex-wrap: wrap;
-            }
-
-            .pagination-btn {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/donationdash.css?v=<?= time(); ?>">
 </head>
+<style>
+    /* Additional CSS for status buttons */
+    .status-buttons {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .status-btn {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-btn.complete {
+        background: #27ae60;
+        color: white;
+    }
+
+    .status-btn.complete.active {
+        background: #1e8449;
+        box-shadow: 0 2px 8px rgba(39, 174, 96, 0.4);
+    }
+
+    .status-btn.pending {
+        background: #f39c12;
+        color: white;
+    }
+
+    .status-btn.pending.active {
+        background: #d68910;
+        box-shadow: 0 2px 8px rgba(243, 156, 18, 0.4);
+    }
+
+    .status-btn.not {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .status-btn.not.active {
+        background: #c0392b;
+        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+    }
+
+    .status-btn:not(.active) {
+        opacity: 0.6;
+    }
+
+    .status-btn:hover {
+        transform: translateY(-1px);
+        opacity: 1;
+    }
+
+    /* Payment method icons styles */
+    .payment-method-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 4px 0;
+    }
+
+    .payment-icon {
+        width: 32px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+
+    .payment-icon svg {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .payment-text {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+    /* PayPal icon styling */
+    .payment-icon.paypal {
+        background: #ffffff;
+        border: 1px solid #e1e8ed;
+    }
+
+    /* Credit Card icon styling */
+    .payment-icon.credit-card {
+        background: #1a1a1a;
+        color: white;
+    }
+
+    /* Bank Transfer icon styling */
+    .payment-icon.bank-transfer {
+        background: #0066cc;
+        color: white;
+    }
+
+    /* Wave Pay icon styling */
+    .payment-icon.wave-pay {
+        background: #FFD500;
+        color: #0099CC;
+    }
+
+    /* KBZ Pay icon styling */
+    .payment-icon.kbz-pay {
+        background: #1e5aa8;
+        color: white;
+    }
+
+    /* Cash icon styling */
+    .payment-icon.cash {
+        background: #28a745;
+        color: white;
+    }
+
+    /* Default payment icon styling */
+    .payment-icon.default {
+        background: #6c757d;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .status-buttons {
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .status-btn {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+        }
+
+        .payment-method-container {
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .payment-icon {
+            width: 28px;
+            height: 20px;
+        }
+
+        .payment-text {
+            font-size: 0.75rem;
+        }
+    }
+</style>
 
 <body>
     <div class="background-overlay"></div>
@@ -383,6 +244,7 @@
                             <th>Phone</th>
                             <th>Amount</th>
                             <th>Payment Method</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -406,6 +268,154 @@
         let currentPage = 1;
         const totalPages = Math.ceil(donationData.length / itemsPerPage);
 
+        function getPaymentMethodIcon(paymentMethod) {
+            const method = paymentMethod.toLowerCase();
+
+            if (method.includes('paypal')) {
+                return {
+                    class: 'paypal',
+                    icon: `<svg viewBox="0 0 24 24" fill="none">
+                        <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.469-.06c-.762-.01-1.467.056-2.16.171-.06 3.06-1.44 5.264-4.314 6.394L12.87 21.337h3.585a.641.641 0 0 0 .633-.74l.9-5.71h1.52c3.585 0 6.187-1.425 7.016-5.91z" fill="#003087"/>
+                        <path d="M6.03 21.337H1.424a.641.641 0 0 1-.633-.74L3.898.901C3.98.382 4.428 0 4.952 0h7.46c2.57 0 4.578.543 5.69 1.81.85.97 1.213 2.115 1.012 3.537-.983 5.05-4.349 6.797-8.647 6.797H8.277c-.524 0-.968.382-1.05.9L6.03 21.337z" fill="#0070ba"/>
+                        <path d="M20.176 6.917c-.762-.01-1.467.056-2.16.171-.06 3.06-1.44 5.264-4.314 6.394L12.293 21.337h3.585a.641.641 0 0 0 .633-.74l.9-5.71h1.52c3.585 0 6.187-1.425 7.016-5.91a3.35 3.35 0 0 0-.469-.06z" fill="#00a9e0"/>
+                    </svg>`
+                };
+            } else if (method.includes('wave') || method.includes('wavepay')) {
+                return {
+                    class: 'wave-pay',
+                    icon: `<svg viewBox="0 0 100 100" fill="none">
+                        <rect width="100" height="100" fill="#FFD500"/>
+                        <g transform="translate(20, 20)">
+                            <circle cx="30" cy="30" r="28" fill="#0099CC"/>
+                            <circle cx="35" cy="25" r="23" fill="#0088BB"/>
+                            <circle cx="30" cy="30" r="8" fill="#FFD500"/>
+                            <path d="M10 30 Q20 10, 30 30 Q40 50, 50 30" stroke="#FFD500" stroke-width="3" fill="none"/>
+                        </g>
+                    </svg>`
+                };
+            } else if (method.includes('kbz') || method.includes('kpay')) {
+                return {
+                    class: 'kbz-pay',
+                    icon: `<svg viewBox="0 0 100 100" fill="none">
+                        <rect width="100" height="100" rx="12" ry="12" fill="#1e5aa8"/>
+                        <text x="50" y="40" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="20">KBZ</text>
+                        <text x="50" y="65" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="normal" font-size="16">Pay</text>
+                        <path d="M15 15 L25 25 M85 15 L75 25 M15 85 L25 75 M85 85 L75 75" stroke="white" stroke-width="2"/>
+                    </svg>`
+                };
+            } else if (method.includes('credit') || method.includes('card') || method.includes('visa') || method.includes('mastercard')) {
+                return {
+                    class: 'credit-card',
+                    icon: `<svg viewBox="0 0 100 60" fill="none">
+                        <!-- Main card -->
+                        <rect x="5" y="8" width="90" height="44" rx="4" ry="4" fill="#1a1a1a"/>
+                        <!-- Chip -->
+                        <rect x="12" y="18" width="12" height="10" rx="2" ry="2" fill="white" opacity="0.9"/>
+                        <rect x="14" y="20" width="8" height="6" rx="1" ry="1" fill="#1a1a1a"/>
+                        <!-- Card number dots -->
+                        <circle cx="30" cy="32" r="1" fill="white" opacity="0.8"/>
+                        <circle cx="34" cy="32" r="1" fill="white" opacity="0.8"/>
+                        <circle cx="38" cy="32" r="1" fill="white" opacity="0.8"/>
+                        <circle cx="42" cy="32" r="1" fill="white" opacity="0.8"/>
+                        <circle cx="48" cy="32" r="1" fill="white" opacity="0.8"/>
+                        <circle cx="52" cy="32" r="1" fill="white" opacity="0.8"/>
+                        <circle cx="56" cy="32" r="1" fill="white" opacity="0.8"/>
+                        <circle cx="60" cy="32" r="1" fill="white" opacity="0.8"/>
+                        <!-- Second card (overlapped) -->
+                        <rect x="10" y="3" width="90" height="44" rx="4" ry="4" fill="#1a1a1a" opacity="0.7"/>
+                        <!-- Credit card text -->
+                        <text x="85" y="15" text-anchor="end" fill="white" font-family="Arial, sans-serif" font-size="6" opacity="0.9">CREDIT CARD</text>
+                    </svg>`
+                };
+            } else if (method.includes('bank') || method.includes('transfer')) {
+                return {
+                    class: 'bank-transfer',
+                    icon: `<svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 1L21 6v2H3V6l9-5zm7 8v8h2v1H3v-1h2V9h14zm-2 0h-3v8h3V9zm-5 0H9v8h3V9zm-5 0H4v8h3V9z"/>
+                    </svg>`
+                };
+            } else if (method.includes('cash')) {
+                return {
+                    class: 'cash',
+                    icon: `<svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                    </svg>`
+                };
+            } else {
+                return {
+                    class: 'default',
+                    icon: `<svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>`
+                };
+            }
+        }
+
+        function createPaymentMethodDisplay(paymentMethod) {
+            const iconData = getPaymentMethodIcon(paymentMethod);
+            return `
+                <div class="payment-method-container">
+                    <div class="payment-icon ${iconData.class}">
+                        ${iconData.icon}
+                    </div>
+                    <span class="payment-text">${escapeHtml(paymentMethod)}</span>
+                </div>
+            `;
+        }
+
+        function updateDonationStatus(donationId, newStatus) {
+            // Make AJAX call to update status in database
+            fetch('<?php echo URLROOT; ?>/donations/updateStatus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        donation_id: donationId,
+                        status: newStatus
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update local data
+                        const donationIndex = donationData.findIndex(d => d.id == donationId);
+                        if (donationIndex !== -1) {
+                            donationData[donationIndex].status = newStatus;
+                            // Refresh the current page
+                            displayTable(currentPage);
+                        }
+                    } else {
+                        alert('Error updating status: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating status');
+                });
+        }
+
+        function createStatusButtons(donation) {
+            const statusButtonsHtml = `
+                <div class="status-buttons">
+                    <button class="status-btn complete ${donation.status === 'complete' ? 'active' : ''}" 
+                            onclick="updateDonationStatus(${donation.id}, 'complete')">
+                        Complete
+                    </button>
+                    <button class="status-btn pending ${donation.status === 'pending' ? 'active' : ''}" 
+                            onclick="updateDonationStatus(${donation.id}, 'pending')">
+                        Pending
+                    </button>
+                    <button class="status-btn not ${donation.status === 'not' ? 'active' : ''}" 
+                            onclick="updateDonationStatus(${donation.id}, 'not')">
+                        Not
+                    </button>
+                </div>
+            `;
+            return statusButtonsHtml;
+        }
+
         function displayTable(page) {
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = '';
@@ -417,7 +427,7 @@
             if (pageData.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="empty-state">
+                        <td colspan="7" class="empty-state">
                             <div>
                                 <svg class="empty-state-icon" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -438,7 +448,8 @@
                     <td><span class="email-cell">${escapeHtml(donation.email)}</span></td>
                     <td><span class="phone-cell">${escapeHtml(donation.phone)}</span></td>
                     <td><span class="amount-cell">$${parseFloat(donation.amount).toFixed(2)}</span></td>
-                    <td><span class="payment-cell">${escapeHtml(donation.payment_method)}</span></td>
+                    <td>${createPaymentMethodDisplay(donation.payment_method)}</td>
+                    <td>${createStatusButtons(donation)}</td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -568,7 +579,7 @@
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="6" class="empty-state">
+                    <td colspan="7" class="empty-state">
                         <div>
                             <svg class="empty-state-icon" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
