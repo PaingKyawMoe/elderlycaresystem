@@ -233,8 +233,6 @@
                 showSuccessAndRedirect();
             }, 2000); // 2 second delay to simulate processing time
 
-            // Prevent actual form submission for demo
-            e.preventDefault();
         });
 
         // Enhanced date input interaction
