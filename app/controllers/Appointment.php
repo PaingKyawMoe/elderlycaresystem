@@ -16,7 +16,6 @@ class Appointment extends Controller
             $name = trim($_POST['name']);
             $dob = trim($_POST['dob']);
             $phone = trim($_POST['phone']);
-
             if (empty($name) || empty($dob) || empty($phone)) {
                 echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
                 return;
@@ -73,6 +72,85 @@ class Appointment extends Controller
     public function index()
     {
         echo "This is the Appointment index page.";
+    }
+
+    // AJAX Delete method - returns JSON response
+    public function deleteAjax()
+    {
+        // Set JSON response header
+        header('Content-Type: application/json');
+
+        if ($_POST && isset($_POST['id'])) {
+            $id = $_POST['id'];
+
+            // Use your existing database delete method
+            $result = $this->db->delete('appointments', $id);
+
+            if ($result) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Appointment deleted successfully!'
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Failed to delete appointment.'
+                ]);
+            }
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid request.'
+            ]);
+        }
+        exit; // Important: stop execution after JSON response
+    }
+
+    // AJAX Update method - returns JSON response
+    public function updateAjax()
+    {
+        // Set JSON response header
+        header('Content-Type: application/json');
+
+        if ($_POST && isset($_POST['id'])) {
+            $id = $_POST['id'];
+
+            // Prepare data array (matching your database column names)
+            $data = [
+                'name' => trim($_POST['name']),
+                'phone' => trim($_POST['phone']),
+                'dob' => $_POST['dob'],
+                'gender' => $_POST['gender'],
+                'address' => trim($_POST['address']),
+                'preferred_date' => $_POST['preferredDate'],
+                'preferred_time' => $_POST['preferredTime'],
+                'appointment_type' => $_POST['appointmentType'],
+                'selectDoctor' => $_POST['selectDoctor'],
+                'reasonForAppointment' => trim($_POST['reasonforappointment'])
+            ];
+
+            // Use your existing database update method
+            $result = $this->db->update('appointments', $id, $data);
+
+            if ($result) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Appointment updated successfully!',
+                    'data' => $data
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Failed to update appointment.'
+                ]);
+            }
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid request.'
+            ]);
+        }
+        exit; // Important: stop execution after JSON response
     }
 
     public function store()

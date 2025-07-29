@@ -133,7 +133,16 @@ class AppointmentModel
         return $this->photo;
     }
 
+    public function delete($id)
+    {
+        return $this->db->delete('appointments', $id);
+    }
 
+    // Update appointment
+    public function update($id, $data)
+    {
+        return $this->db->update('appointments', $id, $data);
+    }
 
     public function toArray()
     {
