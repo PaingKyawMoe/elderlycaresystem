@@ -77,7 +77,7 @@
             `;
                 } else {
                     resultDiv.innerHTML = `
-                <h3>❌ No Appointment Found</h3>
+                <h3>❌ Your Appointment Not Found</h3>
                 <p style="color:#666;">Please check your information and try again.</p>
             `;
                 }

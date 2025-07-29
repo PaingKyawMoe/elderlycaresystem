@@ -165,6 +165,31 @@
             }
         });
 
+        // Function to show success message and redirect
+        function showSuccessAndRedirect() {
+            // Show success modal
+            showModal(
+                'Appointment Successful!',
+                'Your appointment has been successfully submitted. Thank for your appointment...',
+                'success'
+            );
+
+            // Redirect after showing success message (3 seconds delay)
+            setTimeout(function() {
+                // Option 1: Redirect to a specific page
+                window.location.href = '<?= URLROOT ?>/pages/dashboard';
+
+                // Option 2: Redirect to homepage
+                // window.location.href = '<?= URLROOT ?>/';
+
+                // Option 3: Redirect to dashboard
+                // window.location.href = '<?= URLROOT ?>/Dashboard';
+
+                // Option 4: Go back to previous page
+                // window.history.back();
+            }, 3000); // 3 second delay to show success message
+        }
+
         // Form submission with loading state and age validation
         document.getElementById('appointmentForm').addEventListener('submit', function(e) {
             const dobInput = document.getElementById('dob').value;
@@ -202,6 +227,14 @@
             container.classList.add('loading');
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             submitBtn.disabled = true;
+
+            // Simulate form submission success after a delay
+            setTimeout(function() {
+                showSuccessAndRedirect();
+            }, 2000); // 2 second delay to simulate processing time
+
+            // Prevent actual form submission for demo
+            e.preventDefault();
         });
 
         // Enhanced date input interaction

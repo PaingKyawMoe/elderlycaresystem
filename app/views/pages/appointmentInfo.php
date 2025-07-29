@@ -183,53 +183,52 @@
             </div>
 
             <div class="modal-body">
-                <form id="appointmentForm">
-                    <input type="hidden" id="appointmentId" />
+                <form id="appointmentForm" method="POST" action="<?= URLROOT ?>/Appointment/update">
+                    <input type="hidden" id="appointmentId" name="id" />
 
                     <div class="form-grid">
                         <div class="form-group">
                             <label class="form-label" for="patientName">Patient Name</label>
-                            <input type="text" id="patientName" class="form-input" required />
+                            <input type="text" id="patientName" name="name" class="form-input" required />
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="patientPhone">Phone Number</label>
-                            <input type="tel" id="patientPhone" class="form-input" required />
+                            <input type="tel" id="patientPhone" name="phone" class="form-input" required />
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="patientDOB">Date of Birth</label>
-                            <input type="date" id="patientDOB" class="form-input" required />
+                            <input type="date" id="patientDOB" name="dob" class="form-input" required />
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="patientGender">Gender</label>
-                            <select id="patientGender" class="form-select" required>
+                            <select id="patientGender" name="gender" class="form-select" required>
                                 <option value="">Select Gender</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
-                                <option value="other">Other</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="appointmentDate">Appointment Date</label>
-                            <input type="date" id="appointmentDate" class="form-input" required />
+                            <input type="date" id="appointmentDate" name="preferredDate" class="form-input" required />
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="appointmentTime">Preferred Time</label>
-                            <select id="appointmentTime" class="form-select" required>
+                            <select id="appointmentTime" name="preferredTime" class="form-select" required>
                                 <option value="">Select Time</option>
-                                <option value="morning">Morning</option>
-                                <option value="afternoon">Afternoon</option>
-                                <option value="evening">Evening</option>
+                                <option value="morning">Morning (8 AM - 11 AM)</option>
+                                <option value="afternoon">Afternoon (11 AM - 2 PM)</option>
+                                <option value="evening">Evening (2 PM - 5 PM)</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="appointmentType">Appointment Type</label>
-                            <select id="appointmentType" class="form-select" required>
+                            <select id="appointmentType" name="appointmentType" class="form-select" required>
                                 <option value="">Select Type</option>
                                 <option value="consultation">Consultation</option>
                                 <option value="checkup">Checkup</option>
@@ -239,7 +238,7 @@
 
                         <div class="form-group">
                             <label class="form-label" for="selectDoctor">Select Doctor</label>
-                            <select id="selectDoctor" class="form-select" required>
+                            <select id="selectDoctor" name="selectDoctor" class="form-select" required>
                                 <option value="">Choose Doctor</option>
                                 <option value="Dr. Paing">Dr. Paing</option>
                                 <option value="Dr. Kyaw">Dr. Kyaw</option>
@@ -252,12 +251,12 @@
 
                     <div class="form-group">
                         <label class="form-label" for="patientAddress">Address</label>
-                        <input type="text" id="patientAddress" class="form-input" />
+                        <input type="text" id="patientAddress" name="address" class="form-input" />
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="reasonForAppointment">Reason for Appointment</label>
-                        <textarea id="reasonForAppointment" class="form-textarea" rows="4" placeholder="Describe the reason for this appointment..."></textarea>
+                        <textarea id="reasonForAppointment" name="reasonforappointment" class="form-textarea" rows="4" placeholder="Describe the reason for this appointment..."></textarea>
                     </div>
                 </form>
             </div>
@@ -275,6 +274,50 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 24px;"></i>
+                    <h2 class="modal-title">Confirm Delete</h2>
+                </div>
+                <button class="modal-close" id="closeDeleteModalBtn" style="color: white;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body" style="padding: 30px; text-align: center;">
+                <div style="margin-bottom: 20px;">
+                    <i class="fas fa-trash-alt" style="font-size: 48px; color: #ef4444; margin-bottom: 15px;"></i>
+                    <h3 style="margin-bottom: 10px; color: #1f2937;">Delete Appointment</h3>
+                    <p style="color: #6b7280; margin-bottom: 15px;">Are you sure you want to delete the appointment for:</p>
+                    <p style="font-weight: bold; color: #1f2937; font-size: 18px;" id="deletePatientName"></p>
+                </div>
+                <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; text-align: left; border-radius: 6px;">
+                    <p style="color: #7f1d1d; margin: 0; font-weight: 500;">
+                        <i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i>
+                        This action cannot be undone and will permanently remove all appointment data.
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="justify-content: center; gap: 15px;">
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn" style="min-width: 120px;">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button type="button" class="btn" id="confirmDeleteBtn" style="background: #ef4444; color: white; min-width: 120px;">
+                    <i class="fas fa-trash"></i>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Message Container -->
+    <div id="messageContainer" class="message-container"></div>
+
     <script>
         // Define URLROOT for JavaScript if not already defined
         const URLROOT = '<?= URLROOT ?>';
@@ -291,8 +334,13 @@
 
             // DOM elements
             const modal = document.getElementById('appointmentModal');
+            const deleteModal = document.getElementById('deleteModal');
             const closeBtn = document.getElementById('closeModalBtn');
+            const closeDeleteModalBtn = document.getElementById('closeDeleteModalBtn');
             const cancelBtn = document.getElementById('cancelBtn');
+            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const deletePatientName = document.getElementById('deletePatientName');
             const form = document.getElementById('appointmentForm');
             const tbody = document.getElementById('appointmentTableBody');
             const paginationInfo = document.getElementById('paginationInfo');
@@ -303,6 +351,8 @@
             const statsContainer = document.getElementById('statsContainer');
             const modalTitle = document.getElementById('modalTitle');
             const saveBtn = document.getElementById('saveBtn');
+
+            let appointmentToDelete = null;
 
             // Form elements
             const appointmentId = document.getElementById('appointmentId');
@@ -630,33 +680,63 @@
 
             function deleteAppointment(id) {
                 const appointment = appointmentList.find(a => a.id == id);
-                if (appointment && confirm(`Are you sure you want to delete the appointment for "${appointment.name}"?\n\nThis action cannot be undone.`)) {
-                    fetch(`${URLROOT}/appointments/delete/${id}`, {
+                if (appointment) {
+                    // Store appointment data for deletion
+                    appointmentToDelete = appointment;
+
+                    // Set patient name in the delete modal
+                    deletePatientName.textContent = appointment.name;
+
+                    // Show custom delete confirmation modal
+                    deleteModal.classList.add('active');
+                }
+            }
+
+            function confirmDelete() {
+                if (appointmentToDelete) {
+                    const id = appointmentToDelete.id;
+
+                    // Show loading state on delete button
+                    confirmDeleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                    confirmDeleteBtn.disabled = true;
+
+                    // Use AJAX to delete without page refresh
+                    fetch(`${URLROOT}/Appointment/deleteAjax`, {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json'
-                            }
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `id=${id}`
                         })
-                        .then(res => res.json())
-                        .then(response => {
-                            if (response.status === 'success') {
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Remove from local array and update UI
                                 appointmentList = appointmentList.filter(a => a.id != id);
-                                filterAppointments();
+                                filteredAppointments = filteredAppointments.filter(a => a.id != id);
+                                renderTable();
                                 renderStats();
-                                showNotification('Appointment deleted successfully!', 'success');
+                                closeDeleteModal();
+                                showMessage('Appointment deleted successfully!', 'success');
                             } else {
-                                showNotification('Failed to delete appointment: ' + response.message, 'error');
+                                showMessage(data.message || 'Failed to delete appointment.', 'error');
                             }
                         })
-                        .catch(err => {
-                            console.error('Delete error:', err);
-                            showNotification('Error deleting appointment. Please try again.', 'error');
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showMessage('An error occurred while deleting the appointment.', 'error');
+                        })
+                        .finally(() => {
+                            // Reset delete button state
+                            confirmDeleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                            confirmDeleteBtn.disabled = false;
                         });
                 }
             }
 
-            function openAddModal() {
-                openModal(null, true);
+            function closeDeleteModal() {
+                deleteModal.classList.remove('active');
+                appointmentToDelete = null;
             }
 
             function openModal(appointment, editMode) {
@@ -676,12 +756,13 @@
                     reasonForAppointment.value = appointment.reasonForAppointment || '';
 
                     modalTitle.textContent = editMode ? 'Edit Appointment' : 'View Appointment';
-                    saveBtn.textContent = editMode ? 'Save Changes' : 'Close';
-                    saveBtn.innerHTML = editMode ? '<i class="fas fa-save"></i> Save Changes' : '<i class="fas fa-times"></i> Close';
+                    saveBtn.style.display = editMode ? 'inline-block' : 'none';
+                    saveBtn.innerHTML = editMode ? '<i class="fas fa-save"></i> Save Changes' : '';
                 } else {
                     form.reset();
                     appointmentId.value = '';
                     modalTitle.textContent = 'New Appointment';
+                    saveBtn.style.display = 'inline-block';
                     saveBtn.innerHTML = '<i class="fas fa-plus"></i> Create Appointment';
                 }
 
@@ -703,17 +784,26 @@
                 isEditMode = false;
             }
 
-            function showNotification(message, type = 'info') {
-                const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
-                notification.textContent = message;
+            function showMessage(message, type = 'info') {
+                const messageContainer = document.getElementById('messageContainer');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                messageDiv.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.remove()" class="message-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
 
-                document.body.appendChild(notification);
+                messageContainer.appendChild(messageDiv);
 
+                // Auto remove after 5 seconds
                 setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease forwards';
-                    setTimeout(() => notification.remove(), 300);
-                }, 3000);
+                    if (messageDiv.parentElement) {
+                        messageDiv.remove();
+                    }
+                }, 5000);
             }
 
             function viewPhoto(photoName) {
@@ -746,7 +836,7 @@
                 document.body.appendChild(photoModal);
             }
 
-            // Form submission
+            // Form submission - handles both edit and create with AJAX
             form.onsubmit = (e) => {
                 e.preventDefault();
 
@@ -756,68 +846,78 @@
                     return;
                 }
 
-                const appointmentData = {
-                    id: appointmentId.value,
-                    name: patientName.value.trim(),
-                    phone: patientPhone.value.trim(),
-                    dob: patientDOB.value,
-                    gender: patientGender.value,
-                    address: patientAddress.value.trim(),
-                    preferred_date: appointmentDate.value,
-                    preferred_time: appointmentTime.value,
-                    appointment_type: appointmentType.value,
-                    selectDoctor: selectDoctor.value,
-                    reasonForAppointment: reasonForAppointment.value.trim()
-                };
+                // Validate required fields
+                const requiredFields = ['name', 'phone', 'dob', 'gender', 'preferredDate', 'preferredTime', 'appointmentType', 'selectDoctor'];
+                const missingFields = requiredFields.filter(field => !form.elements[field].value.trim());
 
-                if (!appointmentData.name || !appointmentData.phone || !appointmentData.preferred_date ||
-                    !appointmentData.preferred_time || !appointmentData.appointment_type || !appointmentData.selectDoctor) {
-                    showNotification('Please fill in all required fields.', 'error');
+                if (missingFields.length > 0) {
+                    showMessage('Please fill in all required fields.', 'error');
                     return;
                 }
 
-                const url = appointmentData.id ?
-                    `${URLROOT}/appointments/update` :
-                    `${URLROOT}/appointments/create`;
+                // Show loading state
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                saveBtn.disabled = true;
 
-                fetch(url, {
+                // Prepare form data
+                const formData = new FormData(form);
+
+                // Use AJAX to update without page refresh
+                fetch(`${URLROOT}/Appointment/updateAjax`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(appointmentData)
+                        body: formData
                     })
-                    .then(res => res.json())
-                    .then(response => {
-                        if (response.status === 'success') {
-                            if (appointmentData.id) {
-                                // Update existing appointment
-                                const index = appointmentList.findIndex(a => a.id == appointmentData.id);
-                                if (index !== -1) {
-                                    appointmentList[index] = {
-                                        ...appointmentList[index],
-                                        ...appointmentData
-                                    };
-                                }
-                                showNotification('Appointment updated successfully!', 'success');
-                            } else {
-                                // Add new appointment
-                                appointmentData.id = response.id || Date.now();
-                                appointmentList.push(appointmentData);
-                                showNotification('Appointment created successfully!', 'success');
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update local array
+                            const updatedData = {
+                                id: appointmentId.value,
+                                name: patientName.value.trim(),
+                                phone: patientPhone.value.trim(),
+                                dob: patientDOB.value,
+                                gender: patientGender.value,
+                                address: patientAddress.value.trim(),
+                                preferred_date: appointmentDate.value,
+                                preferred_time: appointmentTime.value,
+                                appointment_type: appointmentType.value,
+                                selectDoctor: selectDoctor.value,
+                                reasonForAppointment: reasonForAppointment.value.trim()
+                            };
+
+                            const index = appointmentList.findIndex(a => a.id == appointmentId.value);
+                            if (index !== -1) {
+                                appointmentList[index] = {
+                                    ...appointmentList[index],
+                                    ...updatedData
+                                };
                             }
 
-                            filterAppointments();
-                            populateDoctorFilter();
+                            // Update filtered appointments
+                            const filteredIndex = filteredAppointments.findIndex(a => a.id == appointmentId.value);
+                            if (filteredIndex !== -1) {
+                                filteredAppointments[filteredIndex] = {
+                                    ...filteredAppointments[filteredIndex],
+                                    ...updatedData
+                                };
+                            }
+
+                            renderTable();
                             renderStats();
                             closeModal();
+                            showMessage('Appointment updated successfully!', 'success');
                         } else {
-                            showNotification('Failed to save appointment: ' + response.message, 'error');
+                            showMessage(data.message || 'Failed to update appointment.', 'error');
                         }
                     })
-                    .catch(err => {
-                        console.error('Save error:', err);
-                        showNotification('Error saving appointment. Please try again.', 'error');
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('An error occurred while updating the appointment.', 'error');
+                    })
+                    .finally(() => {
+                        // Reset button state
+                        saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                        saveBtn.disabled = false;
                     });
             };
 
@@ -838,15 +938,27 @@
             // Event listeners
             closeBtn.onclick = closeModal;
             cancelBtn.onclick = closeModal;
+            closeDeleteModalBtn.onclick = closeDeleteModal;
+            cancelDeleteBtn.onclick = closeDeleteModal;
+            confirmDeleteBtn.onclick = confirmDelete;
 
             modal.onclick = (e) => {
                 if (e.target === modal) closeModal();
             };
 
+            deleteModal.onclick = (e) => {
+                if (e.target === deleteModal) closeDeleteModal();
+            };
+
             // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modal.classList.contains('active')) {
-                    closeModal();
+                if (e.key === 'Escape') {
+                    if (modal.classList.contains('active')) {
+                        closeModal();
+                    }
+                    if (deleteModal.classList.contains('active')) {
+                        closeDeleteModal();
+                    }
                 }
             });
 
@@ -854,7 +966,6 @@
             window.viewAppointment = viewAppointment;
             window.editAppointment = editAppointment;
             window.deleteAppointment = deleteAppointment;
-            window.openAddModal = openAddModal;
             window.viewPhoto = viewPhoto;
 
             // Initialize the page
@@ -863,8 +974,87 @@
             renderTable();
             attachEventListeners();
 
+            // Check for success/error messages from PHP (if any)
+            <?php if (isset($_SESSION['success_message'])): ?>
+                showMessage('<?= $_SESSION['success_message'] ?>', 'success');
+                <?php unset($_SESSION['success_message']); ?>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['error_message'])): ?>
+                showMessage('<?= $_SESSION['error_message'] ?>', 'error');
+                <?php unset($_SESSION['error_message']); ?>
+            <?php endif; ?>
+
         })();
     </script>
+
+    <style>
+        /* Message styles */
+        .message-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .message.success {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            color: #047857;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            border-left: 4px solid #1b84fcff;
+            color: #dc2626;
+        }
+
+        .message.info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            color: #1d4ed8;
+        }
+
+        .message-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 2px;
+            margin-left: auto;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .message-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+
 </body>
 
 </html>
