@@ -63,6 +63,11 @@ class Pages extends Controller
         $this->view('pages/searchappointment');
     }
 
+    public function adminActivities()
+    {
+        $this->view('pages/adminactivities');
+    }
+
     public function donationDash()
     {
         $donationData = $this->db->readAll('donations');
