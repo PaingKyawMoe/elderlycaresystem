@@ -4,297 +4,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activities Dashboard - Elder Care System</title>
+    <title>Activities Dashboard</title>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/activities.css?v=<?= time(); ?>">
+
 </head>
 
 <body>
-    <div class="activities-container">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <h1>Activity Center</h1>
-            <p>Discover engaging activities designed to promote health, happiness, and social connection in our caring community.</p>
+    <div class="container">
+        <div class="header">
+            <h1>Activities Dashboard</h1>
+            <p>Discover and explore our curated collection of activities</p>
         </div>
 
-        <!-- Modern Slider -->
-        <div class="slider-wrapper" id="slider">
-            <div class="slider-container">
-                <div class="slider-slide active">
-                    <img class="slider-img" src="https://images.pexels.com/photos/7330708/pexels-photo-7330708.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Physical Activities">
-                    <div class="slider-content">
-                        <div class="slider-title">Physical Activities</div>
-                        <div class="slider-desc">Start your day with energizing morning yoga, join our walking club for fresh air and friendship, or express yourself through therapeutic dance sessions.</div>
-                        <a class="slider-btn" href="#" onclick="showSchedule(); return false;">View Schedule</a>
-                    </div>
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <div class="controls">
+            <div class="search-filter-container">
+                <div class="search-box">
+                    <svg class="search-icon icon" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="Search activities..."
+                        id="searchInput">
                 </div>
-
-                <div class="slider-slide">
-                    <img class="slider-img" src="https://images.pexels.com/photos/8637983/pexels-photo-8637983.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Mental Activities">
-                    <div class="slider-content">
-                        <div class="slider-title">Mental Activities</div>
-                        <div class="slider-desc">Keep your mind sharp and engaged with memory-boosting games, challenging puzzles, and captivating storytelling sessions that spark creativity.</div>
-                        <a class="slider-btn" href="#" onclick="showSchedule(); return false;">View Schedule</a>
-                    </div>
-                </div>
-
-                <div class="slider-slide">
-                    <img class="slider-img" src="https://images.pexels.com/photos/7446764/pexels-photo-7446764.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Social Activities">
-                    <div class="slider-content">
-                        <div class="slider-title">Social Activities</div>
-                        <div class="slider-desc">Build lasting friendships through group singing, celebrate special occasions together, and bond over collaborative cooking experiences.</div>
-                        <a class="slider-btn" href="#" onclick="showSchedule(); return false;">View Schedule</a>
-                    </div>
-                </div>
-
-                <div class="slider-slide">
-                    <img class="slider-img" src="https://media.istockphoto.com/id/682635620/photo/seniors-playing-dominoes.jpg?b=1&s=612x612&w=0&k=20&c=--P5LL0i6QZZ69tgSKxK3t7WE4ZHJ_U-u9DMuk8dcIw=" alt="Creative Activities">
-                    <div class="slider-content">
-                        <div class="slider-title">Creative Activities</div>
-                        <div class="slider-desc">Unleash your artistic side with jewelry making, painting workshops, and poetry writing sessions that celebrate your unique creativity.</div>
-                        <a class="slider-btn" href="#" onclick="showSchedule(); return false;">View Schedule</a>
-                    </div>
-                </div>
-            </div>
-
-            <button class="slider-arrow left" onclick="prevSlide()" aria-label="Previous slide">‹</button>
-            <button class="slider-arrow right" onclick="nextSlide()" aria-label="Next slide">›</button>
-
-            <div class="slider-indicators">
-                <div class="indicator active" onclick="goToSlide(0)"></div>
-                <div class="indicator" onclick="goToSlide(1)"></div>
-                <div class="indicator" onclick="goToSlide(2)"></div>
-                <div class="indicator" onclick="goToSlide(3)"></div>
+                <select class="filter-select" id="categoryFilter">
+                    <option value="All">All Categories</option>
+                    <option value="Physical">Physical</option>
+                    <option value="Mental">Mental</option>
+                    <option value="Social">Social</option>
+                    <option value="Creative">Creative</option>
+                </select>
+                <select class="filter-select" id="statusFilter">
+                    <option value="All">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
             </div>
         </div>
 
-        <!-- Activity Grid -->
-        <div class="activity-grid">
-            <div class="activity-card fade-in-up" onclick="showSchedule()">
-                <img class="activity-img" src="https://media.istockphoto.com/id/682635620/photo/seniors-playing-dominoes.jpg?b=1&s=612x612&w=0&k=20&c=--P5LL0i6QZZ69tgSKxK3t7WE4ZHJ_U-u9DMuk8dcIw=" alt="Mental Activities">
-                <div class="activity-info">
-                    <div class="activity-title">Mental Stimulation</div>
-                    <div class="activity-desc">Engage your mind with memory games, crossword puzzles, and storytelling sessions designed to keep your cognitive abilities sharp and active.</div>
-                    <div class="activity-time">9:00 AM - 10:00 AM</div>
-                </div>
-            </div>
-
-            <div class="activity-card fade-in-up" onclick="showSchedule()">
-                <img class="activity-img" src="https://media.istockphoto.com/id/856881212/photo/pleasant-walk-at-park.jpg?b=1&s=612x612&w=0&k=20&c=pIb09VxI7o-ZUSPDQA29MMiN1nm5ZL-vQ7J8zh5LJOM=" alt="Social Activities">
-                <div class="activity-info">
-                    <div class="activity-title">Social Connection</div>
-                    <div class="activity-desc">Build meaningful relationships through group singing, birthday celebrations, and collaborative cooking sessions that bring our community together.</div>
-                    <div class="activity-time">11:00 AM - 12:00 PM</div>
-                </div>
-            </div>
-
-            <div class="activity-card fade-in-up" onclick="showSchedule()">
-                <img class="activity-img" src="https://images.pexels.com/photos/28175940/pexels-photo-28175940/free-photo-of-abuelito-pintor.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Creative Activities">
-                <div class="activity-info">
-                    <div class="activity-title">Creative Expression</div>
-                    <div class="activity-desc">Explore your artistic talents through jewelry making, painting workshops, and poetry writing that celebrates your unique creative voice.</div>
-                    <div class="activity-time">4:00 PM - 5:00 PM</div>
-                </div>
-            </div>
+        <div class="loading" id="loadingIndicator">
+            <div class="loading-spinner"></div>
+            <p>Loading activities...</p>
         </div>
-    </div>
 
-    <!-- Modern Schedule Popup -->
-    <div id="schedulePopup" class="popup-overlay">
-        <div class="popup-content">
-            <button class="popup-close" onclick="closeSchedule()" aria-label="Close popup">×</button>
+        <div class="activities-grid" id="activitiesGrid" style="display: none;">
+            <!-- Activities will be populated by JavaScript -->
+        </div>
 
-            <div class="popup-header">
-                <h2>Daily Activity Schedule</h2>
-            </div>
-
-            <div class="schedule-list">
-                <div class="schedule-item">
-                    <div class="schedule-activity">Physical Activities</div>
-                    <div class="schedule-time">6:00 AM - 8:00 AM</div>
-                </div>
-                <div class="schedule-item">
-                    <div class="schedule-activity">Mental Activities</div>
-                    <div class="schedule-time">9:00 AM - 10:00 AM</div>
-                </div>
-                <div class="schedule-item">
-                    <div class="schedule-activity">Social Activities</div>
-                    <div class="schedule-time">11:00 AM - 12:00 PM</div>
-                </div>
-                <div class="schedule-item">
-                    <div class="schedule-activity">Creative Activities</div>
-                    <div class="schedule-time">4:00 PM - 5:00 PM</div>
-                </div>
-            </div>
-
-            <div class="popup-footer">
-                <p>We're always here and waiting for you. Join us for a fulfilling day!</p>
-                <button class="popup-btn" onclick="closeSchedule()">Got It!</button>
-            </div>
+        <div class="no-results" id="noResults" style="display: none;">
+            <h3>No activities found</h3>
+            <p>Try adjusting your search or filter criteria</p>
         </div>
     </div>
 
     <script>
-        // Modern Slider Logic
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slider-slide');
-        const indicators = document.querySelectorAll('.indicator');
+        // Configuration - Update this path to match your project structure
+        // Common configurations (uncomment the one that matches your setup):
+        const API_BASE_URL = '/activities'; // If using root-based URLs
+        // const API_BASE_URL = './activities'; // If in same directory
+        // const API_BASE_URL = '../activities'; // If in subdirectory
+        // const API_BASE_URL = 'http://localhost/your-project/activities'; // Full URL
 
-        function updateSlider() {
-            slides.forEach((slide, index) => {
-                slide.classList.remove('active', 'prev');
-                if (index === currentSlide) {
-                    slide.classList.add('active');
-                } else if (index < currentSlide) {
-                    slide.classList.add('prev');
-                }
-            });
+        let allActivities = [];
+        let filteredActivities = [];
 
-            indicators.forEach((indicator, index) => {
-                indicator.classList.toggle('active', index === currentSlide);
-            });
-        }
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const activitiesGrid = document.getElementById('activitiesGrid');
+        const noResults = document.getElementById('noResults');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
 
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % slides.length;
-            updateSlider();
-        }
-
-        function prevSlide() {
-            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-            updateSlider();
-        }
-
-        function goToSlide(index) {
-            currentSlide = index;
-            updateSlider();
-        }
-
-        // Touch/Swipe Support
-        let startX = null;
-        let startY = null;
-        const slider = document.getElementById('slider');
-
-        slider.addEventListener('touchstart', e => {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        }, {
-            passive: true
-        });
-
-        slider.addEventListener('touchend', e => {
-            if (startX === null || startY === null) return;
-
-            let endX = e.changedTouches[0].clientX;
-            let endY = e.changedTouches[0].clientY;
-            let deltaX = endX - startX;
-            let deltaY = endY - startY;
-
-            // Only trigger swipe if horizontal movement is greater than vertical
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX > 50) {
-                    prevSlide();
-                } else if (deltaX < -50) {
-                    nextSlide();
-                }
-            }
-
-            startX = null;
-            startY = null;
-        }, {
-            passive: true
-        });
-
-        // Auto-slide with pause on hover
-        let autoSlideInterval;
-
-        function startAutoSlide() {
-            autoSlideInterval = setInterval(nextSlide, 5000);
-        }
-
-        function stopAutoSlide() {
-            clearInterval(autoSlideInterval);
-        }
-
-        slider.addEventListener('mouseenter', stopAutoSlide);
-        slider.addEventListener('mouseleave', startAutoSlide);
-
-        // Popup Functions
-        function showSchedule() {
-            document.getElementById('schedulePopup').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeSchedule() {
-            document.getElementById('schedulePopup').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        // Keyboard Navigation
-        document.addEventListener('keydown', function(e) {
-            const popup = document.getElementById('schedulePopup');
-
-            if (popup.classList.contains('active')) {
-                if (e.key === 'Escape') {
-                    closeSchedule();
-                }
-            } else {
-                if (e.key === 'ArrowLeft') {
-                    prevSlide();
-                } else if (e.key === 'ArrowRight') {
-                    nextSlide();
-                }
-            }
-        });
-
-        // Close popup when clicking outside
-        document.getElementById('schedulePopup').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeSchedule();
-            }
-        });
-
-        // Intersection Observer for Animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+        // Category SVG icons
+        const categoryIcons = {
+            'Physical': `<svg viewBox="0 0 24 24"><path d="M12 2L13.09 6.26L18 6L14.5 10L18 14L13.09 17.74L12 22L10.91 17.74L6 18L9.5 14L6 10L10.91 6.26L12 2Z"/></svg>`,
+            'Mental': `<svg viewBox="0 0 24 24"><path d="M21.33 12.91c.09-.33.15-.66.15-1a7.12 7.12 0 0 0-.15-.91c-.03-.15-.08-.29-.12-.44-.1-.36-.2-.72-.35-1.06-.03-.07-.05-.14-.08-.2C19.65 6.89 16.92 5 13.7 5s-5.95 1.89-7.08 4.3c-.03.06-.05.13-.08.2-.15.34-.25.7-.35 1.06-.04.15-.09.29-.12.44C6.03 11.34 6 11.67 6 12s.03.66.07 1c.03.15.08.29.12.44.1.36.2.72.35 1.06.03.07.05.14.08.2C7.75 17.11 10.48 19 13.7 19s5.95-1.89 7.08-4.3c.03-.07.05-.13.08-.2.15-.34.25-.7.35-1.06.04-.15.09-.29.12-.44zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/><circle cx="12" cy="12" r="2"/></svg>`,
+            'Social': `<svg viewBox="0 0 24 24"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-6h3v8h-3v-2zm6.5 2h-3v-8h3v8zM12.5 11H16v7h-3.5v-7zM18 22v-6h3v8h-3v-2zm-1.5-6.5c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2zM7 10c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/></svg>`,
+            'Creative': `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9l-5.91 1.74L19 22l-7-3.73L5 22l2.91-11.26L2 9l6.91-1.74L12 2z"/></svg>`
         };
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+        // Default image for activities without images
+        const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop';
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Start auto-slide
-            startAutoSlide();
-
-            // Animate cards on scroll
-            const cards = document.querySelectorAll('.activity-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                card.style.transition = `all 0.6s ease ${index * 0.1}s`;
-                observer.observe(card);
-            });
-
-            // Preload images
-            const images = document.querySelectorAll('img');
-            images.forEach(img => {
-                if (img.dataset.src) {
-                    img.src = img.dataset.src;
-                }
-            });
-        });
-
-        // Performance optimization: Reduce animations on low-end devices
-        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
-            document.documentElement.style.setProperty('--animation-duration', '0.3s');
+        // Format time to 12-hour format
+        function formatTime(time24) {
+            if (!time24) return 'N/A';
+            const [hours, minutes] = time24.split(':');
+            const hour12 = hours % 12 || 12;
+            const ampm = hours < 12 ? 'AM' : 'PM';
+            return `${hour12}:${minutes} ${ampm}`;
         }
+
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            loadingIndicator.style.display = 'none';
+        }
+
+        // Hide error message
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        // Show loading
+        function showLoading() {
+            loadingIndicator.style.display = 'block';
+            activitiesGrid.style.display = 'none';
+            noResults.style.display = 'none';
+        }
+
+        // Hide loading
+        function hideLoading() {
+            loadingIndicator.style.display = 'none';
+        }
+
+        // Create activity card HTML
+        function createActivityCard(activity) {
+            // Use default image if none provided or if image is invalid
+            const imageUrl = activity.image && activity.image.trim() !== '' ? activity.image : DEFAULT_IMAGE;
+
+            return `
+                <div class="activity-card" onclick="viewActivity(${activity.id})">
+                    <img src="${imageUrl}" alt="${activity.title}" class="activity-image" loading="lazy" onerror="this.src='${DEFAULT_IMAGE}'">
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <h3 class="activity-title">${activity.title}</h3>
+                            <div class="activity-category category-${activity.category.toLowerCase()}">
+                                ${categoryIcons[activity.category] || ''} ${activity.category}
+                            </div>
+                        </div>
+                        <p class="activity-description">${activity.description}</p>
+                        <div class="activity-meta">
+                            <div class="activity-time">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12,6 12,12 16,14"></polyline>
+                                </svg>
+                                ${formatTime(activity.time)}
+                            </div>
+                            <div class="activity-duration">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12,6 12,12 16,14"></polyline>
+                                </svg>
+                                ${activity.duration || 'N/A'} min
+                            </div>
+                            <div class="status-badge status-${activity.status}">
+                                ${activity.status}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render activities
+        function renderActivities() {
+            hideLoading();
+
+            if (filteredActivities.length === 0) {
+                activitiesGrid.style.display = 'none';
+                noResults.style.display = 'block';
+            } else {
+                activitiesGrid.style.display = 'grid';
+                noResults.style.display = 'none';
+                activitiesGrid.innerHTML = filteredActivities.map(createActivityCard).join('');
+            }
+        }
+
+        // Filter activities
+        function filterActivities() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const selectedCategory = categoryFilter.value;
+            const selectedStatus = statusFilter.value;
+
+            filteredActivities = allActivities.filter(activity => {
+                const matchesSearch = !searchTerm ||
+                    activity.title.toLowerCase().includes(searchTerm) ||
+                    activity.description.toLowerCase().includes(searchTerm);
+
+                const matchesCategory = selectedCategory === 'All' || activity.category === selectedCategory;
+                const matchesStatus = selectedStatus === 'All' || activity.status === selectedStatus;
+
+                return matchesSearch && matchesCategory && matchesStatus;
+            });
+
+            renderActivities();
+        }
+
+        // Fetch activities from the server
+        async function fetchActivities() {
+            try {
+                showLoading();
+                hideError();
+
+                console.log('Fetching from:', `${API_BASE_URL}/getAll`); // Debug log
+
+                const response = await fetch(`${API_BASE_URL}/getAll`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest' // Indicates AJAX request
+                    }
+                });
+
+                console.log('Response status:', response.status); // Debug log
+                console.log('Response headers:', response.headers); // Debug log
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('Response data:', data); // Debug log
+
+                if (data.success) {
+                    allActivities = data.activities || [];
+                    filteredActivities = [...allActivities];
+                    console.log('Loaded activities:', allActivities.length); // Debug log
+                    renderActivities();
+                } else {
+                    throw new Error(data.message || 'Failed to fetch activities');
+                }
+            } catch (error) {
+                console.error('Error fetching activities:', error);
+
+                // More detailed error message
+                let errorMsg = 'Failed to load activities. ';
+                if (error.message.includes('404')) {
+                    errorMsg += 'Endpoint not found. Check your API_BASE_URL configuration.';
+                } else if (error.message.includes('500')) {
+                    errorMsg += 'Server error. Check your PHP backend logs.';
+                } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+                    errorMsg += 'Network error. Make sure your server is running.';
+                } else {
+                    errorMsg += error.message;
+                }
+
+                showError(errorMsg);
+                allActivities = [];
+                filteredActivities = [];
+                renderActivities();
+            }
+        }
+
+        // View single activity (you can customize this function)
+        function viewActivity(id) {
+            // You can implement this to show a modal or navigate to a detail page
+            console.log('Viewing activity:', id);
+            // Example: window.location.href = `activities/show/${id}`;
+        }
+
+        // Initialize the dashboard
+        async function initializeDashboard() {
+            // Set up event listeners
+            searchInput.addEventListener('input', filterActivities);
+            categoryFilter.addEventListener('change', filterActivities);
+            statusFilter.addEventListener('change', filterActivities);
+
+            // Load activities
+            await fetchActivities();
+        }
+
+        // Start the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+
+        // Refresh activities function (can be called manually)
+        function refreshActivities() {
+            console.log('Refreshing activities...');
+            fetchActivities();
+        }
+
+        // Removed auto-refresh - you can enable it manually if needed
+        // setInterval(refreshActivities, 5 * 60 * 1000);
     </script>
 </body>
 
