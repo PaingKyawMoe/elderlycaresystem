@@ -26,77 +26,27 @@ class Auth extends Controller
         }
     }
 
-    // public function register()
+    // public function verify($token)
     // {
-    //     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //         // Check user exist
-    //         $email = $_POST['email'];
-    //         // call columnFilter Method from Database.php
-    //         $isUserExist = $this->db->columnFilter('users', 'email', $email);
-    //         // print_r($isUserExist);
-    //         // exit;
-    //         if ($isUserExist) {
-    //             setMessage('error', 'This email is already registered !');
-    //             redirect('pages/register');
+    //     $user = $this->db->columnFilter('users', 'token', $token);
+
+    //     if ($user) {
+    //         $success = $this->db->verify($user[0]['id']);
+
+    //         if ($success) {
+    //             setMessage(
+    //                 'success',
+    //                 'Successfully Verified . Please log in !'
+    //             );
     //         } else {
-    //             // Validate entries
-    //             $validation = new UserValidator($_POST);
-    //             $data = $validation->validateForm();
-    //             if (count($data) > 0) {
-    //                 $this->view('pages/register', $data);
-    //             } else {
-    //                 $name = $_POST['name'];
-    //                 $email = $_POST['email'];
-    //                 $password = $_POST['password'];
-
-    //                 //Hash Password before saving
-    //                 $password = base64_encode($password);
-
-    //                 $user = new UserModel();
-    //                 $user->setName($name);
-    //                 $user->setEmail($email);
-    //                 $user->setPassword($password);
-
-    //                 $userCreated = $this->db->create('users', $user->toArray());
-    //                 //$userCreated="true";
-
-    //                 if ($userCreated) {
-    //                     //Instatiate mail
-    //                     $mail = new Mail();
-
-    //                     // $verify_token = URLROOT . '/auth/verify/' . $token;
-    //                     // $mail->verifyMail($email, $name, $verify_token);
-
-    //                     setMessage('success', 'Please check your Mail box !');
-    //                     redirect('pages/login');
-    //                 }
-    //                 redirect('pages/register');
-    //             } // end of validation check
-    //         } // end of user-exist
+    //             setMessage('error', 'Fail to Verify . Please try again!');
+    //         }
+    //     } else {
+    //         setMessage('error', 'Incrorrect Token . Please try again!');
     //     }
+
+    //     redirect('');
     // }
-
-    public function verify($token)
-    {
-        $user = $this->db->columnFilter('users', 'token', $token);
-
-        if ($user) {
-            $success = $this->db->verify($user[0]['id']);
-
-            if ($success) {
-                setMessage(
-                    'success',
-                    'Successfully Verified . Please log in !'
-                );
-            } else {
-                setMessage('error', 'Fail to Verify . Please try again!');
-            }
-        } else {
-            setMessage('error', 'Incrorrect Token . Please try again!');
-        }
-
-        redirect('');
-    }
 
     public function login()
     {
@@ -120,45 +70,10 @@ class Auth extends Controller
                     setMessage('error', 'Login Fail!');
                     redirect('pages/signin');
                 }
-
-                // $isEmailExist = $this->db->columnFilter('users', 'email', $email);
-                // print_r($isEmailExist);
-                // exit;
-                // $isPasswordExist = $this->db->columnFilter('users', 'password', $password);
-
-                // if ($isEmailExist && $isPasswordExist) {
-                //     echo "Login success";
-                // } else {
-                //     echo "login fail";
-                // }
-                // print_r($email);
-                // print_r($password);
             }
         }
     }
 
-
-    // public function login()
-    // {
-    //     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    //         $email = $_POST['email'];
-    //         $password = $_POST['password'];
-
-    //         // Admin table ကနေ ရှာမယ်
-    //         $admin = $this->db->getByEmail('admin', $email);
-
-    //         if ($admin && $admin['password'] === $password) {
-    //             session_start();
-    //             $_SESSION['admin_id'] = $admin['id'];
-    //             $_SESSION['admin_email'] = $admin['email'];
-
-    //             redirect('pages/about');
-    //         } else {
-    //             setMessage('error', 'Invalid login!');
-    //             redirect('pages/index');
-    //         }
-    //     }
-    // }
 
     function logout($id)
     {

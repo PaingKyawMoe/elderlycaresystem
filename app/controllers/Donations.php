@@ -65,7 +65,7 @@ class Donations extends Controller
 
             $data = $donation->toArray();
 
-            // var_dump($data);  // <-- This will print the data array to the browser
+            // var_dump($data);
             // exit;
 
             $saved = $this->db->create('donations', $data);
