@@ -7,6 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Elder Care System</title>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/signup.css?v=<?= time(); ?>">
+    <style>
+        /* SVG Icon Styles */
+        .svg-icon {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .input-icon .svg-icon {
+            width: 18px;
+            height: 18px;
+            color: #6b7280;
+            transition: color 0.2s ease;
+        }
+
+        .form-input:focus+.input-icon .svg-icon {
+            color: #3b82f6;
+        }
+
+        .form-input.error+.input-icon .svg-icon {
+            color: #ef4444;
+        }
+    </style>
 </head>
 
 <body>
@@ -47,7 +74,12 @@
                             class="form-input <?php echo isset($data['name-err']) ? 'error' : ''; ?>"
                             placeholder=" "
                             required>
-                        <div class="input-icon">👤</div>
+                        <div class="input-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
                         <label class="floating-label">Full Name</label>
                     </div>
                 </div>
@@ -72,7 +104,12 @@
                             class="form-input <?php echo (isset($data['email-err']) || isset($_SESSION['error_email'])) ? 'error' : ''; ?>"
                             placeholder=" "
                             required>
-                        <div class="input-icon">📧</div>
+                        <div class="input-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                <polyline points="22,6 12,13 2,6" />
+                            </svg>
+                        </div>
                         <label class="floating-label">Email Address</label>
                     </div>
                 </div>
@@ -90,7 +127,13 @@
                             placeholder=" "
                             id="passwordInput"
                             required>
-                        <div class="input-icon">🔒</div>
+                        <div class="input-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                <circle cx="12" cy="16" r="1" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                        </div>
                         <label class="floating-label">Password</label>
                     </div>
                 </div>
@@ -106,7 +149,14 @@
                             placeholder=" "
                             id="confirmPasswordInput"
                             required>
-                        <div class="input-icon">🔐</div>
+                        <div class="input-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                <circle cx="12" cy="16" r="1" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                <path d="M7 6.5V7a5 5 0 0 1 10 0v-.5" />
+                            </svg>
+                        </div>
                         <label class="floating-label">Confirm Password</label>
                     </div>
                 </div>

@@ -173,7 +173,6 @@
                 'Your appointment has been successfully submitted. Thank for your appointment...',
                 'success'
             );
-
             // Redirect after showing success message (3 seconds delay)
             setTimeout(function() {
                 // Option 1: Redirect to a specific page
@@ -192,6 +191,8 @@
 
         // Form submission with loading state and age validation
         document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
             const dobInput = document.getElementById('dob').value;
             const dob = new Date(dobInput);
             const today = new Date();

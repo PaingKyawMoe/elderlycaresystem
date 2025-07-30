@@ -56,7 +56,7 @@ class Appointment extends Controller
     public function appointmentInfo()
     {
         // Load the appointment database model
-        $appointmentModel = $this->model('AppointmentModel'); // or your model name
+        $appointmentModel = $this->model('AppointmentModel');
 
         // Get all appointments
         $appointments = $appointmentModel->getAllAppointments();
@@ -69,10 +69,10 @@ class Appointment extends Controller
         $this->view('pages/appointmentInfo', $data);
     }
 
-    public function index()
-    {
-        echo "This is the Appointment index page.";
-    }
+    // public function index()
+    // {
+    //     echo "This is the Appointment index page.";
+    // }
 
     // AJAX Delete method - returns JSON response
     public function deleteAjax()

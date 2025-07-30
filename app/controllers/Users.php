@@ -16,7 +16,7 @@ class Users extends Controller
     {
         $users = $this->userModel->getAllUsers();
         $this->view('admin/user_list', ['users' => $users]);
-        $this->view('pages/dash');
+        // $this->view('pages/dash');
     }
 
     // Show user list only
@@ -79,18 +79,18 @@ class Users extends Controller
                 $this->view('pages/signup', $data);
                 return;
             }
-            // var_dump('that');
+            // var_dump('paing');
             // exit;
 
             $emailExist = $this->db->columnFilter('users', 'email', $email);
             if ($emailExist) {
-                // var_dump('that naing');
+                // var_dump('paing');
                 // exit;
                 setMessage('error_email', 'This email is already registered !');
                 redirect('pages/register');
                 return;
             }
-            // var_dump('that naing');
+            // var_dump('paing');
             // exit;
 
             $validation = new UserValidator($_POST);
