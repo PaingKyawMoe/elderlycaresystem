@@ -203,29 +203,7 @@ class Database
         }
     }
 
-    public function setLogin($id)
-    {
-        return $this->toggleLoginState($id, 1);
-    }
 
-    public function unsetLogin($id)
-    {
-        return $this->toggleLoginState($id, 0);
-    }
-
-    private function toggleLoginState($id, $state)
-    {
-        try {
-            $sql = "UPDATE users SET is_login = :state WHERE id = :id";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':id', $id);
-            $stmt->bindValue(':state', $state);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return false;
-        }
-    }
 
     public function verify($id)
     {
@@ -241,34 +219,14 @@ class Database
     }
 
     // Dashboard Stats
-    public function incomeTransition()
-    {
-        return $this->sumQuery("SELECT *, SUM(amount) AS amount FROM incomes WHERE date = CURDATE()");
-    }
 
-    public function expenseTransition()
-    {
-        return $this->sumQuery("SELECT *, SUM(amount * qty) AS amount FROM expenses WHERE date = CURDATE()");
-    }
+
+
 
     private function sumQuery($sql)
     {
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute();
-            return $stmt->fetch();
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return [];
-        }
-    }
-
-    public function getByCategoryId($table, $name)
-    {
-        try {
-            $sql = "SELECT * FROM {$table} WHERE name = :name";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':name', $name);
             $stmt->execute();
             return $stmt->fetch();
         } catch (PDOException $e) {

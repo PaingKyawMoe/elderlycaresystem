@@ -29,10 +29,10 @@
                         <i class="fas fa-plus"></i>
                         Add New Activity
                     </button>
-                    <button class="btn btn-success" onclick="refreshData()">
+                    <!-- <button class="btn btn-success" onclick="refreshData()">
                         <i class="fas fa-sync-alt"></i>
                         Refresh Data
-                    </button>
+                    </button> -->
                 </div>
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                     <a href="<?= URLROOT ?>/pages/activities" class="btn btn-secondary">
@@ -211,9 +211,21 @@
     <div id="messageContainer" class="message-container"></div>
 
     <script>
-        // Global variables - Use actual backend data
+        // Global variables - Use actual backend data with fallback
         const URLROOT = '<?= URLROOT ?>';
-        let activities = <?= json_encode($data['activities'] ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+        let activities = [];
+
+        // Try to get data from PHP backend
+        try {
+            const phpData = <?= json_encode($data['activities'] ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+            if (phpData && Array.isArray(phpData)) {
+                activities = phpData;
+                console.log('Loaded activities from PHP:', activities.length, 'items');
+            }
+        } catch (e) {
+            console.log('No PHP data available, will load from API');
+            activities = [];
+        }
 
         let filteredActivities = [...activities];
         let isEditMode = false;
@@ -234,10 +246,88 @@
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            renderStats();
-            renderTable();
+            console.log('Initial activities data:', activities); // Debug log
+
+            // If no data from PHP backend, load it immediately
+            if (!activities || activities.length === 0) {
+                console.log('No initial data found, loading from database...');
+                loadInitialData();
+            } else {
+                console.log('Found initial data, rendering...');
+                renderStats();
+                renderTable();
+            }
+
             attachEventListeners();
         });
+
+        // Load initial data from database if not provided by PHP
+        function loadInitialData() {
+            console.log('Loading initial data from database...');
+
+            // Show loading indicator
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">Loading...</div>
+                            <div class="stat-label">Please wait</div>
+                        </div>
+                        <div class="stat-icon total">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            activitiesTableBody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <h3>Loading Activities...</h3>
+                            <p>Please wait while we fetch your activities data.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            fetch(`${URLROOT}/Activities/getAll`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Initial data loaded:', data);
+
+                    if (data.success && data.activities) {
+                        activities = data.activities;
+                        filteredActivities = [...activities];
+                        renderStats();
+                        renderTable();
+                        console.log('Successfully loaded and rendered', activities.length, 'activities');
+                    } else {
+                        console.error('Failed to load initial data:', data);
+                        showMessage('Failed to load activities data.', 'error');
+                        // Show empty state
+                        activities = [];
+                        filteredActivities = [];
+                        renderStats();
+                        renderTable();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading initial data:', error);
+                    showMessage('Error loading activities. Please check your connection.', 'error');
+                    // Show empty state
+                    activities = [];
+                    filteredActivities = [];
+                    renderStats();
+                    renderTable();
+                });
+        }
 
         // Render statistics
         function renderStats() {
@@ -296,7 +386,7 @@
             `;
         }
 
-        // Render activities table
+        // Render activities table - FIXED: Better ID handling in onclick handlers
         function renderTable() {
             if (filteredActivities.length === 0) {
                 activitiesTableBody.innerHTML = `
@@ -339,11 +429,11 @@
                     </td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn btn-small btn-edit" onclick="editActivity(${activity.id})">
+                            <button class="btn btn-small btn-edit" onclick="editActivity('${activity.id}')">
                                 <i class="fas fa-edit"></i>
                                 Edit
                             </button>
-                            <button class="btn btn-small btn-delete" onclick="deleteActivity(${activity.id})">
+                            <button class="btn btn-small btn-delete" onclick="deleteActivity('${activity.id}')">
                                 <i class="fas fa-trash"></i>
                                 Delete
                             </button>
@@ -409,33 +499,55 @@
             });
         }
 
-        // Modal functions
+        // Modal functions - ENHANCED for debugging with FIXED ID handling
         function openModal(activity = null) {
             isEditMode = !!activity;
             currentEditingId = activity ? activity.id : null;
+
+            console.group('🔧 Opening Modal');
+            console.log('Mode:', isEditMode ? 'EDIT' : 'CREATE');
+            console.log('Activity ID:', currentEditingId);
+            console.log('Activity Data:', activity);
+            console.groupEnd();
+
             modalTitle.textContent = isEditMode ? 'Edit Activity' : 'Add New Activity';
             saveBtn.innerHTML = `<i class="fas fa-${isEditMode ? 'save' : 'plus'}"></i> ${isEditMode ? 'Update' : 'Create'} Activity`;
 
             if (activity) {
                 // Populate form with activity data
-                document.getElementById('activityId').value = activity.id;
-                document.getElementById('activityTitle').value = activity.title;
-                document.getElementById('activityCategory').value = activity.category;
-                document.getElementById('activityTime').value = activity.time;
-                document.getElementById('activityDuration').value = activity.duration;
-                document.getElementById('activityStatus').value = activity.status;
-                document.getElementById('activityImage').value = activity.image || '';
-                document.getElementById('activityDescription').value = activity.description;
+                try {
+                    document.getElementById('activityId').value = activity.id || '';
+                    document.getElementById('activityTitle').value = activity.title || '';
+                    document.getElementById('activityCategory').value = activity.category || '';
+                    document.getElementById('activityTime').value = activity.time || '';
+                    document.getElementById('activityDuration').value = activity.duration || '';
+                    document.getElementById('activityStatus').value = activity.status || 'active';
+                    document.getElementById('activityImage').value = activity.image || '';
+                    document.getElementById('activityDescription').value = activity.description || '';
+
+                    console.log('✅ Form populated successfully');
+                    console.log('Current title:', activity.title);
+                    console.log('Current ID:', activity.id);
+                } catch (error) {
+                    console.error('❌ Error populating form:', error);
+                    showMessage('Error loading activity data', 'error');
+                    return;
+                }
             } else {
                 // Reset form for new activity
                 activityForm.reset();
                 document.getElementById('activityId').value = '';
                 document.getElementById('activityStatus').value = 'active';
+                console.log('✅ Form reset for new activity');
             }
 
             activityModal.classList.add('active');
             document.body.style.overflow = 'hidden';
-            document.getElementById('activityTitle').focus();
+
+            // Focus on title field after a short delay
+            setTimeout(() => {
+                document.getElementById('activityTitle').focus();
+            }, 100);
         }
 
         function closeModal() {
@@ -446,17 +558,40 @@
             currentEditingId = null;
         }
 
+        // FIXED: editActivity function with proper string ID handling
         function editActivity(id) {
-            const activity = activities.find(a => a.id == id);
+            console.group('Edit Activity Request');
+            console.log('Requested ID:', id, typeof id);
+            console.log('Available activities:', activities.length);
+
+            // Convert ID to string for consistent comparison since IDs in onclick are strings
+            const searchId = String(id);
+
+            const activity = activities.find(a => {
+                const activityId = String(a.id);
+                console.log(`Comparing: "${activityId}" === "${searchId}"`);
+                return activityId === searchId;
+            });
+
+            console.log('Found activity:', activity);
+            console.groupEnd();
+
             if (activity) {
                 openModal(activity);
             } else {
-                showMessage('Activity not found!', 'error');
+                console.error('❌ Activity not found with ID:', id);
+                console.log('Available IDs:', activities.map(a => ({
+                    id: a.id,
+                    type: typeof a.id,
+                    title: a.title
+                })));
+                showMessage('Activity not found! Please refresh the page.', 'error');
             }
         }
 
         function deleteActivity(id) {
-            const activity = activities.find(a => a.id == id);
+            // Use same string conversion for consistency
+            const activity = activities.find(a => String(a.id) === String(id));
             if (activity) {
                 activityToDelete = activity;
                 document.getElementById('deleteActivityName').textContent = activity.title;
@@ -471,7 +606,7 @@
             activityToDelete = null;
         }
 
-        // Enhanced delete function with better error handling
+        // Enhanced delete function - YOUR ORIGINAL BACKEND INTEGRATION
         function confirmDelete() {
             if (!activityToDelete) return;
 
@@ -479,7 +614,7 @@
             confirmBtn.classList.add('loading');
             confirmBtn.disabled = true;
 
-            // Create form data for POST request
+            // Create form data for POST request - YOUR ORIGINAL CODE
             const formData = new FormData();
             formData.append('id', activityToDelete.id);
 
@@ -494,11 +629,15 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Delete response:', data); // Debug log
+                    console.log('Delete response:', data);
 
                     if (data.success) {
-                        activities = activities.filter(a => a.id != activityToDelete.id);
-                        filteredActivities = filteredActivities.filter(a => a.id != activityToDelete.id);
+                        // IMMEDIATELY remove from local arrays - no refresh needed
+                        const deletedId = String(activityToDelete.id);
+                        activities = activities.filter(a => String(a.id) !== deletedId);
+                        filteredActivities = filteredActivities.filter(a => String(a.id) !== deletedId);
+
+                        // IMMEDIATELY update the view
                         renderStats();
                         renderTable();
                         closeDeleteModal();
@@ -517,11 +656,9 @@
                 });
         }
 
-        // Form submission - FIXED to work with your backend
+        // Form submission - YOUR ORIGINAL BACKEND INTEGRATION with FIXED ID handling
         function handleFormSubmit(e) {
             e.preventDefault();
-
-            const formData = new FormData(activityForm);
 
             // Get form values
             const title = document.getElementById('activityTitle').value.trim();
@@ -532,7 +669,7 @@
             const status = document.getElementById('activityStatus').value;
             const image = document.getElementById('activityImage').value.trim();
 
-            // Validation
+            // Client-side validation
             if (!title || !description || !category || !time || !duration) {
                 showMessage('Please fill in all required fields.', 'error');
                 return;
@@ -546,8 +683,9 @@
             // Show loading state
             saveBtn.classList.add('loading');
             saveBtn.disabled = true;
+            saveBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${isEditMode ? 'Updating...' : 'Creating...'}`;
 
-            // Prepare form data for backend
+            // Prepare form data for your backend - YOUR ORIGINAL CODE
             const submitData = new FormData();
             submitData.append('title', title);
             submitData.append('description', description);
@@ -555,47 +693,96 @@
             submitData.append('time', time);
             submitData.append('duration', duration);
             submitData.append('status', status);
-            submitData.append('image', image);
 
-            // Add ID for edit mode
+            // Only append image if it has a value
+            if (image) {
+                submitData.append('image', image);
+            } else {
+                submitData.append('image', ''); // Send empty string if no image
+            }
+
+            // CRITICAL: Add ID for edit mode - this is what your backend expects
             if (isEditMode && currentEditingId) {
                 submitData.append('id', currentEditingId);
             }
 
             const url = isEditMode ? `${URLROOT}/Activities/update` : `${URLROOT}/Activities/create`;
 
+            // Debug logging
+            console.group(`🚀 ${isEditMode ? 'UPDATE' : 'CREATE'} Request`);
+            console.log('URL:', url);
+            console.log('Mode:', isEditMode ? 'EDIT' : 'CREATE');
+            console.log('Activity ID:', currentEditingId);
+            console.log('Form Data:');
+            for (let [key, value] of submitData.entries()) {
+                console.log(`  ${key}: "${value}"`);
+            }
+            console.groupEnd();
+
+            // Make the request - YOUR ORIGINAL BACKEND INTEGRATION
             fetch(url, {
                     method: 'POST',
                     body: submitData
                 })
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Server response:', data); // Debug log
+                    console.log('📡 Response Status:', response.status, response.statusText);
 
-                    if (data.success) {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    return response.text(); // Get as text first to debug
+                })
+                .then(responseText => {
+                    console.log('📄 Raw Response:', responseText);
+
+                    // Parse JSON
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (e) {
+                        console.error('❌ JSON Parse Error:', e);
+                        throw new Error('Invalid JSON response from server');
+                    }
+
+                    console.log('📦 Parsed Response:', data);
+
+                    // Handle response based on your backend structure
+                    if (data.success === true) {
+                        console.log('✅ Success Response');
+
                         if (isEditMode && currentEditingId) {
-                            // EDIT MODE - Update existing activity in local array
-                            const index = activities.findIndex(a => a.id == currentEditingId);
+                            // EDIT MODE - Update local data immediately with FIXED string comparison
+                            const index = activities.findIndex(a => String(a.id) === String(currentEditingId));
                             if (index !== -1) {
+                                // Update the activity object
                                 activities[index] = {
-                                    ...activities[index],
+                                    ...activities[index], // Keep existing fields
                                     title: title,
                                     category: category,
                                     time: time,
                                     duration: parseInt(duration),
                                     status: status,
-                                    image: image || activities[index].image,
-                                    description: description
+                                    description: description,
+                                    image: image || activities[index].image || null
                                 };
+
+                                // Update filtered array with same string comparison
+                                const filteredIndex = filteredActivities.findIndex(a => String(a.id) === String(currentEditingId));
+                                if (filteredIndex !== -1) {
+                                    filteredActivities[filteredIndex] = {
+                                        ...activities[index]
+                                    };
+                                } else {
+                                    // Re-apply filters if item not in current filtered view
+                                    filterActivities();
+                                }
+
+                                console.log('✅ Local data updated:', activities[index]);
                             }
-                            showMessage('Activity updated successfully!', 'success');
+                            showMessage(data.message || 'Activity updated successfully!', 'success');
                         } else {
-                            // CREATE MODE - Add new activity from server response
+                            // CREATE MODE - Add new activity
                             const newActivity = {
                                 id: data.id || Date.now(),
                                 title: title,
@@ -603,34 +790,56 @@
                                 time: time,
                                 duration: parseInt(duration),
                                 status: status,
-                                image: image || 'https://images.pexels.com/photos/7330708/pexels-photo-7330708.jpeg',
+                                image: image || null,
                                 description: description,
                                 created_at: new Date().toISOString()
                             };
-                            activities.push(newActivity);
-                            showMessage('Activity created successfully!', 'success');
+
+                            activities.unshift(newActivity);
+                            filteredActivities.unshift(newActivity);
+
+                            console.log('✅ New activity added:', newActivity);
+                            showMessage(data.message || 'Activity created successfully!', 'success');
                         }
 
-                        // Update filtered activities and refresh UI
-                        filteredActivities = [...activities];
+                        // Update UI immediately
                         renderStats();
                         renderTable();
                         closeModal();
+
                     } else {
-                        showMessage(data.message || 'Failed to save activity.', 'error');
+                        // Handle failure response
+                        console.error('❌ Server Error:', data);
+                        const errorMsg = data.message || (isEditMode ? 'Failed to update activity' : 'Failed to create activity');
+                        showMessage(errorMsg, 'error');
                     }
                 })
                 .catch(error => {
+                    console.group('❌ Request Failed');
                     console.error('Error:', error);
-                    showMessage('An error occurred while saving the activity. Please check the console for details.', 'error');
+                    console.groupEnd();
+
+                    let userMessage = `An error occurred while ${isEditMode ? 'updating' : 'creating'} the activity.`;
+
+                    if (error.message.includes('JSON')) {
+                        userMessage = 'Server returned invalid response. Please check server logs.';
+                    } else if (error.message.includes('HTTP')) {
+                        userMessage = `Server error: ${error.message}`;
+                    } else if (error.message.includes('fetch')) {
+                        userMessage = 'Network error. Please check your connection.';
+                    }
+
+                    showMessage(userMessage, 'error');
                 })
                 .finally(() => {
+                    // Reset button state
                     saveBtn.classList.remove('loading');
                     saveBtn.disabled = false;
+                    saveBtn.innerHTML = `<i class="fas fa-${isEditMode ? 'save' : 'plus'}"></i> ${isEditMode ? 'Update' : 'Create'} Activity`;
                 });
         }
 
-        // Enhanced refresh function with better error handling  
+        // Enhanced refresh function with better error handling - YOUR ORIGINAL BACKEND
         function refreshData() {
             const refreshBtn = document.querySelector('.btn-success');
             refreshBtn.classList.add('loading');
@@ -644,7 +853,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Refresh response:', data); // Debug log
+                    console.log('Refresh response:', data);
 
                     if (data.success && data.activities) {
                         activities = data.activities;

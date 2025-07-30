@@ -50,7 +50,7 @@ class Auth extends Controller
 
     public function login()
     {
-        //  echo "Hello Bo Kaw";
+        //  echo "Hello ";
         //  exit;
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (isset($_POST['email']) && isset($_POST['password'])) {
@@ -75,15 +75,15 @@ class Auth extends Controller
     }
 
 
-    function logout($id)
-    {
-        // session_start();
-        // $this->db->unsetLogin(base64_decode($_SESSION['id']));
+    // function logout($id)
+    // {
+    //     // session_start();
+    //     // $this->db->unsetLogin(base64_decode($_SESSION['id']));
 
-        //$this->db->unsetLogin($this->auth->getAuthId());
-        $this->db->unsetLogin($id);
-        // session_start();
-        // session_destroy();
-        redirect('pages/dashboard');
-    }
+    //     //$this->db->unsetLogin($this->auth->getAuthId());
+    //     $this->db->unsetLogin($id);
+    //     // session_start();
+    //     // session_destroy();
+    //     redirect('pages/dashboard');
+    // }
 }

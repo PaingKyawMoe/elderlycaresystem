@@ -29,7 +29,7 @@
         <a href="<?php echo URLROOT; ?>/pages/home">Home</a>
         <a href="<?php echo URLROOT; ?>/pages/donate"">Donate</a>
         <a href=" <?php echo URLROOT; ?>/pages/about" class="active">About Us</a>
-        <a href="<?php echo URLROOT; ?>/pages/dashboard">Admin</a>
+        <a href="<?php echo URLROOT; ?>/pages/signin">Admin</a>
         <button class="call-now">Call Now</button>
       </nav>
     </div>
@@ -66,17 +66,6 @@
           </div>
         </div>
 
-        <!-- Additional Content -->
-        <!-- <div class="about-features">
-          <h2>Why Choose Us</h2>
-          <ul>
-            <li><i class="fas fa-check-circle"></i> Professional and certified caregivers</li>
-            <li><i class="fas fa-check-circle"></i> Personalized care plans for each client</li>
-            <li><i class="fas fa-check-circle"></i> Modern facilities and equipment</li>
-            <li><i class="fas fa-check-circle"></i> Regular health monitoring and reporting</li>
-            <li><i class="fas fa-check-circle"></i> Family involvement and transparency</li>
-          </ul>
-        </div> -->
       </div>
 
       <div class="right-sidebar">
