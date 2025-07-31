@@ -10,6 +10,46 @@ class Appointment extends Controller
         $this->db = new Database();
     }
 
+    // New method to check if appointment exists
+    public function checkExisting()
+    {
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $name = trim($_POST['name']);
+            $dob = trim($_POST['dob']);
+            $phone = trim($_POST['phone']);
+
+            if (empty($name) || empty($dob) || empty($phone)) {
+                echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
+                return;
+            }
+
+            try {
+                $appointmentModel = $this->model('AppointmentModel');
+                $existingAppointment = $appointmentModel->findAppointment($name, $dob, $phone);
+
+                if ($existingAppointment) {
+                    echo json_encode([
+                        'status' => 'exists',
+                        'message' => 'You already have an existing appointment.',
+                        'data' => $existingAppointment
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => 'available',
+                        'message' => 'No existing appointment found. You can proceed.'
+                    ]);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+        }
+        exit;
+    }
+
     public function search()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -51,8 +91,6 @@ class Appointment extends Controller
         }
     }
 
-
-
     public function appointmentInfo()
     {
         // Load the appointment database model
@@ -68,11 +106,6 @@ class Appointment extends Controller
 
         $this->view('pages/appointmentInfo', $data);
     }
-
-    // public function index()
-    // {
-    //     echo "This is the Appointment index page.";
-    // }
 
     // AJAX Delete method - returns JSON response
     public function deleteAjax()
@@ -167,11 +200,32 @@ class Appointment extends Controller
             $selectDoctor = $_POST['selectDoctor'] ?? '';
             $reasonForAppointment = $_POST['reasonforappointment'] ?? '';
 
+            // Check if this is an AJAX request
+            $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+                strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
+            // Check if appointment already exists before proceeding
+            $appointmentModel = $this->model('AppointmentModel');
+            $existingAppointment = $appointmentModel->findAppointment($name, $dob, $phone);
+
+            if ($existingAppointment) {
+                if ($isAjax) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => false, 'message' => 'You already have an existing appointment.']);
+                    exit;
+                } else {
+                    setMessage('error', 'You already have an existing appointment. Please check your appointment status.');
+                    redirect('appointment/form');
+                    return;
+                }
+            }
+
             // For file upload
             $photo = $_FILES['photo']['name'];
             $tmp_name = $_FILES['photo']['tmp_name'];
             $target = APPROOT . "/../public/uploads/" . basename($photo);
             move_uploaded_file($tmp_name, $target);
+
             // Create model object
             $appointment = new AppointmentModel();
             $appointment->setName($name);
@@ -188,14 +242,24 @@ class Appointment extends Controller
 
             $data = $appointment->toArray();
 
-
             $saved = $this->db->create('appointments', $data);
-            if ($saved) {
-                setMessage('success', 'Appointment submitted!');
-                redirect('pages/dashboard');
+
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                if ($saved) {
+                    echo json_encode(['success' => true, 'message' => 'Appointment submitted successfully!']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Something went wrong.']);
+                }
+                exit;
             } else {
-                setMessage('error', 'Something went wrong.');
-                redirect('appointment/form');
+                if ($saved) {
+                    setMessage('success', 'Appointment submitted!');
+                    redirect('pages/dashboard');
+                } else {
+                    setMessage('error', 'Something went wrong.');
+                    redirect('appointment/form');
+                }
             }
         } else {
             redirect('appointment/form');

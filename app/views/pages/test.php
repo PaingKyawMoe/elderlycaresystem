@@ -29,9 +29,25 @@ function findMissandRepeat($arr)
     return [$repeating, $missing];
 }
 
-// Driver Code (dynamic test)
+
 $arr = [0, 1, 2, 2, 4, 9, 6];  // 3 and 5 are missing, 2 is repeating
 list($repeating, $missing) = findMissandRepeat($arr);
 
 echo "Repeating: " . $repeating . "\n";
 echo "Missing: " . implode(', ', $missing) . "\n";
+
+
+
+
+// $paing = new DateTime('20.6.2001');
+// $mya = new DateTime('22.3.2001');
+
+// if ($paing < $mya) {
+//     echo "you are less than mya";
+// } else {
+//     echo "mya is greather than you";
+// }
+
+// $diff = $paing->diff($mya);
+
+// echo $diff->format('Mya is %y year and %m and %d order than you');

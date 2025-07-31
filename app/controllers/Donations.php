@@ -3,7 +3,6 @@
 class Donations extends Controller
 {
     private $db;
-    private $DonationModel;
 
     public function __construct()
     {

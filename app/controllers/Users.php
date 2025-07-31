@@ -8,15 +8,7 @@ class Users extends Controller
     public function __construct()
     {
         $this->db = new Database();
-        $this->userModel = $this->model('UserModel'); // Use the built-in model() loader
-    }
-
-    // Show dashboard + user list
-    public function index()
-    {
-        $users = $this->userModel->getAllUsers();
-        $this->view('admin/user_list', ['users' => $users]);
-        // $this->view('pages/dash');
+        $this->userModel = $this->model('UserModel');
     }
 
     // Show user list only
@@ -38,7 +30,7 @@ class Users extends Controller
                 echo json_encode(['status' => 'error', 'message' => 'Failed to delete user.']);
             }
         } else {
-            // For direct GET access (optional fallback)
+
             header("Location: " . URLROOT . "/users/userlist");
             exit;
         }
@@ -65,7 +57,7 @@ class Users extends Controller
     // Register a new user
     public function register()
     {
-        // var_dump('that');
+        // var_dump('paing');
         // exit;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
