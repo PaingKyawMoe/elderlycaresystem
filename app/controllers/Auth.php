@@ -77,13 +77,13 @@ class Auth extends Controller
 
     // function logout($id)
     // {
-    //     // session_start();
-    //     // $this->db->unsetLogin(base64_decode($_SESSION['id']));
+    //     session_start();
+    //     $this->db->unsetLogin(base64_decode($_SESSION['id']));
 
-    //     //$this->db->unsetLogin($this->auth->getAuthId());
+    //     $this->db->unsetLogin($this->auth->getAuthId());
     //     $this->db->unsetLogin($id);
-    //     // session_start();
-    //     // session_destroy();
+    //     session_start();
+    //     session_destroy();
     //     redirect('pages/dashboard');
     // }
 }

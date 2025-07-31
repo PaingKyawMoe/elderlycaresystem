@@ -10,30 +10,35 @@ class Appointment extends Controller
         $this->db = new Database();
     }
 
-    // New method to check if appointment exists
-    public function checkExisting()
+
+    public function find($mode = 'check')
     {
         header('Content-Type: application/json');
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $name = trim($_POST['name']);
-            $dob = trim($_POST['dob']);
-            $phone = trim($_POST['phone']);
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+            exit;
+        }
 
-            if (empty($name) || empty($dob) || empty($phone)) {
-                echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
-                return;
-            }
+        $name = trim($_POST['name'] ?? '');
+        $dob = trim($_POST['dob'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
 
-            try {
-                $appointmentModel = $this->model('AppointmentModel');
-                $existingAppointment = $appointmentModel->findAppointment($name, $dob, $phone);
+        if (empty($name) || empty($dob) || empty($phone)) {
+            echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
+            exit;
+        }
 
-                if ($existingAppointment) {
+        try {
+            $appointmentModel = $this->model('AppointmentModel');
+            $appointment = $appointmentModel->findAppointment($name, $dob, $phone);
+
+            if ($mode === 'check') {
+                if ($appointment) {
                     echo json_encode([
                         'status' => 'exists',
                         'message' => 'You already have an existing appointment.',
-                        'data' => $existingAppointment
+                        'data' => $appointment
                     ]);
                 } else {
                     echo json_encode([
@@ -41,55 +46,25 @@ class Appointment extends Controller
                         'message' => 'No existing appointment found. You can proceed.'
                     ]);
                 }
-            } catch (Exception $e) {
-                echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+            } else if ($mode === 'search') {
+                if ($appointment) {
+                    echo json_encode([
+                        'status' => 'found',
+                        'data' => $appointment
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => 'not_found'
+                    ]);
+                }
             }
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
         }
+
         exit;
     }
 
-    public function search()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $name = trim($_POST['name']);
-            $dob = trim($_POST['dob']);
-            $phone = trim($_POST['phone']);
-            if (empty($name) || empty($dob) || empty($phone)) {
-                echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
-                return;
-            }
-
-            if (!method_exists($this->model('AppointmentModel'), 'findAppointment')) {
-                echo json_encode(['status' => 'error', 'message' => 'Method findAppointment not found']);
-                return;
-            }
-
-            try {
-                $appointment = $this->model('AppointmentModel')->findAppointment($name, $dob, $phone);
-            } catch (Exception $e) {
-                echo json_encode(['status' => 'error', 'message' => 'Database query failed: ' . $e->getMessage()]);
-                return;
-            }
-
-            if ($appointment) {
-                echo json_encode([
-                    'status' => 'found',
-                    'data' => $appointment
-                ]);
-            } else {
-                echo json_encode([
-                    'status' => 'not_found'
-                ]);
-            }
-        } else {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Invalid request method'
-            ]);
-        }
-    }
 
     public function appointmentInfo()
     {
@@ -183,7 +158,7 @@ class Appointment extends Controller
                 'message' => 'Invalid request.'
             ]);
         }
-        exit; // Important: stop execution after JSON response
+        exit;
     }
 
     public function store()
