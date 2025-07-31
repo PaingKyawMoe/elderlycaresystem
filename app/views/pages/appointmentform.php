@@ -143,10 +143,20 @@
                 modalBtn.classList.add('success');
                 if (ageReq) ageReq.classList.add('success');
                 modalHeader.querySelector('i').className = 'fas fa-check-circle';
-            } else {
+            } else if (type === 'warning') {
                 modalHeader.classList.remove('success');
+                modalHeader.classList.add('warning');
                 modalBtn.classList.remove('success');
-                if (ageReq) ageReq.classList.remove('success');
+                modalBtn.classList.add('warning');
+                if (ageReq) {
+                    ageReq.classList.remove('success');
+                    ageReq.classList.add('warning');
+                }
+                modalHeader.querySelector('i').className = 'fas fa-exclamation-triangle';
+            } else {
+                modalHeader.classList.remove('success', 'warning');
+                modalBtn.classList.remove('success', 'warning');
+                if (ageReq) ageReq.classList.remove('success', 'warning');
                 modalHeader.querySelector('i').className = 'fas fa-exclamation-circle';
             }
 
@@ -165,47 +175,96 @@
             }
         });
 
+        // Function to check if appointment already exists
+        async function checkExistingAppointment(name, dob, phone) {
+            try {
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('dob', dob);
+                formData.append('phone', phone);
+
+                const response = await fetch('<?= URLROOT ?>/Appointment/checkExisting', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Error checking appointment:', error);
+                return {
+                    status: 'error',
+                    message: 'Failed to check existing appointment. Please try again.'
+                };
+            }
+        }
+
+        // Function to submit form via AJAX
+        async function submitFormAjax(formData) {
+            try {
+                const response = await fetch('<?= URLROOT ?>/Appointment/store', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Since your backend redirects, we'll assume success if no error
+                return {
+                    success: true
+                };
+            } catch (error) {
+                console.error('Form submission error:', error);
+                return {
+                    success: false,
+                    message: 'Failed to submit appointment. Please try again.'
+                };
+            }
+        }
+
         // Function to show success message and redirect
         function showSuccessAndRedirect() {
             // Show success modal
             showModal(
                 'Appointment Successful!',
-                'Your appointment has been successfully submitted. Thank for your appointment...',
+                'Your appointment has been successfully submitted. Thank you for your appointment...',
                 'success'
             );
             // Redirect after showing success message (3 seconds delay)
             setTimeout(function() {
-                // Option 1: Redirect to a specific page
                 window.location.href = '<?= URLROOT ?>/pages/dashboard';
-
-                // Option 2: Redirect to homepage
-                // window.location.href = '<?= URLROOT ?>/';
-
-                // Option 3: Redirect to dashboard
-                // window.location.href = '<?= URLROOT ?>/Dashboard';
-
-                // Option 4: Go back to previous page
-                // window.history.back();
             }, 3000); // 3 second delay to show success message
         }
 
-        // Form submission with loading state and age validation
-        document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+        // Form submission with loading state and validation
+        document.getElementById('appointmentForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
+            const name = document.getElementById('name').value.trim();
             const dobInput = document.getElementById('dob').value;
+            const phone = document.getElementById('phone').value.trim();
             const dob = new Date(dobInput);
             const today = new Date();
+
+            // Validate required fields
+            if (!name || !dobInput || !phone) {
+                showModal(
+                    'Missing Information',
+                    'Please fill in all required fields (Name, Date of Birth, and Phone).'
+                );
+                return;
+            }
 
             if (!dobInput || isNaN(dob)) {
                 showModal(
                     'Invalid Date',
                     'Please enter a valid date of birth.'
                 );
-                e.preventDefault();
                 return;
             }
 
+            // Age validation
             let age = today.getFullYear() - dob.getFullYear();
             const monthDiff = today.getMonth() - dob.getMonth();
             const dayDiff = today.getDate() - dob.getDate();
@@ -218,22 +277,70 @@
                     'Age Requirement Not Met',
                     'Sorry, appointments are only available for people aged <span class="age-requirement">50 and above</span>. Please check your date of birth and try again.'
                 );
-                e.preventDefault();
                 return;
             }
 
             const container = document.querySelector('.form-container');
             const submitBtn = this.querySelector('.submit-btn');
 
+            // Show loading state
             container.classList.add('loading');
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
             submitBtn.disabled = true;
 
-            // Simulate form submission success after a delay
-            setTimeout(function() {
-                showSuccessAndRedirect();
-            }, 2000); // 2 second delay to simulate processing time
+            // Check if appointment already exists
+            const checkResult = await checkExistingAppointment(name, dobInput, phone);
 
+            if (checkResult.status === 'error') {
+                // Remove loading state
+                container.classList.remove('loading');
+                submitBtn.innerHTML = 'Submit';
+                submitBtn.disabled = false;
+
+                showModal(
+                    'Error',
+                    checkResult.message
+                );
+                return;
+            }
+
+            if (checkResult.status === 'exists') {
+                // Remove loading state
+                container.classList.remove('loading');
+                submitBtn.innerHTML = 'Submit';
+                submitBtn.disabled = false;
+
+                showModal(
+                    'Appointment Already Exists',
+                    'You already have an existing appointment with the same name, date of birth, and phone number. Please check your appointment status or contact us if you need to make changes.',
+                    'warning'
+                );
+                return;
+            }
+
+            // If no existing appointment, proceed with submission
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            // Create FormData from the form
+            const formData = new FormData(this);
+
+            // Submit form via AJAX to show success modal first
+            const submitResult = await submitFormAjax(formData);
+
+            if (submitResult.success) {
+                // Show success modal and then redirect
+                showSuccessAndRedirect();
+            } else {
+                // Remove loading state and show error
+                container.classList.remove('loading');
+                submitBtn.innerHTML = 'Submit';
+                submitBtn.disabled = false;
+
+                showModal(
+                    'Submission Failed',
+                    submitResult.message || 'Failed to submit appointment. Please try again.'
+                );
+            }
         });
 
         // Enhanced date input interaction
