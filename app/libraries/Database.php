@@ -106,21 +106,6 @@ class Database
         }
     }
 
-    // Add this method to your Database class
-    // public function updateDonationStatus($donationId, $status)
-    // {
-    //     try {
-    //         $sql = "UPDATE donations SET status = :status WHERE id = :id";
-    //         $stmt = $this->pdo->prepare($sql);
-    //         $stmt->bindValue(':status', $status);
-    //         $stmt->bindValue(':id', $donationId);
-    //         return $stmt->execute();
-    //     } catch (PDOException $e) {
-    //         error_log($e->getMessage());
-    //         return false;
-    //     }
-    // }
-
     public function delete($table, $id)
     {
         try {
@@ -217,11 +202,6 @@ class Database
             return false;
         }
     }
-
-    // Dashboard Stats
-
-
-
 
     private function sumQuery($sql)
     {

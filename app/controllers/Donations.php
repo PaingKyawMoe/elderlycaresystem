@@ -10,7 +10,7 @@ class Donations extends Controller
         $this->db = new Database();
     }
 
-    // In your controller method updateStatus()
+
     public function updateStatus()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -18,18 +18,14 @@ class Donations extends Controller
 
             $donationId = $input['donation_id'];
             $status = $input['status'];
-
-            // Validate status
             $allowedStatuses = ['complete', 'pending', 'not'];
             if (!in_array($status, $allowedStatuses)) {
                 echo json_encode(['success' => false, 'message' => 'Invalid status']);
                 return;
             }
 
-            // Use your existing Database class
             $db = new Database();
 
-            // Update using the existing update method
             $updateData = ['status' => $status];
 
             if ($db->update('donations', $donationId, $updateData)) {
@@ -53,8 +49,6 @@ class Donations extends Controller
             }
 
             $paymentMethod = $_POST['paymentMethod'] ?? '';
-
-            // Create model object
             $donation = new DonationModel();
             $donation->setFullName($full_name);
             $donation->setemail($email);
@@ -70,8 +64,9 @@ class Donations extends Controller
             $saved = $this->db->create('donations', $data);
 
             if ($saved) {
-                // setMessage('success', 'Donation submitted!');
-                redirect('pages/dashboard');
+
+                return;
+                // redirect('pages/dashboard');
             } else {
                 setMessage('error', 'Something went wrong.');
                 redirect('donation/form');

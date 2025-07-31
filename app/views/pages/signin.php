@@ -361,13 +361,10 @@
 
     function closeLoginBox() {
       // Option 1: Hide the container
-      document.querySelector('.container').style.display = 'none';
-
-      // Option 2: Redirect to home page (uncomment if preferred)
-      // window.location.href = '<?php echo URLROOT; ?>/';
+      // document.querySelector('.container').style.display = 'none';
 
       // Option 3: Go back in history
-      // window.history.back();
+      window.history.back();
     }
 
     // Keyboard accessibility

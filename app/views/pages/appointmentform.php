@@ -183,7 +183,7 @@
                 formData.append('dob', dob);
                 formData.append('phone', phone);
 
-                const response = await fetch('<?= URLROOT ?>/Appointment/checkExisting', {
+                const response = await fetch('<?= URLROOT ?>/Appointment/find/check', {
                     method: 'POST',
                     body: formData
                 });

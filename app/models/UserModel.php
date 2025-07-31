@@ -11,7 +11,7 @@ class UserModel
 
     public function __construct()
     {
-        $this->db = new Database(); // Your custom wrapper
+        $this->db = new Database();
     }
 
     // Setters

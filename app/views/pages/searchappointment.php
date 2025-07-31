@@ -50,7 +50,7 @@
 
         const formData = new FormData(this);
 
-        fetch("<?php echo URLROOT; ?>/appointment/search", {
+        fetch("<?php echo URLROOT; ?>/appointment/find/search", {
                 method: "POST",
                 body: formData
             })
@@ -62,7 +62,7 @@
                 if (response.status === "found") {
                     const data = response.data;
                     resultDiv.innerHTML = `
-                <h3>✅ Your Appointment Found!</h3>
+                <h3> Your Appointment Found!</h3>
                 <div class="appointment-details">
                     <div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${data.name}</span></div>
                     <div class="detail-row"><span class="detail-label">Gender:</span><span class="detail-value">${data.gender}</span></div>
@@ -77,7 +77,7 @@
             `;
                 } else {
                     resultDiv.innerHTML = `
-                <h3>❌ Your Appointment Not Found</h3>
+                <h3>Your Appointment Not Found</h3>
                 <p style="color:#666;">Please check your information and try again.</p>
             `;
                 }
