@@ -46,7 +46,7 @@
 
 <script>
     document.getElementById("lookupForm").addEventListener("submit", function(e) {
-        e.preventDefault(); // Stop default reload
+        e.preventDefault();
 
         const formData = new FormData(this);
 
@@ -62,7 +62,8 @@
                 if (response.status === "found") {
                     const data = response.data;
                     resultDiv.innerHTML = `
-                <h3> Your Appointment Found!</h3>
+                <h3 style="text-align: center;">Your Appointment Found!</h3>
+
                 <div class="appointment-details">
                     <div class="detail-row"><span class="detail-label">Name:</span><span class="detail-value">${data.name}</span></div>
                     <div class="detail-row"><span class="detail-label">Gender:</span><span class="detail-value">${data.gender}</span></div>
@@ -77,8 +78,8 @@
             `;
                 } else {
                     resultDiv.innerHTML = `
-                <h3>Your Appointment Not Found</h3>
-                <p style="color:#666;">Please check your information and try again.</p>
+                <h3 style="text-align:center;">Your Appointment Not Found</h3>
+                <p style="color:red;text-align:center;">Please check your information and try again.</p>
             `;
                 }
             })
