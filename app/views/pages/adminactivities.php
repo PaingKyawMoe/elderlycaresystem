@@ -840,40 +840,40 @@
         }
 
         // Enhanced refresh function with better error handling - YOUR ORIGINAL BACKEND
-        function refreshData() {
-            const refreshBtn = document.querySelector('.btn-success');
-            refreshBtn.classList.add('loading');
-            refreshBtn.disabled = true;
+        // function refreshData() {
+        //     const refreshBtn = document.querySelector('.btn-success');
+        //     refreshBtn.classList.add('loading');
+        //     refreshBtn.disabled = true;
 
-            fetch(`${URLROOT}/Activities/getAll`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Refresh response:', data);
+        //     fetch(`${URLROOT}/Activities/getAll`)
+        //         .then(response => {
+        //             if (!response.ok) {
+        //                 throw new Error(`HTTP error! status: ${response.status}`);
+        //             }
+        //             return response.json();
+        //         })
+        //         .then(data => {
+        //             console.log('Refresh response:', data);
 
-                    if (data.success && data.activities) {
-                        activities = data.activities;
-                        filteredActivities = [...activities];
-                        renderStats();
-                        renderTable();
-                        showMessage('Data refreshed successfully!', 'success');
-                    } else {
-                        showMessage(data.message || 'Failed to refresh data.', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Refresh error:', error);
-                    showMessage('An error occurred while refreshing data. Please check the console for details.', 'error');
-                })
-                .finally(() => {
-                    refreshBtn.classList.remove('loading');
-                    refreshBtn.disabled = false;
-                });
-        }
+        //             if (data.success && data.activities) {
+        //                 activities = data.activities;
+        //                 filteredActivities = [...activities];
+        //                 renderStats();
+        //                 renderTable();
+        //                 showMessage('Data refreshed successfully!', 'success');
+        //             } else {
+        //                 showMessage(data.message || 'Failed to refresh data.', 'error');
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.error('Refresh error:', error);
+        //             showMessage('An error occurred while refreshing data. Please check the console for details.', 'error');
+        //         })
+        //         .finally(() => {
+        //             refreshBtn.classList.remove('loading');
+        //             refreshBtn.disabled = false;
+        //         });
+        // }
 
         // Utility functions
         function formatTime(timeString) {
@@ -937,8 +937,58 @@
         window.deleteActivity = deleteActivity;
         window.closeDeleteModal = closeDeleteModal;
         window.confirmDelete = confirmDelete;
-        window.refreshData = refreshData;
+        // window.refreshData = refreshData;
+
+        const editModalBtns = document.querySelectorAll('.edit-btn');
+        const editForm = document.getElementById('edit-activity-form');
+        const editModal = document.getElementById('edit-modal');
+
+        // Bind each Edit button to open modal and fill values
+        editModalBtns.forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name');
+                const description = button.getAttribute('data-description');
+                const date = button.getAttribute('data-date');
+
+                // Fill modal form
+                editForm.querySelector('#edit-id').value = id;
+                editForm.querySelector('#edit-name').value = name;
+                editForm.querySelector('#edit-description').value = description;
+                editForm.querySelector('#edit-date').value = date;
+
+                // Show modal
+                editModal.style.display = 'flex';
+            });
+        });
+
+        // Handle form submission with fetch
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(editForm);
+
+            console.log('Submitting update with ID:', formData.get('id')); // For debugging
+
+            try {
+                const response = await fetch('/activities/edit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    window.location.reload(); // Refresh on success
+                } else {
+                    alert('Update failed');
+                }
+            } catch (error) {
+                console.error('Error updating activity:', error);
+                alert('An error occurred');
+            }
+        });
     </script>
+
 </body>
 
 </html>
