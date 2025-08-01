@@ -66,9 +66,6 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Create new activity (AJAX)
-     */
     public function create()
     {
         // Only allow POST requests
@@ -76,12 +73,6 @@ class Activities extends Controller
             $this->jsonResponse(['success' => false, 'message' => 'Invalid request method']);
             return;
         }
-
-        // TODO: Uncomment authentication when session management is ready
-        // if (!$this->isLoggedIn() || !$this->isAdmin()) {
-        //     $this->jsonResponse(['success' => false, 'message' => 'Unauthorized access']);
-        //     return;
-        // }
 
         try {
             // Sanitize and validate input
@@ -128,9 +119,7 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Update activity (AJAX)
-     */
+
     public function update()
     {
         // Only allow POST requests
@@ -138,12 +127,6 @@ class Activities extends Controller
             $this->jsonResponse(['success' => false, 'message' => 'Invalid request method']);
             return;
         }
-
-        // TODO: Uncomment authentication when session management is ready
-        // if (!$this->isLoggedIn() || !$this->isAdmin()) {
-        //     $this->jsonResponse(['success' => false, 'message' => 'Unauthorized access']);
-        //     return;
-        // }
 
         try {
             $activityId = $_POST['id'] ?? '';
@@ -193,9 +176,7 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Delete activity (AJAX)
-     */
+
     public function delete()
     {
         // Only allow POST requests
@@ -203,12 +184,6 @@ class Activities extends Controller
             $this->jsonResponse(['success' => false, 'message' => 'Invalid request method']);
             return;
         }
-
-        // TODO: Uncomment authentication when session management is ready
-        // if (!$this->isLoggedIn() || !$this->isAdmin()) {
-        //     $this->jsonResponse(['success' => false, 'message' => 'Unauthorized access']);
-        //     return;
-        // }
 
         try {
             $activityId = $_POST['id'] ?? '';
@@ -232,16 +207,9 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Get all activities (AJAX)
-     */
+
     public function getAll()
     {
-        // TODO: Uncomment authentication when session management is ready
-        // if (!$this->isLoggedIn() || !$this->isAdmin()) {
-        //     $this->jsonResponse(['success' => false, 'message' => 'Unauthorized access']);
-        //     return;
-        // }
 
         try {
             $activities = $this->activityModel->getAllActivities();
@@ -252,9 +220,7 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Get activity by ID (AJAX)
-     */
+
     public function getById($id = null)
     {
         if (empty($id)) {
@@ -276,9 +242,7 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Search activities (AJAX)
-     */
+
     public function search()
     {
         try {
@@ -294,9 +258,7 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Toggle activity status (AJAX)
-     */
+
     public function toggleStatus()
     {
         // Only allow POST requests
@@ -304,12 +266,6 @@ class Activities extends Controller
             $this->jsonResponse(['success' => false, 'message' => 'Invalid request method']);
             return;
         }
-
-        // TODO: Uncomment authentication when session management is ready
-        // if (!$this->isLoggedIn() || !$this->isAdmin()) {
-        //     $this->jsonResponse(['success' => false, 'message' => 'Unauthorized access']);
-        //     return;
-        // }
 
         try {
             $activityId = $_POST['id'] ?? '';
@@ -337,9 +293,7 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Get activity statistics (AJAX)
-     */
+
     public function getStats()
     {
         try {
@@ -351,9 +305,7 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Get activities by category
-     */
+
     public function category($category = null)
     {
         if (empty($category)) {
@@ -378,9 +330,7 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Show single activity detail
-     */
+
     public function show($id = null)
     {
         if (empty($id)) {
@@ -408,33 +358,24 @@ class Activities extends Controller
         }
     }
 
-    /**
-     * Helper method to check if user is logged in
-     */
+
     private function isLoggedIn()
     {
         return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
     }
 
-    /**
-     * Helper method to check if user is admin
-     */
     private function isAdmin()
     {
-        return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+        return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'Admin';
     }
 
-    /**
-     * Helper method to sanitize input
-     */
+
     private function sanitizeInput($input)
     {
         return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
     }
 
-    /**
-     * Helper method to send JSON response
-     */
+
     private function jsonResponse($data)
     {
         header('Content-Type: application/json');

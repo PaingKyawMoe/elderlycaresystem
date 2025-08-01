@@ -63,7 +63,7 @@
 
       <div class="dashboard-lower">
         <div class="lower-img">
-          <img src="https://images.pexels.com/photos/7551677/pexels-photo-7551677.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Healthcare professionals providing care">
+          <img src="https://plus.unsplash.com/premium_photo-1681995526481-fe0763f510cd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGVsZGVybHljYXJlfGVufDB8fDB8fHww" alt="Healthcare professionals providing care">
         </div>
         <div class="lower-text">
           <div class="subtitle">Specialist Doctors and Modern Technology</div>

@@ -123,7 +123,7 @@ class Appointment extends Controller
         if ($_POST && isset($_POST['id'])) {
             $id = $_POST['id'];
 
-            // Prepare data array (matching your database column names)
+
             $data = [
                 'name' => trim($_POST['name']),
                 'phone' => trim($_POST['phone']),
@@ -137,7 +137,7 @@ class Appointment extends Controller
                 'reasonForAppointment' => trim($_POST['reasonforappointment'])
             ];
 
-            // Use your existing database update method
+
             $result = $this->db->update('appointments', $id, $data);
 
             if ($result) {
