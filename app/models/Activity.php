@@ -15,10 +15,15 @@ class Activity
     public function getAllActivities()
     {
         try {
-            // Use readAll function from Database class
             $activities = $this->db->readAll('activities');
 
-            // Sort by created_at DESC (since readAll doesn't support ORDER BY)
+            // Debug logging
+            error_log("getAllActivities() returned " . count($activities) . " activities");
+            if (!empty($activities)) {
+                error_log("Sample activity: " . json_encode($activities[0]));
+            }
+
+            // Sort by created_at DESC
             usort($activities, function ($a, $b) {
                 return strtotime($b['created_at']) - strtotime($a['created_at']);
             });
@@ -539,9 +544,6 @@ class Activity
         }
     }
 
-    /**
-     * Helper methods
-     */
     private function isValidTime($time)
     {
         return preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $time);

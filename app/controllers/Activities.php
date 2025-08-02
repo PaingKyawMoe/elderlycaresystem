@@ -39,7 +39,6 @@ class Activities extends Controller
      */
     public function admin()
     {
-        // TODO: Uncomment authentication when session management is ready
         if (!$this->isLoggedIn() || !$this->isAdmin()) {
             redirect('users/login');
             return;
@@ -51,7 +50,7 @@ class Activities extends Controller
 
             $data = [
                 'title' => 'Activities Admin - Elder Care System',
-                'activities' => $activities,
+                'activities' => $activities, // Make sure this is not empty
                 'stats' => $stats
             ];
 
@@ -60,7 +59,7 @@ class Activities extends Controller
             error_log("Error in Activities admin: " . $e->getMessage());
             $this->view('activities/admin', [
                 'title' => 'Activities Admin - Elder Care System',
-                'activities' => [],
+                'activities' => [], // Fallback to empty array
                 'error' => 'Unable to load activities data.'
             ]);
         }

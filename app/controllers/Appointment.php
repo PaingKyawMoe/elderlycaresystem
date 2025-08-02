@@ -66,23 +66,23 @@ class Appointment extends Controller
     }
 
 
-    public function appointmentInfo()
-    {
-        // Load the appointment database model
-        $appointmentModel = $this->model('AppointmentModel');
+    // public function appointmentInfo()
+    // {
+    //     // Load the appointment database model
+    //     $appointmentModel = $this->model('AppointmentModel');
 
-        // Get all appointments
-        $appointments = $appointmentModel->getAllAppointments();
+    //     // Get all appointments
+    //     $appointments = $appointmentModel->getAllAppointments();
 
-        // Pass to the view
-        $data = [
-            'appointments' => $appointments
-        ];
+    //     // Pass to the view
+    //     $data = [
+    //         'appointments' => $appointments
+    //     ];
 
-        $this->view('pages/appointmentInfo', $data);
-    }
+    //     $this->view('pages/appointmentInfo', $data);
+    // }
 
-    // AJAX Delete method - returns JSON response
+
     public function deleteAjax()
     {
         // Set JSON response header
@@ -91,7 +91,7 @@ class Appointment extends Controller
         if ($_POST && isset($_POST['id'])) {
             $id = $_POST['id'];
 
-            // Use your existing database delete method
+
             $result = $this->db->delete('appointments', $id);
 
             if ($result) {
@@ -111,7 +111,7 @@ class Appointment extends Controller
                 'message' => 'Invalid request.'
             ]);
         }
-        exit; // Important: stop execution after JSON response
+        exit;
     }
 
     // AJAX Update method - returns JSON response
