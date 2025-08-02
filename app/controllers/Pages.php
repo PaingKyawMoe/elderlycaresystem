@@ -67,6 +67,10 @@ class Pages extends Controller
     {
         $this->view('pages/adminactivities');
     }
+    public function employee()
+    {
+        $this->view('pages/employee');
+    }
 
     public function donationDash()
     {
