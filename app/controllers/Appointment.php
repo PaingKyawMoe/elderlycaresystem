@@ -66,23 +66,6 @@ class Appointment extends Controller
     }
 
 
-    // public function appointmentInfo()
-    // {
-    //     // Load the appointment database model
-    //     $appointmentModel = $this->model('AppointmentModel');
-
-    //     // Get all appointments
-    //     $appointments = $appointmentModel->getAllAppointments();
-
-    //     // Pass to the view
-    //     $data = [
-    //         'appointments' => $appointments
-    //     ];
-
-    //     $this->view('pages/appointmentInfo', $data);
-    // }
-
-
     public function deleteAjax()
     {
         // Set JSON response header

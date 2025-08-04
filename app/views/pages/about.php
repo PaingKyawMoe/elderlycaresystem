@@ -422,11 +422,11 @@
 
     // Console branding
     console.log(
-      '%c🏥 Elderly Care System - About Page',
+      '%c Elderly Care System - About Page',
       'background: linear-gradient(135deg, #10B981, #34D399); color: white; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);'
     );
     console.log(
-      '%c📍 Location: Yangon, Myanmar',
+      '%c Location: Yangon, Myanmar',
       'color: #0066FF; font-size: 14px; font-weight: 500;'
     );
   </script>

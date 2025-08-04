@@ -29,8 +29,8 @@ class UserValidator
     {
         $val = trim($this->data['name']);
 
-        $uppercase    = preg_match('@[A-Z]@', $val);//check whether the first argument include in second argument
-        $lowercase    = preg_match('@[a-z]@', $val);//if include , it will return 1, if not will return 0
+        $uppercase    = preg_match('@[A-Z]@', $val); //check whether the first argument include in second argument
+        $lowercase    = preg_match('@[a-z]@', $val); //if include , it will return 1, if not will return 0
         if (empty($val)) {
             $this->addError('name-err', 'User name can not be empty !');
         } else {
@@ -46,12 +46,12 @@ class UserValidator
         if (empty($val)) {
             $this->addError('email-err', 'Email can not be empty!');
         } else {
-            
+
             // Remove all illegal characters from email
             // $email = filter_var($email, FILTER_SANITIZE_EMAIL);
             // Check if the variable $email is a valid email address
-        if (!filter_var($val, FILTER_VALIDATE_EMAIL)) {
-            $this->addError('email-err', 'email must be a valid email!');
+            if (!filter_var($val, FILTER_VALIDATE_EMAIL)) {
+                $this->addError('email-err', 'email must be a valid email!');
             }
         }
     }
@@ -68,7 +68,7 @@ class UserValidator
             $this->addError('password-err', 'Password can not be empty.');
         } else {
             if (!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8) {
-            $this->addError('password-err', 'Password should be at least 8 characters , <br> at least one upper case letter, one lower case letter , one number, and one special character.');
+                $this->addError('password-err', 'Password should be at least 8 characters , <br> at least one upper case letter, one lower case letter , one number, and one special character.');
             }
         }
     }
@@ -77,5 +77,4 @@ class UserValidator
     {
         $this->errors[$key] = $val;
     }
-
 }

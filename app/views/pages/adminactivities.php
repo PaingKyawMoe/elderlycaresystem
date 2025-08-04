@@ -386,7 +386,6 @@
             `;
         }
 
-        // Render activities table - FIXED: Better ID handling in onclick handlers
         function renderTable() {
             if (filteredActivities.length === 0) {
                 activitiesTableBody.innerHTML = `
