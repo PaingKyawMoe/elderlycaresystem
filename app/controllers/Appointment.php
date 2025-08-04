@@ -147,24 +147,37 @@ class Appointment extends Controller
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $name = $_POST['name'] ?? '';
-            $dob = $_POST['dob'] ?? '';
-            $phone = $_POST['phone'] ?? '';
-            $address = $_POST['address'] ?? '';
-            $gender = $_POST['gender'] ?? '';
-            $preferred_date = $_POST['preferredDate'] ?? '';
-            $appointment_type = $_POST['appointmentType'] ?? '';
-            $preferred_time = $_POST['preferredTime'] ?? '';
-            $selectDoctor = $_POST['selectDoctor'] ?? '';
-            $reasonForAppointment = $_POST['reasonforappointment'] ?? '';
+            // Sanitize inputs or get directly from $_POST
+            $data = [
+                'name' => $_POST['name'] ?? '',
+                'dob' => $_POST['dob'] ?? '',
+                'phone' => $_POST['phone'] ?? '',
+                'address' => $_POST['address'] ?? '',
+                'gender' => $_POST['gender'] ?? '',
+                'preferred_date' => $_POST['preferredDate'] ?? '',
+                'appointment_type' => $_POST['appointmentType'] ?? '',
+                'preferred_time' => $_POST['preferredTime'] ?? '',
+                'selectDoctor' => $_POST['selectDoctor'] ?? '',
+                'reasonForAppointment' => $_POST['reasonforappointment'] ?? '',
+            ];
 
-            // Check if this is an AJAX request
+            // Handle file upload (photo)
+            if (!empty($_FILES['photo']['name'])) {
+                $photo = $_FILES['photo']['name'];
+                $tmp_name = $_FILES['photo']['tmp_name'];
+                $target = APPROOT . "/../public/uploads/" . basename($photo);
+                move_uploaded_file($tmp_name, $target);
+                $data['photo'] = $photo;
+            } else {
+                $data['photo'] = null; // or keep empty string
+            }
+
             $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
                 strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
-            // Check if appointment already exists before proceeding
+            // Check existing appointment
             $appointmentModel = $this->model('AppointmentModel');
-            $existingAppointment = $appointmentModel->findAppointment($name, $dob, $phone);
+            $existingAppointment = $appointmentModel->findAppointment($data['name'], $data['dob'], $data['phone']);
 
             if ($existingAppointment) {
                 if ($isAjax) {
@@ -178,29 +191,11 @@ class Appointment extends Controller
                 }
             }
 
-            // For file upload
-            $photo = $_FILES['photo']['name'];
-            $tmp_name = $_FILES['photo']['tmp_name'];
-            $target = APPROOT . "/../public/uploads/" . basename($photo);
-            move_uploaded_file($tmp_name, $target);
+            // Use magic constructor to fill properties all at once
+            $appointment = new AppointmentModel($data);
 
-            // Create model object
-            $appointment = new AppointmentModel();
-            $appointment->setName($name);
-            $appointment->setdob($dob);
-            $appointment->setphone($phone);
-            $appointment->setaddress($address);
-            $appointment->setgender($gender);
-            $appointment->setpreferredDate($preferred_date);
-            $appointment->setappointmentType($appointment_type);
-            $appointment->setpreferredTime($preferred_time);
-            $appointment->setselectDoctor($selectDoctor);
-            $appointment->setreasonForAppointment($reasonForAppointment);
-            $appointment->setphoto($photo);
-
-            $data = $appointment->toArray();
-
-            $saved = $this->db->create('appointments', $data);
+            // Convert model to array for DB insertion
+            $saved = $this->db->create('appointments', $appointment->toArray());
 
             if ($isAjax) {
                 header('Content-Type: application/json');

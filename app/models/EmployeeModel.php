@@ -1,163 +1,184 @@
 <?php
 
+require_once 'Database.php';
+
 class EmployeeModel
 {
     private $db;
-    private $id;
-    private $name;
-    private $email;
-    private $phone;
-    private $address;
-    private $employee_type;
+    private $table = 'employees';
 
     public function __construct()
     {
         $this->db = new Database();
     }
 
-    // Getters and Setters
+    /**
+     * Add new employee
+     */
+    public function addEmployee($data)
+    {
+        // Validate required fields
+        $requiredFields = ['name', 'email', 'phone', 'address', 'staff_type'];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                throw new Exception("Field {$field} is required");
+            }
+        }
 
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-    public function getId()
-    {
-        return $this->id;
-    }
+        // Validate staff type
+        $validStaffTypes = ['doctor', 'caregiver', 'driver', 'cleaner'];
+        if (!in_array(strtolower($data['staff_type']), $validStaffTypes)) {
+            throw new Exception("Invalid staff type");
+        }
 
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-    public function getName()
-    {
-        return $this->name;
-    }
+        // Check if email already exists
+        if ($this->emailExists($data['email'])) {
+            throw new Exception("Email already exists");
+        }
 
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-    public function getEmail()
-    {
-        return $this->email;
-    }
+        // Prepare data for insertion
+        $employeeData = [
+            'name' => $this->sanitizeInput($data['name']),
+            'email' => $this->sanitizeInput($data['email']),
+            'phone' => $this->sanitizeInput($data['phone']),
+            'address' => $this->sanitizeInput($data['address']),
+            'staff_type' => strtolower($this->sanitizeInput($data['staff_type'])),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
 
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-    }
-    public function getPhone()
-    {
-        return $this->phone;
-    }
+        $result = $this->db->create($this->table, $employeeData);
 
-    public function setAddress($address)
-    {
-        $this->address = $address;
-    }
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    public function setEmployeeType($employee_type)
-    {
-        $this->employee_type = $employee_type;
-    }
-    public function getEmployeeType()
-    {
-        return $this->employee_type;
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Employee added successfully',
+                'employee_id' => $result
+            ];
+        } else {
+            throw new Exception("Failed to add employee");
+        }
     }
 
-    // Convert the current object state to an associative array for DB operations
-    public function toArray()
+    /**
+     * Get all employees
+     */
+    public function getAllEmployees()
+    {
+        return $this->db->readAll($this->table);
+    }
+
+    /**
+     * Get employee by ID
+     */
+    public function getEmployeeById($id)
+    {
+        return $this->db->getById($this->table, $id);
+    }
+
+    /**
+     * Get employees by staff type
+     */
+    public function getEmployeesByType($staffType)
+    {
+        return $this->db->columnFilter($this->table, 'staff_type', strtolower($staffType));
+    }
+
+    /**
+     * Update employee
+     */
+    public function updateEmployee($id, $data)
+    {
+        // Remove empty fields
+        $data = array_filter($data, function ($value) {
+            return $value !== '' && $value !== null;
+        });
+
+        if (empty($data)) {
+            throw new Exception("No data to update");
+        }
+
+        // Add updated timestamp
+        $data['updated_at'] = date('Y-m-d H:i:s');
+
+        // Sanitize data
+        foreach ($data as $key => $value) {
+            $data[$key] = $this->sanitizeInput($value);
+        }
+
+        $result = $this->db->update($this->table, $id, $data);
+
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Employee updated successfully'
+            ];
+        } else {
+            throw new Exception("Failed to update employee");
+        }
+    }
+
+    /**
+     * Delete employee
+     */
+    public function deleteEmployee($id)
+    {
+        $result = $this->db->delete($this->table, $id);
+
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Employee deleted successfully'
+            ];
+        } else {
+            throw new Exception("Failed to delete employee");
+        }
+    }
+
+    /**
+     * Check if email exists
+     */
+    private function emailExists($email)
+    {
+        $result = $this->db->getByEmail($this->table, $email);
+        return !empty($result);
+    }
+
+    /**
+     * Sanitize input data
+     */
+    private function sanitizeInput($data)
+    {
+        return htmlspecialchars(strip_tags(trim($data)));
+    }
+
+    /**
+     * Get staff types
+     */
+    public function getStaffTypes()
     {
         return [
-            'name' => $this->getName(),
-            'email' => $this->getEmail(),
-            'phone' => $this->getPhone(),
-            'address' => $this->getAddress(),
-            'employee_type' => $this->getEmployeeType(),
+            'doctor' => 'Doctor',
+            'caregiver' => 'Caregiver',
+            'driver' => 'Driver',
+            'cleaner' => 'Cleaner'
         ];
     }
 
-    // CRUD Operations
-
-    // Create new employee
-  
-    
-
-    // Get all employees
-    public function getAll()
+    /**
+     * Validate phone number
+     */
+    public function validatePhone($phone)
     {
-        $employees = $this->db->readAll('employees');
-        return $employees;
+        // Basic phone validation - adjust regex based on your requirements
+        return preg_match('/^[\+]?[1-9][\d]{0,15}$/', $phone);
     }
 
-    // Get employee by ID
-    public function getById($id)
+    /**
+     * Validate email
+     */
+    public function validateEmail($email)
     {
-        if (!is_numeric($id) || $id <= 0) {
-            throw new Exception("Invalid employee ID");
-        }
-        $employee = $this->db->getById('employees', $id);
-        if (!$employee) {
-            throw new Exception("Employee not found");
-        }
-        return $employee;
-    }
-
-    // Update employee data by ID
-    public function update($id, $data)
-    {
-        $this->setName($data['name'] ?? '');
-        $this->setEmail($data['email'] ?? '');
-        $this->setPhone($data['phone'] ?? '');
-        $this->setAddress($data['address'] ?? '');
-        $this->setEmployeeType($data['employee_type'] ?? '');
-
-        if (!is_numeric($id) || $id <= 0) {
-            throw new Exception("Invalid employee ID");
-        }
-
-        // Check if employee exists
-        $existing = $this->getById($id);
-
-        // Check email uniqueness for update
-        $existingEmail = $this->db->getByEmail('employees', $this->getEmail());
-        if ($existingEmail && $existingEmail['id'] != $id) {
-            throw new Exception("Another employee with this email already exists");
-        }
-
-        $result = $this->db->update('employees', $id, $this->toArray());
-
-        if ($result === false) {
-            throw new Exception("Failed to update employee");
-        }
-
-        return true;
-    }
-
-    // Delete employee by ID
-    public function delete($id)
-    {
-        if (!is_numeric($id) || $id <= 0) {
-            throw new Exception("Invalid employee ID");
-        }
-        $existing = $this->getById($id);
-        $result = $this->db->delete('employees', $id);
-        if ($result === false) {
-            throw new Exception("Failed to delete employee");
-        }
-        return true;
-    }
-
-    // Get employees by employee_type
-    public function getByType($employee_type)
-    {
-        $employees = $this->db->columnFilter('employees', 'employee_type', $employee_type);
-        return $employees;
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 }

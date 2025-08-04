@@ -1,251 +1,308 @@
 <?php
 
-class EmployeeController extends Controller
+require_once 'EmployeeModel.php';
+
+class EmployeeController
 {
-    private $db;
+    private $model;
+    private $response;
 
     public function __construct()
     {
-        $this->model('EmployeeModel');
-        $this->db = new Database();
+        $this->model = new EmployeeModel();
+        $this->response = [
+            'success' => false,
+            'message' => '',
+            'data' => []
+        ];
     }
 
-    // Show the employee list view
+    /**
+     * Handle employee creation
+     */
+    public function create()
+    {
+        try {
+            // Check if request is POST
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new Exception("Invalid request method");
+            }
+
+            // Get POST data
+            $data = [
+                'name' => $_POST['name'] ?? '',
+                'email' => $_POST['email'] ?? '',
+                'phone' => $_POST['phone'] ?? '',
+                'address' => $_POST['address'] ?? '',
+                'staff_type' => $_POST['staff_type'] ?? ''
+            ];
+
+            // Validate email format
+            if (!$this->model->validateEmail($data['email'])) {
+                throw new Exception("Invalid email format");
+            }
+
+            // Validate phone format
+            if (!$this->model->validatePhone($data['phone'])) {
+                throw new Exception("Invalid phone number format");
+            }
+
+            // Add employee
+            $result = $this->model->addEmployee($data);
+
+            $this->response = [
+                'success' => true,
+                'message' => $result['message'],
+                'data' => ['employee_id' => $result['employee_id']]
+            ];
+
+            // Redirect on success
+            $this->redirect('add_employee.php?success=1');
+        } catch (Exception $e) {
+            $this->response = [
+                'success' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
+
+            // Store error in session for display
+            session_start();
+            $_SESSION['error'] = $e->getMessage();
+            $_SESSION['form_data'] = $_POST;
+
+            $this->redirect('add_employee.php?error=1');
+        }
+    }
+
+    /**
+     * Handle employee listing
+     */
     public function index()
     {
-        // Usually, you'd load the view and pass data if needed
-        $this->view('pages/employee');
-    }
-
-    // AJAX: Get all employees as JSON
-    public function getAll()
-    {
-        header('Content-Type: application/json');
-
         try {
-            $employeeModel = $this->model('EmployeeModel');
-            $employees = $employeeModel->getAll();
+            $employees = $this->model->getAllEmployees();
 
-            echo json_encode([
+            $this->response = [
                 'success' => true,
-                'data' => $employees,
-                'count' => count($employees)
-            ]);
+                'message' => 'Employees retrieved successfully',
+                'data' => $employees
+            ];
         } catch (Exception $e) {
-            echo json_encode([
+            $this->response = [
                 'success' => false,
-                'message' => 'Failed to fetch employees: ' . $e->getMessage()
-            ]);
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
         }
 
-        exit;
+        return $this->response;
     }
 
-    // AJAX: Create new employee
-    public function store()
+    /**
+     * Handle employee update
+     */
+    public function update($id)
     {
-        if (ob_get_level()) {
-            ob_clean();
-        }
-
-
-        header('Content-Type: application/json');
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
-            exit;
-        }
-
-        // Validate required fields
-        $requiredFields = ['name', 'email', 'phone', 'address', 'employee_type'];
-        $missingFields = [];
-
-        foreach ($requiredFields as $field) {
-            if (empty(trim($_POST[$field] ?? ''))) {
-                $missingFields[] = $field;
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new Exception("Invalid request method");
             }
-        }
 
-        if (!empty($missingFields)) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Missing required fields: ' . implode(', ', $missingFields)
-            ]);
-            exit;
-        }
+            $data = [
+                'name' => $_POST['name'] ?? '',
+                'email' => $_POST['email'] ?? '',
+                'phone' => $_POST['phone'] ?? '',
+                'address' => $_POST['address'] ?? '',
+                'staff_type' => $_POST['staff_type'] ?? ''
+            ];
 
-        $data = [
-            'name' => trim($_POST['name']),
-            'email' => trim($_POST['email']),
-            'phone' => trim($_POST['phone']),
-            'address' => trim($_POST['address']),
-            'employee_type' => trim($_POST['employee_type']),
-        ];
+            // Remove empty values
+            $data = array_filter($data, function ($value) {
+                return $value !== '';
+            });
 
-        // Validate email format
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid email format'
-            ]);
-            exit;
-        }
+            if (!empty($data['email']) && !$this->model->validateEmail($data['email'])) {
+                throw new Exception("Invalid email format");
+            }
 
-        try {
-            $employeeModel = $this->model('EmployeeModel');
-            $id = $employeeModel->create($data);
+            if (!empty($data['phone']) && !$this->model->validatePhone($data['phone'])) {
+                throw new Exception("Invalid phone number format");
+            }
 
-            echo json_encode([
+            $result = $this->model->updateEmployee($id, $data);
+
+            $this->response = [
                 'success' => true,
-                'message' => 'Employee created successfully',
-                'id' => $id
-            ]);
+                'message' => $result['message'],
+                'data' => []
+            ];
         } catch (Exception $e) {
-            echo json_encode([
+            $this->response = [
                 'success' => false,
-                'message' => $e->getMessage()
-            ]);
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
         }
 
-        exit;
+        return $this->response;
     }
 
-    // AJAX: Get employee by ID
-    public function getById()
+    /**
+     * Handle employee deletion
+     */
+    public function delete($id)
     {
-        header('Content-Type: application/json');
+        try {
+            $result = $this->model->deleteEmployee($id);
 
-        $id = $_GET['id'] ?? null;
-
-        if (!$id) {
-            echo json_encode(['success' => false, 'message' => 'Employee ID is required']);
-            exit;
+            $this->response = [
+                'success' => true,
+                'message' => $result['message'],
+                'data' => []
+            ];
+        } catch (Exception $e) {
+            $this->response = [
+                'success' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
         }
 
-        try {
-            $employeeModel = $this->model('EmployeeModel');
-            $employee = $employeeModel->getById($id);
+        return $this->response;
+    }
 
-            echo json_encode([
+    /**
+     * Get employee by ID
+     */
+    public function show($id)
+    {
+        try {
+            $employee = $this->model->getEmployeeById($id);
+
+            if (empty($employee)) {
+                throw new Exception("Employee not found");
+            }
+
+            $this->response = [
                 'success' => true,
+                'message' => 'Employee retrieved successfully',
                 'data' => $employee
-            ]);
+            ];
         } catch (Exception $e) {
-            echo json_encode([
+            $this->response = [
                 'success' => false,
-                'message' => $e->getMessage()
-            ]);
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
         }
 
-        exit;
+        return $this->response;
     }
 
-    // AJAX: Update employee by ID
-    public function update()
+    /**
+     * Get employees by staff type
+     */
+    public function getByType($staffType)
+    {
+        try {
+            $employees = $this->model->getEmployeesByType($staffType);
+
+            $this->response = [
+                'success' => true,
+                'message' => 'Employees retrieved successfully',
+                'data' => $employees
+            ];
+        } catch (Exception $e) {
+            $this->response = [
+                'success' => false,
+                'message' => $e->getMessage(),
+                'data' => []
+            ];
+        }
+
+        return $this->response;
+    }
+
+    /**
+     * Handle AJAX requests
+     */
+    public function handleAjax()
     {
         header('Content-Type: application/json');
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
-            exit;
-        }
+        $action = $_GET['action'] ?? '';
+        $id = $_GET['id'] ?? 0;
 
-        $id = $_POST['id'] ?? null;
+        switch ($action) {
+            case 'create':
+                $this->create();
+                break;
 
-        if (!$id) {
-            echo json_encode(['success' => false, 'message' => 'Employee ID is required for update']);
-            exit;
-        }
+            case 'update':
+                $result = $this->update($id);
+                echo json_encode($result);
+                break;
 
-        $data = [
-            'name' => trim($_POST['name'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'phone' => trim($_POST['phone'] ?? ''),
-            'address' => trim($_POST['address'] ?? ''),
-            'employee_type' => trim($_POST['employee_type'] ?? ''),
-        ];
+            case 'delete':
+                $result = $this->delete($id);
+                echo json_encode($result);
+                break;
 
-        try {
-            $employeeModel = $this->model('EmployeeModel');
-            $employeeModel->update($id, $data);
+            case 'show':
+                $result = $this->show($id);
+                echo json_encode($result);
+                break;
 
-            echo json_encode([
-                'success' => true,
-                'message' => 'Employee updated successfully'
-            ]);
-        } catch (Exception $e) {
-            echo json_encode([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]);
+            case 'list':
+                $result = $this->index();
+                echo json_encode($result);
+                break;
+
+            case 'by-type':
+                $staffType = $_GET['staff_type'] ?? '';
+                $result = $this->getByType($staffType);
+                echo json_encode($result);
+                break;
+
+            default:
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid action',
+                    'data' => []
+                ]);
         }
 
         exit;
     }
 
-    // AJAX: Delete employee by ID
-    public function delete()
+    /**
+     * Get staff types for form
+     */
+    public function getStaffTypes()
     {
-        header('Content-Type: application/json');
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
-            exit;
-        }
-
-        $id = $_POST['id'] ?? null;
-
-        if (!$id) {
-            echo json_encode(['success' => false, 'message' => 'Employee ID is required for deletion']);
-            exit;
-        }
-
-        try {
-            $employeeModel = $this->model('EmployeeModel');
-            $employeeModel->delete($id);
-
-            echo json_encode([
-                'success' => true,
-                'message' => 'Employee deleted successfully'
-            ]);
-        } catch (Exception $e) {
-            echo json_encode([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]);
-        }
-
-        exit;
+        return $this->model->getStaffTypes();
     }
 
-    // AJAX: Get employees by type
-    public function getByType()
+    /**
+     * Redirect helper
+     */
+    private function redirect($url)
     {
-        header('Content-Type: application/json');
-
-        $type = $_GET['employee_type'] ?? null;
-
-        if (!$type) {
-            echo json_encode(['success' => false, 'message' => 'Employee type is required']);
-            exit;
-        }
-
-        try {
-            $employeeModel = $this->model('EmployeeModel');
-            $employees = $employeeModel->getByType($type);
-
-            echo json_encode([
-                'success' => true,
-                'data' => $employees,
-                'count' => count($employees)
-            ]);
-        } catch (Exception $e) {
-            echo json_encode([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]);
-        }
-
+        header("Location: $url");
         exit;
     }
+
+    /**
+     * Get response
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+}
+
+// Handle direct AJAX requests
+if (isset($_GET['ajax']) && $_GET['ajax'] === '1') {
+    $controller = new EmployeeController();
+    $controller->handleAjax();
 }

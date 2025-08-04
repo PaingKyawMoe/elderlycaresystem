@@ -3,6 +3,8 @@
 class AppointmentModel
 {
     private $db;
+
+    // All properties remain private
     private $id;
     private $name;
     private $dob;
@@ -16,121 +18,34 @@ class AppointmentModel
     private $reasonForAppointment;
     private $photo;
 
-    public function __construct()
+    
+    public function __construct(array $data = [])
     {
-        $this->db = new Database(); // You already have a Database class
+        $this->db = new Database();
+
+        foreach ($data as $key => $value) {
+           
+            $this->__set($key, $value);
+        }
     }
 
-
-    public function setId($id)
+    // Magic setter
+    public function __set($name, $value)
     {
-        $this->id = $id;
+        if (property_exists($this, $name)) {
+            $this->$name = $value;
+        } else {
+            throw new Exception("Property '$name' does not exist on " . __CLASS__);
+        }
     }
 
-    public function getId()
+    // Magic getter
+    public function __get($name)
     {
-        return $this->id;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setdob($dob)
-    {
-        $this->dob = $dob;
-    }
-
-    public function getdob()
-    {
-        return $this->dob;
-    }
-
-    public function setphone($phone)
-    {
-        $this->phone = $phone;
-    }
-    public function getphone()
-    {
-        return $this->phone;
-    }
-
-    public function setaddress($address)
-    {
-        $this->address = $address;
-    }
-    public function getaddress()
-    {
-        return $this->address;
-    }
-
-    public function setgender($gender)
-    {
-        $this->gender = $gender;
-    }
-    public function getgender()
-    {
-        return $this->gender;
-    }
-
-    public function setpreferredDate($preferred_date)
-    {
-        $this->preferred_date = $preferred_date;
-    }
-    public function getpreferredDate()
-    {
-        return $this->preferred_date;
-    }
-
-    public function setappointmentType($appointment_type)
-    {
-        $this->appointment_type = $appointment_type;
-    }
-    public function getappointmentType()
-    {
-        return $this->appointment_type;
-    }
-
-    public function setpreferredTime($preferred_time)
-    {
-        $this->preferred_time = $preferred_time;
-    }
-    public function getpreferredTime()
-    {
-        return $this->preferred_time;
-    }
-
-    public function setselectDoctor($selectDoctor)
-    {
-        $this->selectDoctor = $selectDoctor;
-    }
-    public function getselectDoctor()
-    {
-        return $this->selectDoctor;
-    }
-
-    public function setreasonForAppointment($reasonForAppointment)
-    {
-        $this->reasonForAppointment = $reasonForAppointment;
-    }
-    public function getreasonForAppointment()
-    {
-        return $this->reasonForAppointment;
-    }
-
-    public function setphoto($photo)
-    {
-        $this->photo = $photo;
-    }
-    public function getphoto()
-    {
-        return $this->photo;
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
+        throw new Exception("Property '$name' does not exist on " . __CLASS__);
     }
 
     public function delete($id)
@@ -138,7 +53,6 @@ class AppointmentModel
         return $this->db->delete('appointments', $id);
     }
 
-    // Update appointment
     public function update($id, $data)
     {
         return $this->db->update('appointments', $id, $data);
@@ -147,17 +61,17 @@ class AppointmentModel
     public function toArray()
     {
         return [
-            'name'   => $this->getName(),
-            'dob' => $this->getdob(),
-            'phone' => $this->getphone(),
-            'address' => $this->getaddress(),
-            'gender' => $this->getgender(),
-            'preferred_date' => $this->getpreferredDate(),
-            'appointment_type' => $this->getappointmentType(),
-            'preferred_time' => $this->getpreferredTime(),
-            'selectDoctor' => $this->getselectDoctor(),
-            'reasonforappointment' => $this->getreasonForAppointment(),
-            'photo' => $this->getphoto(),
+            'name' => $this->name,
+            'dob' => $this->dob,
+            'phone' => $this->phone,
+            'address' => $this->address,
+            'gender' => $this->gender,
+            'preferred_date' => $this->preferred_date,
+            'appointment_type' => $this->appointment_type,
+            'preferred_time' => $this->preferred_time,
+            'selectDoctor' => $this->selectDoctor,
+            'reasonForAppointment' => $this->reasonForAppointment,
+            'photo' => $this->photo,
         ];
     }
 
@@ -167,6 +81,6 @@ class AppointmentModel
         $this->db->bind(':name', $name);
         $this->db->bind(':dob', $dob);
         $this->db->bind(':phone', $phone);
-        return $this->db->single(); // return single row or false
+        return $this->db->single();
     }
 }
