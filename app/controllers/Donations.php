@@ -49,24 +49,23 @@ class Donations extends Controller
             }
 
             $paymentMethod = $_POST['paymentMethod'] ?? '';
-            $donation = new DonationModel();
-            $donation->setFullName($full_name);
-            $donation->setemail($email);
-            $donation->setphone($phone);
-            $donation->setamount($amount);
-            $donation->setpayment_method($paymentMethod);
 
-            $data = $donation->toArray();
 
-            // var_dump($data);
-            // exit;
+            $donation = new DonationModel([
+                'full_name' => $full_name,
+                'email' => $email,
+                'phone' => $phone,
+                'amount' => $amount,
+                'payment_method' => $paymentMethod
+            ]);
 
-            $saved = $this->db->create('donations', $data);
+
+            $saved = $donation->save();
 
             if ($saved) {
 
-                return;
-                // redirect('pages/dashboard');
+                setMessage('success', 'Successful Payment.');
+                redirect('donation/form');
             } else {
                 setMessage('error', 'Something went wrong.');
                 redirect('donation/form');
