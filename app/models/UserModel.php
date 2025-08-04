@@ -4,7 +4,7 @@ class UserModel
 {
     private $db;
     private $id;
-    private $name;
+    protected $name;
     private $email;
     private $password;
     private $roleid;
