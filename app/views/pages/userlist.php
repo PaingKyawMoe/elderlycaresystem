@@ -337,7 +337,7 @@
 
           closeDeleteModal();
 
-          // Use the original fetch method from your code
+
           fetch(`<?= URLROOT ?>/users/delete/${id}`, {
               method: 'POST',
               headers: {
