@@ -92,15 +92,19 @@ class Users extends Controller
                 return;
             }
 
-            $this->userModel->setName($name);
-            $this->userModel->setEmail($email);
-            $this->userModel->setRoleid(User);
-            $this->userModel->setPassword(base64_encode($password));
-            $userData = $this->userModel->toArray();
+            $this->userModel->name = $_POST['name'];
+            $this->userModel->email = $_POST['email'];
+            $this->userModel->roleid = User; // Not setRoleid()
+            $this->userModel->password = base64_encode($password); // Not setPassword()
+            // $userData = $this->userModel->toArray();
+            // $userData = new UserModel($data);
 
+            // $appointment = new AppointmentModel($data);
             // Save to DB
-            $result = $this->db->create('users', $userData);
-
+            // $result = $this->db->create('users', $userData->toArray());
+            // var_dump('paing');
+            // die;
+            $result = $this->userModel->save();
             if (!$result) {
                 echo "Something went wrong.";
                 return;
