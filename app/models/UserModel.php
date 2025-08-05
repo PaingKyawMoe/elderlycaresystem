@@ -1,68 +1,27 @@
 <?php
+require_once 'BaseModel.php';
 
-class UserModel
+class UserModel extends BaseModel
 {
-    private $db;
-    private $id;
-    protected $name;
-    private $email;
-    private $password;
-    private $roleid;
+    protected $table = 'users';
 
-    public function __construct()
+    public function save()
     {
-        $this->db = new Database();
-    }
+        $columns = ['name', 'email', 'role_id', 'password'];
+        $placeholders = array_map(fn($col) => ':' . $col, $columns);
 
-    // Setters
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
+        $sql = "INSERT INTO {$this->table} (" . implode(',', $columns) . ")
+            VALUES (" . implode(',', $placeholders) . ")";
 
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
+        $this->db->query($sql);
 
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
+        // Bind values explicitly
+        $this->db->bind(':name', $this->name);
+        $this->db->bind(':email', $this->email);
+        $this->db->bind(':role_id', $this->roleid);
+        $this->db->bind(':password', $this->password);
 
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
-
-    public function setRoleid($id)
-    {
-        $this->roleid = $id;
-    }
-
-    // Getters
-    public function getRoleid()
-    {
-        return $this->roleid;
-    }
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
+        return $this->db->execute();
     }
 
     public function getAllUsers()
@@ -87,17 +46,5 @@ class UserModel
         $this->db->bind(':password', $data['password']);
         $this->db->bind(':id', $data['id']);
         return $this->db->execute();
-    }
-
-    // Convert object to array
-    public function toArray()
-    {
-        return [
-            'id'       => $this->getId(),
-            'name'     => $this->getName(),
-            'email'    => $this->getEmail(),
-            'password' => $this->getPassword(),
-            'role_id' => $this->getRoleid()
-        ];
     }
 }
