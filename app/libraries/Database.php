@@ -123,7 +123,7 @@ class Database
     {
         try {
             $sql = "SELECT * FROM {$table}";
-            return $this->pdo->query($sql)->fetchAll();
+            return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC); // Return associative arrays
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return [];
