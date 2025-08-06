@@ -67,6 +67,10 @@ class Pages extends Controller
     {
         $this->view('pages/adminactivities');
     }
+    public function emplist()
+    {
+        $this->view('pages/emplist');
+    }
     public function employee()
     {
         $this->view('pages/employee');

@@ -3,11 +3,34 @@ require_once 'BaseModel.php';
 
 class EmployeeModel extends BaseModel
 {
-    protected $table = 'employees'; // DB table name
+    protected $table = 'employees';
 
     public function __construct($data = [])
     {
         parent::__construct($data);
+    }
+    public function getAllEmployees()
+    {
+        // Use the built-in readAll method
+        return $this->db->readAll($this->table);
+    }
+
+    public function getEmployeeById($id)
+    {
+        // Use the built-in getById method
+        return $this->db->getById($this->table, $id);
+    }
+
+    public function updateEmployee($id, $data)
+    {
+        // Use the built-in update method
+        return $this->db->update($this->table, $id, $data);
+    }
+
+    public function deleteEmployee($id)
+    {
+        // Use the built-in delete method
+        return $this->db->delete($this->table, $id);
     }
 
     public function save()

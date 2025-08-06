@@ -23,6 +23,9 @@
                 <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Users/userlist'">
                     ViewUsers
                 </button>
+                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/emplist'">
+                    EmpList
+                </button>
                 <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/Info'">
                     AppointmentData
                 </button>
