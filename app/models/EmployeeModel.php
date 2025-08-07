@@ -12,34 +12,32 @@ class EmployeeModel extends BaseModel
 
     public function getAllEmployees()
     {
-        // Use the built-in readAll method
-        return $this->db->readAll($this->table);
+        return $this->db->callProcedure('GetAllEmployees');
     }
 
     public function getEmployeeById($id)
     {
-        // Use the built-in getById method
         return $this->db->getById($this->table, $id);
     }
 
     public function updateEmployee($id, $data)
     {
-        // Use the built-in update method
+
         return $this->db->update($this->table, $id, $data);
     }
 
     public function deleteEmployee($id)
     {
-        // Use the built-in delete method
+
         return $this->db->delete($this->table, $id);
     }
 
-    // NEW: Check if email already exists
+
     public function emailExists($email, $excludeId = null)
     {
         $sql = "SELECT id FROM {$this->table} WHERE email = :email";
 
-        // If updating, exclude the current employee's ID
+
         if ($excludeId) {
             $sql .= " AND id != :excludeId";
         }

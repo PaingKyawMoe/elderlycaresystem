@@ -26,8 +26,9 @@ class UserModel extends BaseModel
 
     public function getAllUsers()
     {
-        $this->db->query("SELECT id, name, email, password FROM users");
-        return $this->db->resultSet();
+        // $this->db->query("SELECT id, name, email, password FROM users");
+        // return $this->db->resultSet();
+        return $this->db->callProcedure('GetAllUsers');
     }
 
     // Delete user by ID
@@ -36,6 +37,7 @@ class UserModel extends BaseModel
         $this->db->query("DELETE FROM users WHERE id = :id");
         $this->db->bind(':id', $id);
         return $this->db->execute();
+        // $this->db->callProcedure('DeleteUserById', [$id]);
     }
 
     public function updateUser($data)

@@ -70,6 +70,26 @@ class Database
         return $this->stmt->rowCount();
     }
 
+    public function callProcedure($procedureName, $params = [])
+    {
+        try {
+            $placeholders = implode(',', array_fill(0, count($params), '?'));
+            $sql = "CALL {$procedureName}($placeholders)";
+            $stmt = $this->pdo->prepare($sql);
+
+            foreach (array_values($params) as $index => $value) {
+                $stmt->bindValue($index + 1, $value);
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Stored Procedure Error: " . $e->getMessage());
+            return [];
+        }
+    }
+
+
     // CRUD Operations
     public function create($table, $data)
     {
