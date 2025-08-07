@@ -6,126 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee List</title>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/emplist.css?v=<?= time(); ?>">
-    <style>
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: none;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .modal-title {
-            margin: 0;
-            font-size: 1.5em;
-            color: #333;
-        }
-
-        .close {
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #000;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-
-        .form-group textarea {
-            height: 80px;
-            resize: vertical;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-secondary:hover {
-            background-color: #545b62;
-        }
-
-        .btn-primary:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-    </style>
 </head>
 
 <body>
@@ -137,7 +17,8 @@
                     <input type="text" placeholder="Search employees..." id="searchInput">
                     <span class="search-icon"></span>
                 </div>
-                <button class="add-btn" onclick="window.location.href='<?= URLROOT; ?>/pages/employee'">+ Add New Employee</button>
+                <button class="add-btn" onclick="window.location.href='<?= URLROOT; ?>/pages/employee'">Add New</button>
+                <button class="add-btn" onclick="window.location.href='<?= URLROOT; ?>/pages/Info'">Appointment</button>
             </div>
         </div>
 
@@ -167,8 +48,6 @@
             </div>
         </div>
 
-        <div id="alertContainer"></div>
-
         <div class="content" id="content">
             <div class="loading">
                 <div class="loading-spinner">⏳</div>
@@ -178,6 +57,9 @@
         </div>
     </div>
 
+    <!-- Alert Container (Fixed Position Overlay) -->
+    <div id="alertContainer" class="alert-overlay"></div>
+
     <!-- Edit Employee Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
@@ -185,45 +67,47 @@
                 <h2 class="modal-title">Edit Employee</h2>
                 <button class="close" onclick="closeEditModal()">&times;</button>
             </div>
-            <form id="editEmployeeForm">
-                <input type="hidden" id="editEmployeeId" name="id">
+            <div class="modal-body">
+                <form id="editEmployeeForm">
+                    <input type="hidden" id="editEmployeeId" name="id">
 
-                <div class="form-group">
-                    <label for="editName">Name *</label>
-                    <input type="text" id="editName" name="name" required>
-                </div>
+                    <div class="form-group">
+                        <label for="editName">Name *</label>
+                        <input type="text" id="editName" name="name" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="editEmail">Email *</label>
-                    <input type="email" id="editEmail" name="email" required>
-                </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email *</label>
+                        <input type="email" id="editEmail" name="email" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="editPhone">Phone *</label>
-                    <input type="tel" id="editPhone" name="phone" required>
-                </div>
+                    <div class="form-group">
+                        <label for="editPhone">Phone *</label>
+                        <input type="tel" id="editPhone" name="phone" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="editRole">Role *</label>
-                    <select id="editRole" name="role" required>
-                        <option value="">Select Role</option>
-                        <option value="doctor">Doctor</option>
-                        <option value="caregiver">Caregiver</option>
-                        <option value="driver">Driver</option>
-                        <option value="staff">Staff</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="editRole">Role *</label>
+                        <select id="editRole" name="role" required>
+                            <option value="">Select Role</option>
+                            <option value="doctor">Doctor</option>
+                            <option value="caregiver">Caregiver</option>
+                            <option value="driver">Driver</option>
+                            <option value="staff">Staff</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label for="editAddress">Address *</label>
-                    <textarea id="editAddress" name="address" required></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="editAddress">Address *</label>
+                        <textarea id="editAddress" name="address" required></textarea>
+                    </div>
 
-                <div class="modal-buttons">
-                    <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
-                    <button type="submit" class="btn-primary" id="saveEmployeeBtn">Save Changes</button>
-                </div>
-            </form>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+                        <button type="submit" class="btn-primary" id="saveEmployeeBtn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -524,7 +408,7 @@
                 });
         }
 
-        // NEW: Edit employee function
+        // Edit employee function
         function editEmployee(id) {
             // Find the employee in our current data
             const employee = allEmployees.find(emp => emp.id == id);
@@ -606,9 +490,8 @@
             }
         }
 
-        // Add employee (placeholder - implement as needed)
+        // Add employee function
         function addEmployee() {
-            // Redirect to add employee page or show modal
             window.location.href = `${URLROOT}/Employee/add`;
         }
 
@@ -637,25 +520,56 @@
             `;
         }
 
-        // Show alert messages
+        // Show alert messages as flexible overlay
         function showAlert(message, type = 'success') {
             const alertContainer = document.getElementById('alertContainer');
+
+            // Create alert element
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
-            alert.textContent = message;
 
+            // Create message span
+            const messageSpan = document.createElement('span');
+            messageSpan.className = 'alert-message';
+            messageSpan.textContent = message;
+
+            // Create close button
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'alert-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.setAttribute('aria-label', 'Close alert');
+            closeBtn.onclick = function() {
+                removeAlert(alert);
+            };
+
+            // Append elements
+            alert.appendChild(messageSpan);
+            alert.appendChild(closeBtn);
+
+            // Add to container
             alertContainer.appendChild(alert);
 
-            // Auto-remove alert after 5 seconds
+            // Auto-remove alert after 4 seconds
             setTimeout(() => {
-                if (alert.parentNode) {
-                    alert.parentNode.removeChild(alert);
-                }
-            }, 5000);
+                removeAlert(alert);
+            }, 4000);
+        }
+
+        // Remove alert with smooth animation
+        function removeAlert(alert) {
+            if (alert && alert.parentNode) {
+                alert.style.animation = 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.parentNode.removeChild(alert);
+                    }
+                }, 400);
+            }
         }
 
         // Escape HTML to prevent XSS
         function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;

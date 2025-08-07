@@ -21,6 +21,47 @@ class Employee extends Controller
         $this->view('pages/emplist', $data);
     }
 
+    // NEW: AJAX endpoint to check if email exists
+    public function checkEmailAjax()
+    {
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid request method'
+            ]);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $email = $input['email'] ?? '';
+        $excludeId = $input['excludeId'] ?? null; // For edit functionality
+
+        if (empty($email)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Email is required'
+            ]);
+            exit;
+        }
+
+        try {
+            $exists = $this->employeeModel->emailExists($email, $excludeId);
+
+            echo json_encode([
+                'success' => true,
+                'exists' => $exists
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage()
+            ]);
+        }
+        exit;
+    }
+
     // AJAX endpoint to get employees
     public function getEmployeesAjax()
     {
@@ -177,6 +218,23 @@ class Employee extends Controller
             exit;
         }
 
+        // Check if email exists for other employees
+        try {
+            if ($this->employeeModel->emailExists($email, $id)) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Email already exists! Please use a different email address.'
+                ]);
+                exit;
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage()
+            ]);
+            exit;
+        }
+
         $data = [
             'name' => $name,
             'email' => $email,
@@ -220,6 +278,13 @@ class Employee extends Controller
                 'address' => $_POST['address'] ?? '',
                 'role' => $_POST['role'] ?? '',  // doctor, caregiver, driver, staff
             ];
+
+            // Check if email already exists
+            if ($this->employeeModel->emailExists($data['email'])) {
+                $error = 'Email already exists! Please use a different email address.';
+                $this->view('employee/add', ['error' => $error]);
+                return;
+            }
 
             // Assign data to model attributes
             foreach ($data as $key => $value) {
