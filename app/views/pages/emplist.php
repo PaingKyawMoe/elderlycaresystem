@@ -6,6 +6,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee List</title>
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/emplist.css?v=<?= time(); ?>">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: none;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-primary:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 
 <body>
@@ -44,7 +164,6 @@
                     <option value="25">25 per page</option>
                     <option value="50">50 per page</option>
                 </select>
-
             </div>
         </div>
 
@@ -56,6 +175,55 @@
                 <h3>Loading employees...</h3>
                 <p>Please wait while we fetch the data.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Edit Employee Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Employee</h2>
+                <button class="close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editEmployeeForm">
+                <input type="hidden" id="editEmployeeId" name="id">
+
+                <div class="form-group">
+                    <label for="editName">Name *</label>
+                    <input type="text" id="editName" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEmail">Email *</label>
+                    <input type="email" id="editEmail" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPhone">Phone *</label>
+                    <input type="tel" id="editPhone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editRole">Role *</label>
+                    <select id="editRole" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="doctor">Doctor</option>
+                        <option value="caregiver">Caregiver</option>
+                        <option value="driver">Driver</option>
+                        <option value="staff">Staff</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editAddress">Address *</label>
+                    <textarea id="editAddress" name="address" required></textarea>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" id="saveEmployeeBtn">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -356,16 +524,92 @@
                 });
         }
 
+        // NEW: Edit employee function
+        function editEmployee(id) {
+            // Find the employee in our current data
+            const employee = allEmployees.find(emp => emp.id == id);
+
+            if (!employee) {
+                showAlert('Employee not found', 'error');
+                return;
+            }
+
+            // Populate the edit form
+            document.getElementById('editEmployeeId').value = employee.id;
+            document.getElementById('editName').value = employee.name;
+            document.getElementById('editEmail').value = employee.email;
+            document.getElementById('editPhone').value = employee.phone;
+            document.getElementById('editRole').value = employee.role;
+            document.getElementById('editAddress').value = employee.address;
+
+            // Show the modal
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editEmployeeForm').reset();
+        }
+
+        // Handle edit form submission
+        document.getElementById('editEmployeeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const saveBtn = document.getElementById('saveEmployeeBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            const formData = new FormData(this);
+            const data = {
+                id: formData.get('id'),
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                role: formData.get('role'),
+                address: formData.get('address')
+            };
+
+            fetch(`${URLROOT}/Employee/editAjax`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        showAlert('Employee updated successfully!', 'success');
+                        closeEditModal();
+                        loadEmployees(); // Reload the list to show updated data
+                    } else {
+                        showAlert(result.message || 'Failed to update employee', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating employee:', error);
+                    showAlert('Failed to update employee', 'error');
+                })
+                .finally(() => {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save Changes';
+                });
+        });
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+
         // Add employee (placeholder - implement as needed)
         function addEmployee() {
             // Redirect to add employee page or show modal
             window.location.href = `${URLROOT}/Employee/add`;
-        }
-
-        // Edit employee (placeholder - implement as needed)
-        function editEmployee(id) {
-            // Redirect to edit employee page or show modal
-            window.location.href = `${URLROOT}/Employee/edit/${id}`;
         }
 
         // Show loading state

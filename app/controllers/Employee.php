@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/EmployeeModel.php';
 
-
 class Employee extends Controller
 {
     private $db;
@@ -11,6 +10,7 @@ class Employee extends Controller
     {
         $this->employeeModel = new EmployeeModel();
     }
+
     // Original index method (keep for non-AJAX requests)
     public function index()
     {
@@ -21,10 +21,9 @@ class Employee extends Controller
         $this->view('pages/emplist', $data);
     }
 
-    // NEW: AJAX endpoint to get employees
+    // AJAX endpoint to get employees
     public function getEmployeesAjax()
     {
-        // Set JSON header
         header('Content-Type: application/json');
 
         try {
@@ -51,7 +50,7 @@ class Employee extends Controller
         exit;
     }
 
-    // NEW: AJAX endpoint to delete employee
+    // AJAX endpoint to delete employee
     public function deleteAjax()
     {
         header('Content-Type: application/json');
@@ -98,47 +97,117 @@ class Employee extends Controller
         exit;
     }
 
-    // Keep your existing methods...
-    public function editAjax($id = null)
+    // NEW: AJAX endpoint to get single employee for editing
+    public function getEmployeeAjax($id = null)
     {
         header('Content-Type: application/json');
 
-        if ($_POST && isset($_POST['id'])) {
-            $id = $_POST['id'];
+        if (!$id) {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $id = $input['id'] ?? null;
+        }
 
+        if (!$id) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Employee ID is required'
+            ]);
+            exit;
+        }
 
-            $data = [
-                'name' => trim($_POST['name']),
-                'email' => $_POST['email'],
-                'phone' => $_POST['phone'],
-                'address' => trim($_POST['address']),
-                'role' => $_POST['role'],
-            ];
+        try {
+            $employee = $this->employeeModel->getEmployeeById($id);
 
-
-            $result = $this->db->update('employees', $id, $data);
-
-            if ($result) {
+            if ($employee) {
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Appointment updated successfully!',
-                    'data' => $data
+                    'data' => $employee
                 ]);
             } else {
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Failed to update appointment.'
+                    'message' => 'Employee not found'
                 ]);
             }
-        } else {
+        } catch (Exception $e) {
             echo json_encode([
                 'success' => false,
-                'message' => 'Invalid request.'
+                'message' => 'Database error: ' . $e->getMessage()
             ]);
         }
         exit;
     }
 
+    // FIXED: AJAX endpoint to update employee
+    public function editAjax()
+    {
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid request method'
+            ]);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $id = $input['id'] ?? null;
+        $name = trim($input['name'] ?? '');
+        $email = $input['email'] ?? '';
+        $phone = $input['phone'] ?? '';
+        $address = trim($input['address'] ?? '');
+        $role = $input['role'] ?? '';
+
+        if (!$id) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Employee ID is required'
+            ]);
+            exit;
+        }
+
+        // Validate required fields
+        if (empty($name) || empty($email) || empty($phone) || empty($address) || empty($role)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'All fields are required'
+            ]);
+            exit;
+        }
+
+        $data = [
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'address' => $address,
+            'role' => $role,
+        ];
+
+        try {
+            $result = $this->employeeModel->updateEmployee($id, $data);
+
+            if ($result) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Employee updated successfully!',
+                    'data' => $data
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Failed to update employee.'
+                ]);
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage()
+            ]);
+        }
+        exit;
+    }
 
     public function add()
     {
@@ -156,8 +225,6 @@ class Employee extends Controller
             foreach ($data as $key => $value) {
                 $this->employeeModel->__set($key, $value);
             }
-            // print_r($this->employeeModel);
-            // die();
 
             $result = $this->employeeModel->save();
 
