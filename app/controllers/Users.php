@@ -1,9 +1,12 @@
 <?php
-// session_start();
+
+require_once __DIR__ . '/../interfaces/UserModelInterface.php';
+require_once __DIR__ . '/../models/UserModel.php';
+
 class Users extends Controller
 {
     private $db;
-    private $userModel;
+    private UserModelInterface $userModel;
     public function __construct()
     {
         $this->db = new Database();
