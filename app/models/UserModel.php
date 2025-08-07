@@ -1,7 +1,9 @@
 <?php
 require_once 'BaseModel.php';
+require_once __DIR__ . '/../interfaces/UserModelInterface.php';
 
-class UserModel extends BaseModel
+
+class UserModel extends BaseModel implements UserModelInterface
 {
     protected $table = 'users';
 
