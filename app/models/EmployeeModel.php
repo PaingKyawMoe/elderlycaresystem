@@ -9,6 +9,7 @@ class EmployeeModel extends BaseModel
     {
         parent::__construct($data);
     }
+
     public function getAllEmployees()
     {
         // Use the built-in readAll method
@@ -31,6 +32,27 @@ class EmployeeModel extends BaseModel
     {
         // Use the built-in delete method
         return $this->db->delete($this->table, $id);
+    }
+
+    // NEW: Check if email already exists
+    public function emailExists($email, $excludeId = null)
+    {
+        $sql = "SELECT id FROM {$this->table} WHERE email = :email";
+
+        // If updating, exclude the current employee's ID
+        if ($excludeId) {
+            $sql .= " AND id != :excludeId";
+        }
+
+        $this->db->query($sql);
+        $this->db->bind(':email', $email);
+
+        if ($excludeId) {
+            $this->db->bind(':excludeId', $excludeId);
+        }
+
+        $result = $this->db->single();
+        return $result !== false;
     }
 
     public function save()
