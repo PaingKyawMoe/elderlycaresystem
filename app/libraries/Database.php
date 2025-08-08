@@ -47,29 +47,6 @@ class Database
         $this->stmt->bindValue($param, $value, $type);
     }
 
-    public function execute()
-    {
-        return $this->stmt->execute();
-    }
-
-    public function resultSet()
-    {
-        $this->execute();
-        return $this->stmt->fetchAll();
-    }
-
-    public function single()
-    {
-        $this->execute();
-        return $this->stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-
-    public function rowCount()
-    {
-        return $this->stmt->rowCount();
-    }
-
     public function callProcedure($procedureName, $params = [])
     {
         try {
@@ -178,20 +155,6 @@ class Database
         }
     }
 
-    public function columnFilter($table, $column, $value)
-    {
-        try {
-            $sql = "SELECT * FROM {$table} WHERE {$column} = :value";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':value', $value);
-            $stmt->execute();
-            return $stmt->fetch();
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return [];
-        }
-    }
-
     // Authentication
     public function loginCheck($email, $password)
     {
@@ -208,30 +171,65 @@ class Database
         }
     }
 
-
-
-    public function verify($id)
+    public function execute()
     {
-        try {
-            $sql = "UPDATE users SET is_confirmed = 1 WHERE id = :id";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':id', $id);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return false;
-        }
+        return $this->stmt->execute();
     }
 
-    private function sumQuery($sql)
+    public function single()
     {
-        try {
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute();
-            return $stmt->fetch();
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return [];
-        }
+        $this->execute();
+        return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+
+    // public function resultSet()
+    // {
+    //     $this->execute();
+    //     return $this->stmt->fetchAll();
+    // }
+
+    // public function rowCount()
+    // {
+    //     return $this->stmt->rowCount();
+    // }
+
+    // public function columnFilter($table, $column, $value)
+    // {
+    //     try {
+    //         $sql = "SELECT * FROM {$table} WHERE {$column} = :value";
+    //         $stmt = $this->pdo->prepare($sql);
+    //         $stmt->bindValue(':value', $value);
+    //         $stmt->execute();
+    //         return $stmt->fetch();
+    //     } catch (PDOException $e) {
+    //         error_log($e->getMessage());
+    //         return [];
+    //     }
+    // }
+
+    // public function verify($id)
+    // {
+    //     try {
+    //         $sql = "UPDATE users SET is_confirmed = 1 WHERE id = :id";
+    //         $stmt = $this->pdo->prepare($sql);
+    //         $stmt->bindValue(':id', $id);
+    //         return $stmt->execute();
+    //     } catch (PDOException $e) {
+    //         error_log($e->getMessage());
+    //         return false;
+    //     }
+    // }
+
+    // private function sumQuery($sql)
+    // {
+    //     try {
+    //         $stmt = $this->pdo->prepare($sql);
+    //         $stmt->execute();
+    //         return $stmt->fetch();
+    //     } catch (PDOException $e) {
+    //         error_log($e->getMessage());
+    //         return [];
+    //     }
+    // }
 }

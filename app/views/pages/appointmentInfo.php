@@ -23,7 +23,7 @@
                 <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Users/userlist'">
                     ViewUsers
                 </button>
-                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/donationDash'">
+                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Donations/donationDash'">
                     DonationData
                 </button>
                 <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/adminactivities'">

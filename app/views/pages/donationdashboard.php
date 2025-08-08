@@ -45,7 +45,7 @@
                 </div>
                 <div class="stat-value">
                     <?php
-                    echo !empty($data['donationData']) ? count($data['donationData']) : 0;
+                    echo !empty($data['Donation']) ? count($data['Donation']) : 0;
                     ?>
                 </div>
                 <div class="stat-label">Total Donations</div>
@@ -59,8 +59,8 @@
                 </div>
                 <div class="stat-value">
                     <?php
-                    if (!empty($data['donationData'])) {
-                        $total = array_sum(array_column($data['donationData'], 'amount'));
+                    if (!empty($data['Donation'])) {
+                        $total = array_sum(array_column($data['Donation'], 'amount'));
                         echo '$' . number_format($total, 2);
                     } else {
                         echo '$0';
@@ -78,9 +78,9 @@
                 </div>
                 <div class="stat-value">
                     <?php
-                    if (!empty($data['donationData'])) {
-                        $total = array_sum(array_column($data['donationData'], 'amount'));
-                        $count = count($data['donationData']);
+                    if (!empty($data['Donation'])) {
+                        $total = array_sum(array_column($data['Donation'], 'amount'));
+                        $count = count($data['Donation']);
                         $average = $total / $count;
                         echo '$' . number_format($average, 2);
                     } else {
@@ -120,7 +120,7 @@
 
     <script>
         // PHP data passed to JavaScript
-        const donationData = <?php echo json_encode(!empty($data['donationData']) ? $data['donationData'] : []); ?>;
+        const donationData = <?php echo json_encode(!empty($data['Donation']) ? $data['Donation'] : []); ?>;
 
         // Pagination variables
         const itemsPerPage = 10;

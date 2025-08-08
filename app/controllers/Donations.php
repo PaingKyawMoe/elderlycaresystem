@@ -10,6 +10,12 @@ class Donations extends Controller
         $this->db = new Database();
     }
 
+    public function donationDash()
+    {
+        $donation =  $this->model('DonationModel')->readAll();
+        $this->view('pages/donationdashboard', ['Donation' => $donation]);
+    }
+
 
     public function updateStatus()
     {
