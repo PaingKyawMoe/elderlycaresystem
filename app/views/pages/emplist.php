@@ -18,7 +18,7 @@
                     <span class="search-icon"></span>
                 </div>
                 <button class="add-btn" onclick="window.location.href='<?= URLROOT; ?>/pages/employee'">Add New</button>
-                <button class="add-btn" onclick="window.location.href='<?= URLROOT; ?>/pages/Info'">Appointment</button>
+                <button class="add-btn" onclick="window.location.href='<?= URLROOT; ?>/Appointment/list'">Appointment</button>
             </div>
         </div>
 

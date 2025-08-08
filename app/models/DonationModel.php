@@ -18,6 +18,13 @@ class DonationModel extends BaseModel
         return $this->db->execute();
     }
 
+    public function readAll()
+    {
+        // $this->db->query("SELECT id, name, email, password FROM users");
+        // return $this->db->resultSet();
+        return $this->db->callProcedure('GetAllDonations');
+    }
+
     public function updateStatus($donationId, $status)
     {
         $this->db->query('UPDATE donations SET status = :status WHERE id = :id');

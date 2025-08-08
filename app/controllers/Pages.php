@@ -49,6 +49,7 @@ class Pages extends Controller
     {
         $this->view('pages/activities');
     }
+
     public function personal()
     {
         $this->view('pages/personaldetail');
@@ -63,29 +64,14 @@ class Pages extends Controller
     {
         $this->view('pages/adminactivities');
     }
+
     public function emplist()
     {
         $this->view('pages/emplist');
     }
+
     public function employee()
     {
         $this->view('pages/employee');
     }
-
-    public function donationDash()
-    {
-        $donationData = $this->db->readAll('donations');
-        // $total = $this->db->getDonationTotal();
-        $data = [
-            'donationData' => $donationData
-            // 'total_amount' => $total['total_amount']
-        ];
-        $this->view('pages/donationdashboard', $data);
-    }
-
-    // public function Info()
-    // {
-
-    //     $this->view('Appointment/');
-    // }
 }
