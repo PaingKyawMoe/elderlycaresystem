@@ -59,7 +59,7 @@ class Auth extends Controller
                 $isLogin = $this->db->loginCheck($email, $password);
                 // var_dump($isLogin);
                 // exit;
-
+                $_SESSION['user'] = $isLogin;
                 if ($isLogin) {
                     $checkData = $this->db->getById('users', $isLogin['id']);
                     if ($checkData['role_id'] == Admin) {
