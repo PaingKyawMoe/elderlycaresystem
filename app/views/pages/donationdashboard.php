@@ -26,7 +26,7 @@
                 <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/emplist'">
                     EmpList
                 </button>
-                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/Info'">
+                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Appointment/list'">
                     AppointmentData
                 </button>
                 <a href="<?= URLROOT ?>/pages/dashboard" class="btn logout-btn">

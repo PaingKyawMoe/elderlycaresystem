@@ -327,7 +327,7 @@
 
         (() => {
             // Get appointments data from PHP
-            const rawAppointments = <?= json_encode($data['appointmentData'] ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+            const rawAppointments = <?= json_encode($data['Appointments'] ?? [], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
             // Initialize appointment list with the PHP data
             let appointmentList = [...rawAppointments];

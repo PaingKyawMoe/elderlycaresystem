@@ -10,6 +10,12 @@ class Appointment extends Controller
         $this->db = new Database();
     }
 
+    public function list()
+    {
+        $appointment =  $this->model('AppointmentModel')->readAll();
+        $this->view('pages/appointmentInfo', ['Appointments' => $appointment]);
+    }
+
 
     public function find($mode = 'check')
     {

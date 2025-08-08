@@ -20,7 +20,7 @@
         <span class="header-title">Register Users</span>
       </h1>
       <div class="header-actions">
-        <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/Info'">
+        <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Appointment/list'">
           AppointmentData
         </button>
         <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/donationDash'">

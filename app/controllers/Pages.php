@@ -14,10 +14,6 @@ class Pages extends Controller
         $this->view('pages/home');
     }
 
-    public function admin()
-    {
-        $this->view('Users/userlist');
-    }
 
     public function dashboard()
     {
@@ -87,13 +83,9 @@ class Pages extends Controller
         $this->view('pages/donationdashboard', $data);
     }
 
-    public function Info()
-    {
-        $appointmentData = $this->db->readAll('appointments');
-        $data = [
-            'appointmentData' => $appointmentData
-        ];
+    // public function Info()
+    // {
 
-        $this->view('pages/appointmentInfo', $data);
-    }
+    //     $this->view('Appointment/');
+    // }
 }
