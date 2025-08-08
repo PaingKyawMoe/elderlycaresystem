@@ -153,7 +153,6 @@ class Appointment extends Controller
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitize inputs or get directly from $_POST
             $data = [
                 'name' => $_POST['name'] ?? '',
                 'dob' => $_POST['dob'] ?? '',
@@ -205,23 +204,14 @@ class Appointment extends Controller
 
             if ($isAjax) {
                 header('Content-Type: application/json');
-                if ($saved) {
-                    echo json_encode(['success' => true, 'message' => 'Appointment submitted successfully!']);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Something went wrong.']);
-                }
+                echo json_encode([
+                    'success' => $saved,
+                    'message' => $saved ? 'Appointment submitted successfully!' : 'Something went wrong.'
+                ]);
                 exit;
-            } else {
-                if ($saved) {
-                    setMessage('success', 'Appointment submitted!');
-                    redirect('pages/dashboard');
-                } else {
-                    setMessage('error', 'Something went wrong.');
-                    redirect('appointment/form');
-                }
             }
-        } else {
-            redirect('appointment/form');
+            redirect($saved ? 'pages/dashboard' : 'appointment/form');
+            exit;
         }
     }
 }
