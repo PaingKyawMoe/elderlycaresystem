@@ -1,7 +1,5 @@
 <?php
 
-
-
 interface UserModelInterface
 {
     public function save();

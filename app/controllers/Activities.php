@@ -9,9 +9,7 @@ class Activities extends Controller
         $this->activityModel = $this->model('Activity');
     }
 
-    /**
-     * Display activities index page (public view)
-     */
+
     public function index()
     {
         try {

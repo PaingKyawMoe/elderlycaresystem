@@ -1,11 +1,17 @@
 <?php
 
-namespace App\Interfaces;
+// namespace App\interface;
 
-
-
-interface DonationInterfaces
+interface DonationModelInterface
 {
     public function save();
+    public function readAll();
     public function updateStatus($donationId, $status);
+}
+
+interface DonationsControllerInterface
+{
+    public function donationDash();
+    public function updateStatus();
+    public function donate();
 }

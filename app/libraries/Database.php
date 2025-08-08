@@ -9,7 +9,7 @@ class Database
 
     private $pdo;
     private $stmt;
-    private $error;
+    // private $error;
 
     public function __construct()
     {
@@ -182,6 +182,19 @@ class Database
         return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function columnFilter($table, $column, $value)
+    {
+        try {
+            $sql = "SELECT * FROM {$table} WHERE {$column} = :value";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':value', $value);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
 
     // public function resultSet()
     // {
@@ -192,20 +205,6 @@ class Database
     // public function rowCount()
     // {
     //     return $this->stmt->rowCount();
-    // }
-
-    // public function columnFilter($table, $column, $value)
-    // {
-    //     try {
-    //         $sql = "SELECT * FROM {$table} WHERE {$column} = :value";
-    //         $stmt = $this->pdo->prepare($sql);
-    //         $stmt->bindValue(':value', $value);
-    //         $stmt->execute();
-    //         return $stmt->fetch();
-    //     } catch (PDOException $e) {
-    //         error_log($e->getMessage());
-    //         return [];
-    //     }
     // }
 
     // public function verify($id)
