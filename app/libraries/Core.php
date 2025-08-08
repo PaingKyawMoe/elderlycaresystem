@@ -5,7 +5,7 @@ class Core
 {
     // App core class
     // create url & load controllers
-    // URL method -/controller/method/params
+    // URL method - /controller/method/params
 
     protected $currentController = "Pages";
     protected $currentMethod = "index";
@@ -14,55 +14,73 @@ class Core
     public function __construct()
     {
         $url = $this->getURL();
-        // print_r($url);
-        // exit;
 
-        // check the first value of URL in controllers
-        if (isset($url[0])) { // pages/ Category
-            // ucwords means change lowercase to uppercase 
+        if (isset($url[0])) {
             if (file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
-                $this->currentController = ucwords($url[0]); // Pages
+                $this->currentController = ucwords($url[0]);
                 unset($url[0]);
             }
         }
 
-        require_once('../app/controllers/' . $this->currentController . '.php');
+        // Store the controller name string before instantiating the controller object
+        $controllerName = $this->currentController;
 
-        // create new object
-        $this->currentController = new $this->currentController;
-        // $Pages = new Pages();
-        // $Category = new Category();
+        require_once('../app/controllers/' . $controllerName . '.php');
 
-        // Check there is any method in controller
+        $this->currentController = new $controllerName;
+
         if (isset($url[1])) {
             if (method_exists($this->currentController, $url[1])) {
                 $this->currentMethod = $url[1];
                 unset($url[1]);
             }
-            // print_r($this->currentMethod);
         }
 
-        // Get params
         $this->params = $url ? array_values($url) : [];
-        // print_r($this->params);
-        // exit();
 
-        call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
-        // print_r($this->params);
-        // print_r($url);
-        // exit();
-        // echo $this->currentMethod;
+        // Build route key string like 'donations/donationdash'
+        $routeKey = strtolower($controllerName . '/' . $this->currentMethod);
+
+        // Define your middleware map: route => array of middleware class names
+        $middlewareMap = [
+            // Example route with middleware
+            // 'donations/donationdash' => ['AuthTokenMiddleware'],
+            // Add more routes here if needed
+            // 'Donations/updatestatus' => ['LogMiddleware', 'AuthTokenMiddleware'],
+        ];
+
+        $middlewareClasses = $middlewareMap[$routeKey] ?? [];
+
+        // Define the final controller action callable with params
+        $finalAction = function () {
+            return call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
+        };
+
+        // Wrap each middleware around the finalAction
+        foreach (array_reverse($middlewareClasses) as $middlewareClass) {
+            require_once '../app/middlewares/' . $middlewareClass . '.php';
+
+            $middleware = new $middlewareClass();
+
+            $next = $finalAction;
+
+            $finalAction = function () use ($middleware, $next) {
+                return $middleware->handle($next);
+            };
+        }
+
+        // Execute the middleware pipeline → controller method
+        $finalAction();
     }
 
     public function getURL()
     {
         if (isset($_GET['url'])) {
             $url = rtrim($_GET['url'], '/');
-            // FILTER_SANITIZE_URL filter removes all illegal URL characters from a string.
-            // This filter allows all letters, digits and $-_.+!*'(),{}|\\^~[]`"><#%;/?:@&=
-            $url = filter_var($url, FILTER_SANITIZE_URL); //remove illegal
-            $url = explode('/', $url); //Break a string into an array
+            $url = filter_var($url, FILTER_SANITIZE_URL);
+            $url = explode('/', $url);
             return $url;
         }
+        return [];
     }
 }
