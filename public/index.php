@@ -7,5 +7,6 @@
 // 	Use require_once() to load dependencies ( classes, functions, constants).
 // the include() function generates a warning, but the script will continue execution. The require() generates a fatal error, and the script will stop.
 require_once '../app/class_loader.php';
+session_start();
 
 $init = new Core();

@@ -1,12 +1,8 @@
 <?php
 
-// define url
 class Core
 {
-    // App core class
-    // create url & load controllers
-    // URL method - /controller/method/params
-
+    // Default controller/method/params
     protected $currentController = "Pages";
     protected $currentMethod = "index";
     protected $params = [];
@@ -15,43 +11,59 @@ class Core
     {
         $url = $this->getURL();
 
-        if (isset($url[0])) {
-            if (file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
-                $this->currentController = ucwords($url[0]);
-                unset($url[0]);
-            }
+        // Get controller name from URL if exists and file found
+        if (isset($url[0]) && file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
+            $this->currentController = ucwords($url[0]);
+            unset($url[0]);
         }
 
-        // Store the controller name string before instantiating the controller object
         $controllerName = $this->currentController;
 
+        // Include controller file and instantiate
         require_once('../app/controllers/' . $controllerName . '.php');
-
         $this->currentController = new $controllerName;
 
-        if (isset($url[1])) {
-            if (method_exists($this->currentController, $url[1])) {
-                $this->currentMethod = $url[1];
-                unset($url[1]);
-            }
+        // Get method from URL if exists and method exists
+        if (isset($url[1]) && method_exists($this->currentController, $url[1])) {
+            $this->currentMethod = $url[1];
+            unset($url[1]);
         }
 
+        // Collect params
         $this->params = $url ? array_values($url) : [];
 
-        // Build route key string like 'donations/donationdash'
+        // Build route key e.g. donations/donationdash (lowercase)
         $routeKey = strtolower($controllerName . '/' . $this->currentMethod);
 
-        // Define your middleware map: route => array of middleware class names
-        $middlewareMap = [
-            // Example route with middleware
-            // 'donations/donationdash' => ['AuthTokenMiddleware'],
-            // Add more routes here if needed
-            // 'Donations/updatestatus' => ['LogMiddleware', 'AuthTokenMiddleware'],
+
+        // Routes that should skip middleware
+        $skipMiddlewareRoutes = [
+            // 'pages/index',
+            // 'pages/about',
+            // 'pages/signin',
+            // 'pages/register',
+            // 'pages/donate',
         ];
 
+        $middlewareMap = [
+            'pages/dashboard' => ['AuthTokenMiddleware'],
+            'pages/search' => ['AuthTokenMiddleware'],
+            'pages/appointmentform' => ['AuthTokenMiddleware'],
+            'pages/emplist' => ['AuthTokenMiddleware'],
+            'pages/employee' => ['AuthTokenMiddleware'],
+        ];
+
+
+        // If current route is in skip list, directly call controller method (no middleware)
+        if (in_array($routeKey, $skipMiddlewareRoutes)) {
+            call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
+            return;
+        }
+
+        // Get middleware classes for current route, if any
         $middlewareClasses = $middlewareMap[$routeKey] ?? [];
 
-        // Define the final controller action callable with params
+        // Define the final callable (controller method with params)
         $finalAction = function () {
             return call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
         };
@@ -73,13 +85,13 @@ class Core
         $finalAction();
     }
 
+    // Parse and sanitize URL
     public function getURL()
     {
         if (isset($_GET['url'])) {
             $url = rtrim($_GET['url'], '/');
             $url = filter_var($url, FILTER_SANITIZE_URL);
-            $url = explode('/', $url);
-            return $url;
+            return explode('/', $url);
         }
         return [];
     }

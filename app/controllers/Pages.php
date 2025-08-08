@@ -50,11 +50,6 @@ class Pages extends Controller
         $this->view('pages/activities');
     }
 
-    public function personal()
-    {
-        $this->view('pages/personaldetail');
-    }
-
     public function search()
     {
         $this->view('pages/searchappointment');
