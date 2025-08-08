@@ -63,7 +63,7 @@ class Auth extends Controller
                 if ($isLogin) {
                     $checkData = $this->db->getById('users', $isLogin['id']);
                     if ($checkData['role_id'] == Admin) {
-                        redirect('pages/Info');
+                        redirect('Appointment/list');
                     }
                     redirect('pages/dashboard');
                 } else {

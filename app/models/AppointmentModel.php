@@ -4,6 +4,12 @@ require_once 'BaseModel.php';
 
 class AppointmentModel extends BaseModel
 {
+    public function readAll()
+    {
+        // $this->db->query("SELECT id, name, email, password FROM users");
+        // return $this->db->resultSet();
+        return $this->db->callProcedure('GetAllAppointments');
+    }
 
     public function findAppointment($name, $dob, $phone)
     {
