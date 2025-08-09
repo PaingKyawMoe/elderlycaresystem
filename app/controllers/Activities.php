@@ -1,4 +1,5 @@
 <?php
+require_once APPROOT . '/models/Activity.php';
 
 class Activities extends Controller
 {
@@ -6,377 +7,134 @@ class Activities extends Controller
 
     public function __construct()
     {
-        $this->activityModel = $this->model('Activity');
+        $this->activityModel = new Activity();
     }
 
-
-    public function index()
+    // Show list + Add form or Edit form if $id provided
+    public function index($id = null)
     {
-        try {
-            $activities = $this->activityModel->getActiveActivities();
+        $activities = $this->activityModel->getAll();
+        $data = ['activities' => $activities];
+
+        if ($id) {
+            $editActivity = $this->activityModel->getById($id);
+            if ($editActivity) {
+                $data['editActivity'] = $editActivity;
+            }
+        }
+
+        $this->view('pages/activities', $data);
+    }
+
+    // Handle POST from Add form
+    public function store()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Validate and sanitize your inputs here (optional but recommended)
+
+            // Handle photo upload
+            $photoName = '';
+            if (!empty($_FILES['photo']['name'])) {
+                $photoName = $this->uploadPhoto($_FILES['photo']);
+                if (!$photoName) {
+
+                    redirect('activities');
+                    return;
+                }
+            }
 
             $data = [
-                'title' => 'Activities - Elder Care System',
-                'activities' => $activities,
-                'stats' => $this->activityModel->getActivityStats()
+                'activity_name' => $_POST['activity_name'],
+                'category' => $_POST['category'],
+                'photo' => $photoName,
+                'time' => $_POST['time'],
+                'participants' => $_POST['participants'],
+                'location' => $_POST['location'],
             ];
 
-            $this->view('activities/index', $data);
-        } catch (Exception $e) {
-            error_log("Error in Activities index: " . $e->getMessage());
-            $this->view('activities/index', [
-                'title' => 'Activities - Elder Care System',
-                'activities' => [],
-                'error' => 'Unable to load activities at this time.'
-            ]);
-        }
-    }
+            if ($this->activityModel->create($data)) {
 
-    /**
-     * Display admin activities page
-     */
-    public function admin()
-    {
-        if (!$this->isLoggedIn() || !$this->isAdmin()) {
-            redirect('users/login');
-            return;
-        }
-
-        try {
-            $activities = $this->activityModel->getAllActivities();
-            $stats = $this->activityModel->getActivityStats();
-
-            $data = [
-                'title' => 'Activities Admin - Elder Care System',
-                'activities' => $activities, // Make sure this is not empty
-                'stats' => $stats
-            ];
-
-            $this->view('activities/admin', $data);
-        } catch (Exception $e) {
-            error_log("Error in Activities admin: " . $e->getMessage());
-            $this->view('activities/admin', [
-                'title' => 'Activities Admin - Elder Care System',
-                'activities' => [], // Fallback to empty array
-                'error' => 'Unable to load activities data.'
-            ]);
-        }
-    }
-
-    public function create()
-    {
-        // Only allow POST requests
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method']);
-            return;
-        }
-
-        try {
-            // Sanitize and validate input
-            $data = [
-                'title' => $this->sanitizeInput($_POST['title'] ?? ''),
-                'description' => $this->sanitizeInput($_POST['description'] ?? ''),
-                'category' => $_POST['category'] ?? '',
-                'time' => $_POST['time'] ?? '',
-                'duration' => $_POST['duration'] ?? '',
-                'status' => $_POST['status'] ?? 'active',
-                'image' => $this->sanitizeInput($_POST['image'] ?? '')
-            ];
-
-            // Additional validation
-            if (
-                empty($data['title']) || empty($data['description']) || empty($data['category']) ||
-                empty($data['time']) || empty($data['duration'])
-            ) {
-                $this->jsonResponse(['success' => false, 'message' => 'All required fields must be filled']);
-                return;
-            }
-
-            // Check for duplicate title
-            if ($this->activityModel->titleExists($data['title'])) {
-                $this->jsonResponse(['success' => false, 'message' => 'An activity with this title already exists']);
-                return;
-            }
-
-            // Create activity
-            $activityId = $this->activityModel->createActivity($data);
-
-            if ($activityId) {
-                $this->jsonResponse([
-                    'success' => true,
-                    'message' => 'Activity created successfully',
-                    'id' => $activityId
-                ]);
-            } else {
-                $this->jsonResponse(['success' => false, 'message' => 'Failed to create activity']);
-            }
-        } catch (Exception $e) {
-            error_log("Error creating activity: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'An error occurred while creating the activity']);
-        }
-    }
-
-
-    public function update()
-    {
-        // Only allow POST requests
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method']);
-            return;
-        }
-
-        try {
-            $activityId = $_POST['id'] ?? '';
-
-            if (empty($activityId)) {
-                $this->jsonResponse(['success' => false, 'message' => 'Activity ID is required']);
-                return;
-            }
-
-            // Sanitize and validate input
-            $data = [
-                'title' => $this->sanitizeInput($_POST['title'] ?? ''),
-                'description' => $this->sanitizeInput($_POST['description'] ?? ''),
-                'category' => $_POST['category'] ?? '',
-                'time' => $_POST['time'] ?? '',
-                'duration' => $_POST['duration'] ?? '',
-                'status' => $_POST['status'] ?? 'active',
-                'image' => $this->sanitizeInput($_POST['image'] ?? '')
-            ];
-
-            // Additional validation
-            if (
-                empty($data['title']) || empty($data['description']) || empty($data['category']) ||
-                empty($data['time']) || empty($data['duration'])
-            ) {
-                $this->jsonResponse(['success' => false, 'message' => 'All required fields must be filled']);
-                return;
-            }
-
-            // Check for duplicate title (excluding current activity)
-            if ($this->activityModel->titleExists($data['title'], $activityId)) {
-                $this->jsonResponse(['success' => false, 'message' => 'An activity with this title already exists']);
-                return;
-            }
-
-            // Update activity
-            $success = $this->activityModel->updateActivity($activityId, $data);
-
-            if ($success) {
-                $this->jsonResponse(['success' => true, 'message' => 'Activity updated successfully']);
-            } else {
-                $this->jsonResponse(['success' => false, 'message' => 'Failed to update activity']);
-            }
-        } catch (Exception $e) {
-            error_log("Error updating activity: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'An error occurred while updating the activity']);
-        }
-    }
-
-
-    public function delete()
-    {
-        // Only allow POST requests
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method']);
-            return;
-        }
-
-        try {
-            $activityId = $_POST['id'] ?? '';
-
-            if (empty($activityId)) {
-                $this->jsonResponse(['success' => false, 'message' => 'Activity ID is required']);
-                return;
-            }
-
-            // Delete activity
-            $success = $this->activityModel->deleteActivity($activityId);
-
-            if ($success) {
-                $this->jsonResponse(['success' => true, 'message' => 'Activity deleted successfully']);
-            } else {
-                $this->jsonResponse(['success' => false, 'message' => 'Failed to delete activity']);
-            }
-        } catch (Exception $e) {
-            error_log("Error deleting activity: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'An error occurred while deleting the activity']);
-        }
-    }
-
-
-    public function getAll()
-    {
-
-        try {
-            $activities = $this->activityModel->getAllActivities();
-            $this->jsonResponse(['success' => true, 'activities' => $activities]);
-        } catch (Exception $e) {
-            error_log("Error getting all activities: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'Failed to retrieve activities']);
-        }
-    }
-
-
-    public function getById($id = null)
-    {
-        if (empty($id)) {
-            $this->jsonResponse(['success' => false, 'message' => 'Activity ID is required']);
-            return;
-        }
-
-        try {
-            $activity = $this->activityModel->getActivityById($id);
-
-            if ($activity) {
-                $this->jsonResponse(['success' => true, 'activity' => $activity]);
-            } else {
-                $this->jsonResponse(['success' => false, 'message' => 'Activity not found']);
-            }
-        } catch (Exception $e) {
-            error_log("Error getting activity by ID: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'Failed to retrieve activity']);
-        }
-    }
-
-
-    public function search()
-    {
-        try {
-            $searchTerm = $_GET['search'] ?? '';
-            $category = $_GET['category'] ?? '';
-            $status = $_GET['status'] ?? '';
-
-            $activities = $this->activityModel->searchActivities($searchTerm, $category, $status);
-            $this->jsonResponse(['success' => true, 'activities' => $activities]);
-        } catch (Exception $e) {
-            error_log("Error searching activities: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'Search failed']);
-        }
-    }
-
-
-    public function toggleStatus()
-    {
-        // Only allow POST requests
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method']);
-            return;
-        }
-
-        try {
-            $activityId = $_POST['id'] ?? '';
-
-            if (empty($activityId)) {
-                $this->jsonResponse(['success' => false, 'message' => 'Activity ID is required']);
-                return;
-            }
-
-            $success = $this->activityModel->toggleActivityStatus($activityId);
-
-            if ($success) {
-                $activity = $this->activityModel->getActivityById($activityId);
-                $this->jsonResponse([
-                    'success' => true,
-                    'message' => 'Activity status updated successfully',
-                    'newStatus' => $activity['status']
-                ]);
-            } else {
-                $this->jsonResponse(['success' => false, 'message' => 'Failed to update activity status']);
-            }
-        } catch (Exception $e) {
-            error_log("Error toggling activity status: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'An error occurred while updating status']);
-        }
-    }
-
-
-    public function getStats()
-    {
-        try {
-            $stats = $this->activityModel->getActivityStats();
-            $this->jsonResponse(['success' => true, 'stats' => $stats]);
-        } catch (Exception $e) {
-            error_log("Error getting activity stats: " . $e->getMessage());
-            $this->jsonResponse(['success' => false, 'message' => 'Failed to retrieve statistics']);
-        }
-    }
-
-
-    public function category($category = null)
-    {
-        if (empty($category)) {
-            redirect('activities');
-            return;
-        }
-
-        try {
-            $activities = $this->activityModel->getActivitiesByCategory($category);
-
-            $data = [
-                'title' => ucfirst($category) . ' Activities - Elder Care System',
-                'activities' => $activities,
-                'category' => $category,
-                'stats' => $this->activityModel->getActivityStats()
-            ];
-
-            $this->view('activities/category', $data);
-        } catch (Exception $e) {
-            error_log("Error getting activities by category: " . $e->getMessage());
-            redirect('activities');
-        }
-    }
-
-
-    public function show($id = null)
-    {
-        if (empty($id)) {
-            redirect('activities');
-            return;
-        }
-
-        try {
-            $activity = $this->activityModel->getActivityById($id);
-
-            if (!$activity || $activity['status'] !== 'active') {
                 redirect('activities');
-                return;
+            } else {
+
+                redirect('activities');
+            }
+        }
+    }
+
+    // Handle POST from Edit form
+    public function update($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Existing photo from hidden field
+            $existingPhoto = $_POST['existing_photo'] ?? '';
+
+            $photoName = $existingPhoto;
+
+            // If new photo uploaded, replace old photo
+            if (!empty($_FILES['photo']['name'])) {
+                $photoName = $this->uploadPhoto($_FILES['photo']);
+                if (!$photoName) {
+
+                    redirect('activities/index/' . $id);
+                    return;
+                }
+                // Optionally, delete old photo file from server here
+                if ($existingPhoto && file_exists('uploads/' . $existingPhoto)) {
+                    unlink('uploads/' . $existingPhoto);
+                }
             }
 
             $data = [
-                'title' => $activity['title'] . ' - Elder Care System',
-                'activity' => $activity
+                'activity_name' => $_POST['activity_name'],
+                'category' => $_POST['category'],
+                'photo' => $photoName,
+                'time' => $_POST['time'],
+                'participants' => $_POST['participants'],
+                'location' => $_POST['location'],
             ];
 
-            $this->view('activities/show', $data);
-        } catch (Exception $e) {
-            error_log("Error showing activity: " . $e->getMessage());
+            if ($this->activityModel->update($id, $data)) {
+
+                redirect('activities');
+            } else {
+
+                redirect('activities/index/' . $id);
+            }
+        }
+    }
+
+    public function delete($id)
+    {
+        $activity = $this->activityModel->getById($id);
+        if ($activity && $this->activityModel->delete($id)) {
+            // Delete photo file if exists
+            if (!empty($activity['photo']) && file_exists('uploads/' . $activity['photo'])) {
+                unlink('uploads/' . $activity['photo']);
+            }
+
+            redirect('activities');
+        } else {
+
             redirect('activities');
         }
     }
 
-
-    private function isLoggedIn()
+    private function uploadPhoto($file)
     {
-        return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
-    }
+        $targetDir = 'uploads/';
+        $fileName = basename($file['name']);
+        $targetFilePath = $targetDir . time() . '_' . $fileName;
+        $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-    private function isAdmin()
-    {
-        return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'Admin';
-    }
+        // Allowed file types
+        $allowTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
-
-    private function sanitizeInput($input)
-    {
-        return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
-    }
-
-
-    private function jsonResponse($data)
-    {
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        exit;
+        if (in_array($fileType, $allowTypes)) {
+            if (move_uploaded_file($file['tmp_name'], $targetFilePath)) {
+                return basename($targetFilePath);
+            }
+        }
+        return false;
     }
 }
