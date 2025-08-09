@@ -94,11 +94,6 @@ class Appointment extends Controller
                     'message' => 'Failed to delete appointment.'
                 ]);
             }
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid request.'
-            ]);
         }
         exit;
     }
@@ -141,11 +136,6 @@ class Appointment extends Controller
                     'message' => 'Failed to update appointment.'
                 ]);
             }
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid request.'
-            ]);
         }
         exit;
     }
