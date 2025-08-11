@@ -55,9 +55,9 @@ class Pages extends Controller
         $this->view('pages/searchappointment');
     }
 
-    public function adminActivities()
+    public function viewactivities()
     {
-        $this->view('pages/adminactivities');
+        $this->view('pages/viewactivities');
     }
 
     public function emplist()

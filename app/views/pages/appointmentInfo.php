@@ -26,7 +26,7 @@
                 <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Donations/donationDash'">
                     DonationData
                 </button>
-                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/pages/adminactivities'">
+                <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Activities/index'">
                     ActivitiesData
                 </button>
                 <a href="<?= URLROOT ?>/pages/dashboard" class="btn logout-btn">
