@@ -206,6 +206,26 @@ class Database
         }
     }
 
+    public function multiColumnFilter(string $table, array $criteria): ?array
+    {
+        try {
+            $columns = array_keys($criteria);
+            $conditions = implode(' AND ', array_map(fn($col) => "$col = :$col", $columns));
+            $sql = "SELECT * FROM {$table} WHERE {$conditions} LIMIT 1";
+            $stmt = $this->pdo->prepare($sql);
+            foreach ($criteria as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+
+
 
     // public function resultSet()
     // {
