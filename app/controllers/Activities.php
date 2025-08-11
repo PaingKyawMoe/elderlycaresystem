@@ -28,12 +28,11 @@ class Activities extends Controller
 
     public function elderlyView()
     {
-        // Fetch all activities from database
         $activities = $this->activityModel->getAll();
         $data = ['activities' => $activities];
-
-        $this->view('pages/activities', $data);
+        $this->view('pages/activitiespublic', $data);
     }
+
 
     // Handle POST from Add form
     public function store()

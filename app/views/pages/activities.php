@@ -12,9 +12,9 @@
 <body>
     <div class="container fade-in">
         <div class="header">
-            <!-- Your PHP code remains unchanged -->
+
             <?php
-            // If editing, $data['editActivity'] will be set, otherwise not
+
             $editActivity = $data['editActivity'] ?? null;
             ?>
             <h2><i class="fas fa-calendar-alt"></i> <?= $editActivity ? 'Edit Activity' : 'Add Activity' ?></h2>
