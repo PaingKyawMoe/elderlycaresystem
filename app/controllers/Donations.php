@@ -31,13 +31,14 @@ class Donations extends Controller
 
         try {
             $success = $this->donationService->updateDonationStatus($donationId, $status);
-            return json_encode($success
+            echo json_encode($success
                 ? ['success' => true]
                 : ['success' => false, 'message' => 'Database update failed']);
         } catch (InvalidArgumentException $e) {
-            return json_encode(['success' => false, 'message' => $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
+
 
     public function donate()
     {
