@@ -182,12 +182,22 @@ class Database
         return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function columnFilter($table, $column, $value)
+    public function columnFilter(string $table, string $column, $value, ?string $excludeColumn = null, $excludeValue = null)
     {
         try {
             $sql = "SELECT * FROM {$table} WHERE {$column} = :value";
+
+            if ($excludeColumn !== null && $excludeValue !== null) {
+                $sql .= " AND {$excludeColumn} != :excludeValue";
+            }
+
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindValue(':value', $value);
+
+            if ($excludeColumn !== null && $excludeValue !== null) {
+                $stmt->bindValue(':excludeValue', $excludeValue);
+            }
+
             $stmt->execute();
             return $stmt->fetch();
         } catch (PDOException $e) {
@@ -195,6 +205,7 @@ class Database
             return [];
         }
     }
+
 
     // public function resultSet()
     // {
