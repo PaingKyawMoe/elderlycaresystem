@@ -3,7 +3,7 @@
 
 require_once __DIR__ . '/../interfaces/AppointmentRepositoryInterface.php';
 require_once __DIR__ . '/../models/AppointmentModel.php';
-require_once __DIR__ . '/../libraries/Database.php';
+// require_once __DIR__ . '/../libraries/Database.php';
 
 class AppointmentRepository implements AppointmentRepositoryInterface
 {
