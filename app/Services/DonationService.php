@@ -1,10 +1,8 @@
 <?php
-// app/services/DonationService.php
+require_once __DIR__ . '/../interfaces/DonationServiceInterface.php';
+require_once __DIR__ . '/../interfaces/DonationRepositoryInterface.php';
 
-require_once __DIR__ . '/../repositories/DonationRepository.php';
-// require_once __DIR__ . '/../models/DonationModel.php';
-
-class DonationService
+class DonationService implements DonationServiceInterface
 {
     private $donationRepository;
 

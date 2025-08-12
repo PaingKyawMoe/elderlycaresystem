@@ -1,8 +1,9 @@
 <?php
-require_once __DIR__ . '/../repositories/EmployeeRepository.php';
-// require_once __DIR__ . '/../interfaces/EmployeeRepositoryInterface.php';
 
-class EmployeeService
+require_once __DIR__ . '/../interfaces/EmployeeServiceInterface.php';
+require_once __DIR__ . '/../interfaces/EmployeeRepositoryInterface.php';
+
+class EmployeeService implements EmployeeServiceInterface
 {
     private EmployeeRepositoryInterface $repository;
 
@@ -26,7 +27,6 @@ class EmployeeService
         return $this->repository->emailExists($email, $excludeId);
     }
 
-
     public function deleteEmployee(int $id): bool
     {
         return $this->repository->delete($id);
@@ -34,7 +34,6 @@ class EmployeeService
 
     public function updateEmployee(int $id, array $data): bool
     {
-        // Validate required fields
         $required = ['name', 'email', 'phone', 'address', 'role'];
         foreach ($required as $field) {
             if (empty($data[$field])) {
@@ -42,7 +41,6 @@ class EmployeeService
             }
         }
 
-        // Check email uniqueness
         if ($this->checkEmailExists($data['email'], $id)) {
             throw new InvalidArgumentException("Email already exists.");
         }
