@@ -224,6 +224,10 @@ class Database
             return null;
         }
     }
+    public function getPdo(): PDO
+    {
+        return $this->pdo;
+    }
 
 
 
