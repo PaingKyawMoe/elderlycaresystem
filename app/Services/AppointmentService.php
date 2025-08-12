@@ -54,7 +54,7 @@ class AppointmentService
 
     public function updateAppointment(int $id, array $data): bool
     {
-        // Clean data keys (optional)
+        
         $allowedFields = [
             'name',
             'phone',
