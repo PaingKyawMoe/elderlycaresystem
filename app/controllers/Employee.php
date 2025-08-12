@@ -1,15 +1,22 @@
 <?php
+
 require_once __DIR__ . '/../services/EmployeeService.php';
 require_once __DIR__ . '/../repositories/EmployeeRepository.php';
+require_once __DIR__ . '/../interfaces/EmployeeServiceInterface.php';
 
 class Employee extends Controller
 {
-    private EmployeeService $service;
+    private EmployeeServiceInterface $service;
 
-    public function __construct()
+    public function __construct(?EmployeeServiceInterface $employeeService = null)
     {
-        $repo = new EmployeeRepository();
-        $this->service = new EmployeeService($repo);
+
+        if ($employeeService === null) {
+            $employeeRepo = new EmployeeRepository();
+            $employeeService = new EmployeeService($employeeRepo);
+        }
+
+        $this->service = $employeeService;
     }
 
     public function index()

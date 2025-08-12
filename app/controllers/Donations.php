@@ -1,15 +1,22 @@
 <?php
 
 require_once __DIR__ . '/../services/DonationService.php';
+require_once __DIR__ . '/../repositories/DonationRepository.php';
+require_once __DIR__ . '/../interfaces/DonationServiceInterface.php';
 
 class Donations extends Controller
 {
-    private $donationService;
+    private DonationServiceInterface $donationService;
 
-    public function __construct()
+
+    public function __construct(?DonationServiceInterface $donationService = null)
     {
-        $repository = new DonationRepository();
-        $this->donationService = new DonationService($repository);
+        if ($donationService === null) {
+            $repository = new DonationRepository();
+            $donationService = new DonationService($repository);
+        }
+
+        $this->donationService = $donationService;
     }
 
     public function donationDash()
@@ -39,7 +46,6 @@ class Donations extends Controller
         }
     }
 
-
     public function donate()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -51,7 +57,9 @@ class Donations extends Controller
             'full_name' => $_POST['fullName'] ?? '',
             'email' => $_POST['email'] ?? '',
             'phone' => $_POST['phone'] ?? '',
-            'amount' => ($_POST['amount'] ?? '') === 'custom' ? ($_POST['customAmount'] ?? '') : ($_POST['amount'] ?? ''),
+            'amount' => ($_POST['amount'] ?? '') === 'custom'
+                ? ($_POST['customAmount'] ?? '')
+                : ($_POST['amount'] ?? ''),
             'payment_method' => $_POST['paymentMethod'] ?? ''
         ];
 
