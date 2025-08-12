@@ -23,16 +23,19 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function emailExists(string $email, ?int $excludeId = null): bool
     {
-        $query = "SELECT COUNT(*) FROM employees WHERE email = :email";
+        $sql = "SELECT COUNT(*) FROM employees WHERE email = :email";
         $params = ['email' => $email];
 
         if ($excludeId) {
-            $query .= " AND id != :excludeId";
+            $sql .= " AND id != :excludeId";
             $params['excludeId'] = $excludeId;
         }
 
-        return (bool)$this->db->multiColumnFilter($query, $params);
+        $stmt = $this->db->getPdo()->prepare($sql);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn() > 0;
     }
+
 
     public function create(array $data): bool
     {
