@@ -1,10 +1,7 @@
 <?php
 
-
-
 class Core
 {
-    // Default controller/method/params
     protected $currentController = "Pages";
     protected $currentMethod = "index";
     protected $params = [];
@@ -13,7 +10,7 @@ class Core
     {
         $url = $this->getURL();
 
-        // Get controller name from URL if exists and file found
+        // Detect controller
         if (isset($url[0]) && file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
             $this->currentController = ucwords($url[0]);
             unset($url[0]);
@@ -21,70 +18,81 @@ class Core
 
         $controllerName = $this->currentController;
 
-        // Include controller file and instantiate
+        // Include & instantiate
         require_once('../app/controllers/' . $controllerName . '.php');
         $this->currentController = $this->buildController($controllerName);
 
-
-        // Get method from URL if exists and method exists
+        // Detect method
         if (isset($url[1]) && method_exists($this->currentController, $url[1])) {
             $this->currentMethod = $url[1];
             unset($url[1]);
         }
 
-        // Collect params
+        // Params
         $this->params = $url ? array_values($url) : [];
 
-        // Build route key e.g. donations/donationdash (lowercase)
+        // Current route key
         $routeKey = strtolower($controllerName . '/' . $this->currentMethod);
 
-
-        // Routes that should skip middleware
+        // Skip middleware for these routes
         $skipMiddlewareRoutes = [
-            // 'pages/index',
-            // 'pages/about',
-            // 'pages/signin',
-            // 'pages/register',
-            // 'pages/donate',
+            'pages/index',
+            'pages/about',
+            'pages/signin',
+            'pages/register',
+            'pages/donate',
         ];
 
+        // Map routes to middleware
         $middlewareMap = [
-            'pages/dashboard' => ['AuthTokenMiddleware'],
-            'pages/search' => ['AuthTokenMiddleware'],
-            'pages/appointmentform' => ['AuthTokenMiddleware'],
-            'pages/emplist' => ['AuthTokenMiddleware'],
-            'pages/employee' => ['AuthTokenMiddleware'],
+            // User-only
+            'pages/dashboard'       => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
+            'pages/search'          => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
+            'pages/appointmentform' => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
+
+            // Admin-only
+            'pages/emplist'         => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
+            'pages/employee'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
+            'Appointment/list'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
         ];
 
-
-        // If current route is in skip list, directly call controller method (no middleware)
+        // If route is in skip list → run directly
         if (in_array($routeKey, $skipMiddlewareRoutes)) {
             call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
             return;
         }
 
-        // Get middleware classes for current route, if any
+        // Get middleware for this route
         $middlewareClasses = $middlewareMap[$routeKey] ?? [];
 
-        // Define the final callable (controller method with params)
+        // Final controller call
         $finalAction = function () {
             return call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
         };
 
-        // Wrap each middleware around the finalAction
-        foreach (array_reverse($middlewareClasses) as $middlewareClass) {
-            require_once '../app/middlewares/' . $middlewareClass . '.php';
+        // Wrap middleware
+        foreach (array_reverse($middlewareClasses) as $middlewareItem) {
+            // Check if middleware has parameters
+            if (is_array($middlewareItem)) {
+                $middlewareClass = $middlewareItem[0];
+                $params = $middlewareItem[1] ?? [];
+            } else {
+                $middlewareClass = $middlewareItem;
+                $params = [];
+            }
 
+            require_once '../app/middlewares/' . $middlewareClass . '.php';
             $middleware = new $middlewareClass();
 
             $next = $finalAction;
 
-            $finalAction = function () use ($middleware, $next) {
-                return $middleware->handle($next);
+            $finalAction = function () use ($middleware, $next, $params) {
+                return $middleware->handle($next, $params);
             };
         }
 
-        // Execute the middleware pipeline → controller method
+
+        // Execute controller with middleware
         $finalAction();
     }
 
@@ -92,17 +100,13 @@ class Core
     {
         if ($controllerName === 'Donations') {
             $dbFile = '../app/libraries/Database.php';
-
             if (!file_exists($dbFile)) {
                 die("Database file not found at $dbFile");
             }
-
             require_once $dbFile;
-
             if (!class_exists('Database')) {
                 die("Database class does not exist after including $dbFile");
             }
-
             $db = new Database();
 
             require_once '../app/repositories/DonationRepository.php';
@@ -117,8 +121,6 @@ class Core
         return new $controllerName();
     }
 
-
-    // Parse and sanitize URL
     public function getURL()
     {
         if (isset($_GET['url'])) {

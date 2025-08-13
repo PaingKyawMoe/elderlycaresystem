@@ -50,29 +50,43 @@ class Auth extends Controller
 
     public function login()
     {
-        //  echo "Hello ";
-        //  exit;
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (isset($_POST['email']) && isset($_POST['password'])) {
-                $email = $_POST['email'];
-                $password = base64_encode($_POST['password']);
-                $isLogin = $this->db->loginCheck($email, $password);
-                // var_dump($isLogin);
-                // exit;
-                $_SESSION['user'] = $isLogin;
-                if ($isLogin) {
-                    $checkData = $this->db->getById('users', $isLogin['id']);
-                    if ($checkData['role_id'] == Admin) {
-                        redirect('Appointment/list');
-                    }
-                    redirect('pages/dashboard');
-                } else {
-                    setMessage('error', 'Login Fail!');
-                    redirect('pages/signin');
-                }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Get form input
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+
+            if (empty($email) || empty($password)) {
+                setMessage('error', 'Please enter both email and password.');
+                redirect('pages/signin');
             }
+
+            // Fetch user by email from database
+            $user = $this->db->getByEmail('users', $email);
+
+            // Check if user exists and verify password
+            if ($user && password_verify($password, $user['password'])) {
+                // Store user info in session
+                $_SESSION['user'] = $user;
+                $_SESSION['user_role'] = $user['role_id'];
+
+                // Redirect based on role
+                if ($user['role_id'] == Admin) {
+                    redirect('Appointment/list'); // Admin dashboard
+                } else {
+                    redirect('pages/dashboard'); // User dashboard
+                }
+            } else {
+                // Invalid login
+                setMessage('error', 'Login failed! Invalid email or password.');
+                redirect('pages/signin');
+            }
+        } else {
+            // If accessed directly via GET, redirect to sign-in page
+            redirect('pages/signin');
         }
     }
+
+
 
 
     // function logout($id)
