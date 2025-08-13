@@ -1,6 +1,8 @@
 <?php
 
-class Database
+require_once __DIR__ . '/../interfaces/DatabaseInterface.php';
+
+class Database implements DatabaseInterface
 {
     private $host = DB_HOST;
     private $user = DB_USER;
@@ -47,7 +49,7 @@ class Database
         $this->stmt->bindValue($param, $value, $type);
     }
 
-    public function callProcedure($procedureName, $params = [])
+    public function callProcedure($procedureName, $params = []): array
     {
         try {
             $placeholders = implode(',', array_fill(0, count($params), '?'));
@@ -85,7 +87,7 @@ class Database
         }
     }
 
-    public function update($table, $id, $data)
+    public function update($table, $id, $data): bool
     {
         unset($data['id']);
         try {
@@ -103,7 +105,7 @@ class Database
         }
     }
 
-    public function delete($table, $id)
+    public function delete($table, $id): bool
     {
         try {
             $sql = "DELETE FROM {$table} WHERE id = :id";
@@ -116,7 +118,7 @@ class Database
         }
     }
 
-    public function readAll($table)
+    public function readAll($table): array
     {
         try {
             $sql = "SELECT * FROM {$table}";
