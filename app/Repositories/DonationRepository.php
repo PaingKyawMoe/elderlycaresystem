@@ -2,20 +2,20 @@
 // app/repositories/DonationRepository.php
 
 require_once __DIR__ . '/../interfaces/DonationRepositoryInterface.php';
-require_once __DIR__ . '/../models/DonationModel.php';
+require_once __DIR__ . '/../interfaces/DatabaseInterface.php';
 
 class DonationRepository implements DonationRepositoryInterface
 {
-    private $db;
+    private DatabaseInterface $db;
 
-    public function __construct()
+    public function __construct(DatabaseInterface $db)
     {
-        $this->db = new Database();
+        $this->db = $db;
     }
 
     public function readAll(): array
     {
-        return $this->db->readAll('donations'); 
+        return $this->db->readAll('donations');
     }
 
     public function updateStatus(int $donationId, string $status): bool
@@ -26,6 +26,6 @@ class DonationRepository implements DonationRepositoryInterface
 
     public function save(array $data): bool
     {
-        return $this->db->create('donations', $data);
+        return $this->db->create('donations', $data) !== false;
     }
 }

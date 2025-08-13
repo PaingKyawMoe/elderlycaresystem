@@ -1,21 +1,14 @@
 <?php
+// app/controllers/Donations.php
 
-require_once __DIR__ . '/../services/DonationService.php';
-require_once __DIR__ . '/../repositories/DonationRepository.php';
 require_once __DIR__ . '/../interfaces/DonationServiceInterface.php';
 
 class Donations extends Controller
 {
     private DonationServiceInterface $donationService;
 
-
-    public function __construct(?DonationServiceInterface $donationService = null)
+    public function __construct(DonationServiceInterface $donationService)
     {
-        if ($donationService === null) {
-            $repository = new DonationRepository();
-            $donationService = new DonationService($repository);
-        }
-
         $this->donationService = $donationService;
     }
 
@@ -54,10 +47,10 @@ class Donations extends Controller
         }
 
         $data = [
-            'full_name' => $_POST['fullName'] ?? '',
-            'email' => $_POST['email'] ?? '',
-            'phone' => $_POST['phone'] ?? '',
-            'amount' => ($_POST['amount'] ?? '') === 'custom'
+            'full_name'      => $_POST['fullName'] ?? '',
+            'email'          => $_POST['email'] ?? '',
+            'phone'          => $_POST['phone'] ?? '',
+            'amount'         => ($_POST['amount'] ?? '') === 'custom'
                 ? ($_POST['customAmount'] ?? '')
                 : ($_POST['amount'] ?? ''),
             'payment_method' => $_POST['paymentMethod'] ?? ''

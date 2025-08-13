@@ -1,5 +1,7 @@
 <?php
 
+
+
 class Core
 {
     // Default controller/method/params
@@ -21,7 +23,8 @@ class Core
 
         // Include controller file and instantiate
         require_once('../app/controllers/' . $controllerName . '.php');
-        $this->currentController = new $controllerName;
+        $this->currentController = $this->buildController($controllerName);
+
 
         // Get method from URL if exists and method exists
         if (isset($url[1]) && method_exists($this->currentController, $url[1])) {
@@ -84,6 +87,36 @@ class Core
         // Execute the middleware pipeline → controller method
         $finalAction();
     }
+
+    private function buildController(string $controllerName)
+    {
+        if ($controllerName === 'Donations') {
+            $dbFile = '../app/libraries/Database.php';
+
+            if (!file_exists($dbFile)) {
+                die("Database file not found at $dbFile");
+            }
+
+            require_once $dbFile;
+
+            if (!class_exists('Database')) {
+                die("Database class does not exist after including $dbFile");
+            }
+
+            $db = new Database();
+
+            require_once '../app/repositories/DonationRepository.php';
+            require_once '../app/services/DonationService.php';
+
+            $repository = new DonationRepository($db);
+            $service = new DonationService($repository);
+
+            return new Donations($service);
+        }
+
+        return new $controllerName();
+    }
+
 
     // Parse and sanitize URL
     public function getURL()
