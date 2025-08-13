@@ -34,7 +34,7 @@ class Core
         // Current route key
         $routeKey = strtolower($controllerName . '/' . $this->currentMethod);
 
-        // Skip middleware for these routes
+        // Skip middleware for public pages
         $skipMiddlewareRoutes = [
             'pages/index',
             'pages/about',
@@ -49,11 +49,15 @@ class Core
             'pages/dashboard'       => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
             'pages/search'          => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
             'pages/appointmentform' => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
+            'pages/viewactivities' => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
 
             // Admin-only
             'pages/emplist'         => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
             'pages/employee'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
-            'Appointment/list'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
+            'donations/donationdash'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
+            'users/userlist'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
+            'appointment/list'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
+            'pages/activities'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
         ];
 
         // If route is in skip list → run directly
