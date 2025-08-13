@@ -47,7 +47,7 @@ class Pages extends Controller
 
     public function activities()
     {
-        $this->view('pages/activities');
+        redirect('Activities/index');
     }
 
     public function search()
@@ -57,7 +57,7 @@ class Pages extends Controller
 
     public function viewactivities()
     {
-        $this->view('pages/viewactivities');
+        redirect('Activities/elderlyView');
     }
 
     public function emplist()
@@ -68,5 +68,20 @@ class Pages extends Controller
     public function employee()
     {
         $this->view('pages/employee');
+    }
+
+    public function donationInfo()
+    {
+        redirect('donations/donationDash');
+    }
+
+    public function appointmentInfo()
+    {
+        redirect('Appointment/list');
+    }
+
+    public function userInfo()
+    {
+        redirect('Users/userlist');
     }
 }

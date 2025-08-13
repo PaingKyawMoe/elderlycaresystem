@@ -55,18 +55,7 @@ class Users extends Controller
         }
     }
 
-    public function logout()
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Destroy session and redirect
-        session_destroy();
-
-        header("Location: " . URLROOT . "/pages/signin");
-        exit;
-    }
+    
 
 
 
