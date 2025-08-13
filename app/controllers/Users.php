@@ -55,6 +55,21 @@ class Users extends Controller
         }
     }
 
+    public function logout()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Destroy session and redirect
+        session_destroy();
+
+        header("Location: " . URLROOT . "/pages/signin");
+        exit;
+    }
+
+
+
 
     // Register a new user
     public function register()
@@ -98,7 +113,8 @@ class Users extends Controller
             $this->userModel->name = $_POST['name'];
             $this->userModel->email = $_POST['email'];
             $this->userModel->roleid = User; // Not setRoleid()
-            $this->userModel->password = base64_encode($password); // Not setPassword()
+            $this->userModel->password = password_hash($password, PASSWORD_DEFAULT);
+            // Not setPassword()
             // $userData = $this->userModel->toArray();
             // $userData = new UserModel($data);
 

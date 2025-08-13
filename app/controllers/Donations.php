@@ -59,7 +59,7 @@ class Donations extends Controller
         $saved = $this->donationService->createDonation($data);
 
         if ($saved) {
-            setMessage('success', 'Successful Payment.');
+            redirect('donation/form');
         } else {
             setMessage('error', 'Something went wrong.');
         }
