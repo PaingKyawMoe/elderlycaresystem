@@ -26,7 +26,7 @@
         <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Donations/donationDash'">
           DonationData
         </button>
-        <a href="<?= URLROOT ?>/pages/index" class="btn logout-btn">
+        <a href="<?= URLROOT ?>/Auth/logout" class="btn logout-btn">
           Logout
           <i class="fas fa-arrow-right"></i>
         </a>
