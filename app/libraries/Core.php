@@ -50,6 +50,7 @@ class Core
             'pages/search'          => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
             'pages/appointmentform' => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
             'pages/viewactivities' => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
+            'Activities/elderlyView' => ['AuthTokenMiddleware', ['RoleMiddleware', [User]]],
 
             // Admin-only
             'pages/emplist'         => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
@@ -58,6 +59,7 @@ class Core
             'users/userlist'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
             'appointment/list'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
             'pages/activities'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
+            'Activities/index'        => ['AuthTokenMiddleware', ['RoleMiddleware', [Admin]]],
         ];
 
         // If route is in skip list → run directly
