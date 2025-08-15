@@ -1,3 +1,12 @@
+<?php
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+?>
+<script>
+    const csrfToken = "<?php echo $_SESSION['csrf_token']; ?>";
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -223,12 +232,12 @@
         }
 
         function updateDonationStatus(donationId, newStatus) {
-            // Make AJAX call to update status in database
             fetch('<?php echo URLROOT; ?>/donations/updateStatus', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': csrfToken // send token
                     },
                     body: JSON.stringify({
                         donation_id: donationId,
@@ -238,11 +247,9 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update local data
                         const donationIndex = donationData.findIndex(d => d.id == donationId);
                         if (donationIndex !== -1) {
                             donationData[donationIndex].status = newStatus;
-                            // Refresh the current page
                             displayTable(currentPage);
                         }
                     } else {
@@ -254,6 +261,7 @@
                     alert('Error updating status');
                 });
         }
+
 
         function createStatusButtons(donation) {
             const statusButtonsHtml = `
@@ -307,7 +315,7 @@
                     <td><span class="email-cell">${escapeHtml(donation.email)}</span></td>
                     <td><span class="phone-cell">${escapeHtml(donation.phone)}</span></td>
                     <td><span class="amount-cell">$${parseFloat(donation.amount).toFixed(2)}</span></td>
-                    <td>${createPaymentMethodDisplay(donation.payment_method)}</td>
+                   <td>${createPaymentMethodDisplay(escapeHtml(donation.payment_method))}</td>
                     <td>${createStatusButtons(donation)}</td>
                 `;
                 tableBody.appendChild(row);
