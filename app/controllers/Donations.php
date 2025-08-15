@@ -33,9 +33,16 @@ class Donations extends Controller
             return;
         }
 
+        $headers = getallheaders();
+        if (!isset($headers['X-CSRF-Token']) || $headers['X-CSRF-Token'] !== $_SESSION['csrf_token']) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+            return;
+        }
+
         $input = json_decode(file_get_contents('php://input'), true);
         $donationId = $input['donation_id'] ?? null;
-        $status = $input['status'] ?? null;
+        $status = strip_tags($input['status'] ?? ''); // prevent XSS
 
         try {
             $success = $this->donationService->updateDonationStatus($donationId, $status);
@@ -46,6 +53,7 @@ class Donations extends Controller
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
+
 
     public function donate()
     {
