@@ -23,7 +23,7 @@
       </a>
 
       <nav id="nav">
-        <a href="<?php echo URLROOT; ?>/pages/home">Home</a>
+        <a href="<?php echo URLROOT; ?>/pages/home" class="active">Home</a>
         <a href="<?php echo URLROOT; ?>/pages/donate"">Donate</a>
         <a href=" <?php echo URLROOT; ?>/pages/about">About Us</a>
         <a href="<?php echo URLROOT; ?>/pages/signin">Admin</a>

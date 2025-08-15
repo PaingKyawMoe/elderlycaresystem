@@ -50,7 +50,7 @@
 
         <div class="content" id="content">
             <div class="loading">
-                <div class="loading-spinner">⏳</div>
+                <div class="loading-spinner"></div>
                 <h3>Loading employees...</h3>
                 <p>Please wait while we fetch the data.</p>
             </div>

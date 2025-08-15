@@ -9,6 +9,14 @@ class Donations extends Controller
 
     public function __construct(DonationServiceInterface $donationService)
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_set_cookie_params([
+                'httponly' => true,
+                'samesite' => 'Lax',  // CSRF is correct or not
+                'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+            ]);
+            session_start();
+        }
         $this->donationService = $donationService;
     }
 
@@ -41,28 +49,33 @@ class Donations extends Controller
 
     public function donate()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            redirect('donation/form');
-            return;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            session_start();
+
+            // CSRF validation
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                http_response_code(403);
+                die("Invalid CSRF token");
+            }
+
+            // Collect form data
+            $donationData = [
+                'full_name'      => $_POST['fullName'] ?? '',
+                'email'          => $_POST['email'] ?? '',
+                'phone'          => $_POST['phone'] ?? '',
+                'amount'         => $_POST['amount'] ?? $_POST['customAmount'] ?? 0,
+                'payment_method' => $_POST['paymentMethod'] ?? ''
+            ];
+
+            // Use the service to save to database
+            $this->donationService->createDonation($donationData);
+
+            // Redirect or show success
+            header('Location: ' . URLROOT . '/pages/donate?success=true');
+            exit;
         }
 
-        $data = [
-            'full_name'      => $_POST['fullName'] ?? '',
-            'email'          => $_POST['email'] ?? '',
-            'phone'          => $_POST['phone'] ?? '',
-            'amount'         => ($_POST['amount'] ?? '') === 'custom'
-                ? ($_POST['customAmount'] ?? '')
-                : ($_POST['amount'] ?? ''),
-            'payment_method' => $_POST['paymentMethod'] ?? ''
-        ];
-
-        $saved = $this->donationService->createDonation($data);
-
-        if ($saved) {
-            redirect('donation/form');
-        } else {
-            setMessage('error', 'Something went wrong.');
-        }
-        redirect('donation/form');
+        // If GET, show form
+        $this->view('pages/donate');
     }
 }
