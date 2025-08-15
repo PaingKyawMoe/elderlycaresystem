@@ -41,6 +41,7 @@ function e($v)
                 <a href="<?= e(URLROOT) ?>/pages/donate" class="active">Donate</a>
                 <a href="<?= e(URLROOT) ?>/pages/about">About Us</a>
                 <a href="<?= e(URLROOT) ?>/pages/signin">Admin</a>
+                <button class="call-now">Call Now</button>
             </nav>
         </div>
     </header>
