@@ -1,12 +1,26 @@
 <?php
+// ------------------------------------
+// Security hardening: session settings
+// ------------------------------------
+ini_set('session.cookie_httponly', '1');
+ini_set('session.use_strict_mode', '1');
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax',
+    'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+]);
 
-// The require_once() will first check whether a file is already included or not
-// and if it is already included then it will not include it again.
-// require_once function is used just once
-//  Use require() to load template-like files.
-// 	Use require_once() to load dependencies ( classes, functions, constants).
-// the include() function generates a warning, but the script will continue execution. The require() generates a fatal error, and the script will stop.
+// Security headers
+header("X-Content-Type-Options: nosniff");
+header("X-Frame-Options: DENY");
+header("Referrer-Policy: strict-origin-when-cross-origin");
+
+// ------------------------------------
+// App bootstrap
+// ------------------------------------
 require_once '../app/class_loader.php';
 session_start();
+// DO NOT start the session here
+// You will call session_start() only inside controllers/views where needed
 
 $init = new Core();
