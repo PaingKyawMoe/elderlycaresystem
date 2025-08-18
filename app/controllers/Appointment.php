@@ -5,12 +5,19 @@ require_once __DIR__ . '/../services/AppointmentService.php';
 class Appointment extends Controller
 {
     private $appointmentService;
+    private $uploadDir;
 
     public function __construct()
     {
         $db = new Database();
         $repository = new AppointmentRepository($db);
         $this->appointmentService = new AppointmentService($repository);
+
+        // Store uploads OUTSIDE public web root if possible
+        $this->uploadDir = realpath(APPROOT . '/../public/uploads');
+        if ($this->uploadDir === false) {
+            throw new Exception("Upload directory not found");
+        }
     }
 
     public function list()
@@ -28,12 +35,13 @@ class Appointment extends Controller
             return;
         }
 
-        $name = trim($_POST['name'] ?? '');
-        $dob = trim($_POST['dob'] ?? '');
+        $name  = trim($_POST['name'] ?? '');
+        $dob   = trim($_POST['dob'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
 
-        if (!$name || !$dob || !$phone) {
-            echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
+        // Basic validation (avoid URL tampering / missing fields)
+        if ($name === '' || $dob === '' || $phone === '' || !preg_match('/^\d{10,15}$/', $phone)) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
             return;
         }
 
@@ -53,11 +61,14 @@ class Appointment extends Controller
     public function deleteAjax()
     {
         header('Content-Type: application/json');
-        if (!isset($_POST['id'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing ID']);
+
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($id === false) {
+            echo json_encode(['success' => false, 'message' => 'Invalid ID']);
             return;
         }
-        $success = $this->appointmentService->deleteAppointment((int)$_POST['id']);
+
+        $success = $this->appointmentService->deleteAppointment($id);
         echo json_encode(['success' => $success, 'message' => $success ? 'Deleted successfully!' : 'Failed to delete.']);
     }
 
@@ -65,12 +76,11 @@ class Appointment extends Controller
     {
         header('Content-Type: application/json');
 
-        if (!isset($_POST['id'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing appointment ID']);
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($id === false) {
+            echo json_encode(['success' => false, 'message' => 'Invalid appointment ID']);
             return;
         }
-
-        $id = (int)$_POST['id'];
 
         $data = [
             'name' => trim($_POST['name'] ?? ''),
@@ -93,7 +103,6 @@ class Appointment extends Controller
         }
     }
 
-
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -102,24 +111,67 @@ class Appointment extends Controller
         }
 
         $data = [
-            'name' => $_POST['name'] ?? '',
+            'name' => trim($_POST['name'] ?? ''),
             'dob' => $_POST['dob'] ?? '',
-            'phone' => $_POST['phone'] ?? '',
-            'address' => $_POST['address'] ?? '',
+            'phone' => trim($_POST['phone'] ?? ''),
+            'address' => trim($_POST['address'] ?? ''),
             'gender' => $_POST['gender'] ?? '',
             'preferred_date' => $_POST['preferredDate'] ?? '',
             'appointment_type' => $_POST['appointmentType'] ?? '',
             'preferred_time' => $_POST['preferredTime'] ?? '',
             'selectDoctor' => $_POST['selectDoctor'] ?? '',
-            'reasonForAppointment' => $_POST['reasonforappointment'] ?? '',
+            'reasonForAppointment' => trim($_POST['reasonforappointment'] ?? ''),
         ];
 
-        if (!empty($_FILES['photo']['name'])) {
-            $photo = $_FILES['photo']['name'];
-            move_uploaded_file($_FILES['photo']['tmp_name'], APPROOT . "/../public/uploads/" . basename($photo));
-            $data['photo'] = $photo;
-        } else {
-            $data['photo'] = null;
+        $data['photo'] = null;
+
+        if (!empty($_FILES['photo']['name']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $tmpName = $_FILES['photo']['tmp_name'];
+            $origName = $_FILES['photo']['name'];
+
+            // Size limit (2MB)
+            if ($_FILES['photo']['size'] > 2 * 1024 * 1024) {
+                setMessage('error', 'File too large.');
+                redirect('appointment/form');
+                return;
+            }
+
+            // Check MIME using Fileinfo
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->file($tmpName);
+            $allowed = [
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png'
+            ];
+
+            $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+            if (!array_key_exists($ext, $allowed) || $allowed[$ext] !== $mime) {
+                setMessage('error', 'Invalid file type.');
+                redirect('appointment/form');
+                return;
+            }
+
+            // Generate safe random name
+            $safeName = bin2hex(random_bytes(16)) . '.' . $ext;
+            $target = $this->uploadDir . DIRECTORY_SEPARATOR . $safeName;
+
+            // Prevent directory traversal
+            $realTarget = realpath(dirname($target));
+            if ($realTarget === false || strpos($realTarget, $this->uploadDir) !== 0) {
+                setMessage('error', 'Invalid upload path.');
+                redirect('appointment/form');
+                return;
+            }
+
+            if (!move_uploaded_file($tmpName, $target)) {
+                setMessage('error', 'Failed to save file.');
+                redirect('appointment/form');
+                return;
+            }
+
+            chmod($target, 0600); // owner only
+            $data['photo'] = $safeName;
         }
 
         $result = $this->appointmentService->createAppointment($data);
