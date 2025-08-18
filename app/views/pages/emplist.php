@@ -111,6 +111,152 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Delete Employee</h2>
+                <button class="close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirmation">
+                    <div class="delete-icon">⚠️</div>
+                    <h3>Are you sure you want to delete this employee?</h3>
+                    <p id="deleteEmployeeName">This action cannot be undone.</p>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                    <button type="button" class="btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">Delete Employee</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-danger {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-primary:disabled,
+        .btn-danger:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Delete Modal Specific Styles */
+        .delete-confirmation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .delete-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .delete-confirmation h3 {
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+
+        .delete-confirmation p {
+            color: #666;
+            margin-bottom: 0;
+        }
+    </style>
+
     <script>
         // Global variables
         let allEmployees = [];
@@ -118,6 +264,7 @@
         let currentPage = 1;
         let itemsPerPage = 10;
         let totalPages = 1;
+        let employeeToDelete = null; // Store employee ID to delete
         const URLROOT = ''; // Set your URL root here
 
         // Load employees on page load
@@ -224,7 +371,7 @@
                                     <td>
                                         <div class="actions">
                                             <button class="btn btn-edit" onclick="editEmployee(${employee.id})">Edit</button>
-                                            <button class="btn btn-delete" onclick="deleteEmployee(${employee.id})">Delete</button>
+                                            <button class="btn btn-delete" onclick="showDeleteModal(${employee.id}, '${escapeHtml(employee.name).replace(/'/g, "\\'")}')">Delete</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -261,7 +408,7 @@
                             </div>
                             <div class="actions">
                                 <button class="btn btn-edit" onclick="editEmployee(${employee.id})">Edit</button>
-                                <button class="btn btn-delete" onclick="deleteEmployee(${employee.id})">Delete</button>
+                                <button class="btn btn-delete" onclick="showDeleteModal(${employee.id}, '${escapeHtml(employee.name).replace(/'/g, "\\'")}')">Delete</button>
                             </div>
                         </div>
                     `).join('')}
@@ -377,11 +524,26 @@
             updateStats();
         }
 
-        // Delete employee
-        function deleteEmployee(id) {
-            if (!confirm('Are you sure you want to delete this employee?')) {
-                return;
-            }
+        // Show delete confirmation modal
+        function showDeleteModal(id, employeeName) {
+            employeeToDelete = id;
+            document.getElementById('deleteEmployeeName').textContent = `Are you sure you want to delete "${employeeName}"? This action cannot be undone.`;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        // Close delete modal
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            employeeToDelete = null;
+        }
+
+        // Confirm delete
+        function confirmDelete() {
+            if (!employeeToDelete) return;
+
+            const deleteBtn = document.getElementById('confirmDeleteBtn');
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = 'Deleting...';
 
             fetch(`${URLROOT}/Employee/deleteAjax`, {
                     method: 'POST',
@@ -390,13 +552,14 @@
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({
-                        id: id
+                        id: employeeToDelete
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         showAlert('Employee deleted successfully!', 'success');
+                        closeDeleteModal();
                         loadEmployees(); // Reload the list
                     } else {
                         showAlert(data.message || 'Failed to delete employee', 'error');
@@ -405,6 +568,10 @@
                 .catch(error => {
                     console.error('Error deleting employee:', error);
                     showAlert('Failed to delete employee', 'error');
+                })
+                .finally(() => {
+                    deleteBtn.disabled = false;
+                    deleteBtn.textContent = 'Delete Employee';
                 });
         }
 
@@ -484,9 +651,14 @@
 
         // Close modal when clicking outside of it
         window.onclick = function(event) {
-            const modal = document.getElementById('editModal');
-            if (event.target === modal) {
+            const editModal = document.getElementById('editModal');
+            const deleteModal = document.getElementById('deleteModal');
+
+            if (event.target === editModal) {
                 closeEditModal();
+            }
+            if (event.target === deleteModal) {
+                closeDeleteModal();
             }
         }
 
