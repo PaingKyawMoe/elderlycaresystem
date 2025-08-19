@@ -159,18 +159,27 @@
                         <label class="floating-label">Confirm Password</label>
                     </div>
                 </div>
+                <div class="input-container">
+                    <!-- reCAPTCHA v2 widget -->
+                    <div class="g-recaptcha" data-sitekey="6LfTA6srAAAAANUe7iOdVOQHwAd15Jq0WgkmOrgT"></div>
+
+                    <!-- Show captcha error -->
+                    <?php if (isset($data['captcha-err'])): ?>
+                        <small class="error-message"><?php echo $data['captcha-err']; ?></small>
+                    <?php endif; ?>
+                </div>
+
 
                 <button type="submit" class="submit-btn" id="submitBtn">
                     Create Account
                 </button>
-
                 <div class="signin-link">
                     Already have an account? <a href="<?php echo URLROOT; ?>/pages/signin">Sign In</a>
                 </div>
             </form>
         </div>
     </div>
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
         // Enhanced form functionality
         document.addEventListener('DOMContentLoaded', function() {

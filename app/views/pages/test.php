@@ -1,25 +1,22 @@
 <?php
 
-function findthird($array)
+function findSecond($array)
 {
-    $first = $second = $third = null;
+    $first = $second = null;
 
     foreach ($array as $x) {
-        if ($x === $first || $x === $second || $x === $third) {
-            continue; //avoid to duplicate
-        } elseif ($first === null || $x > $first) {
-            $third = $second;
-            $second = $first;
+        if ($first === null || $x > $first) {
+            if ($first != null && $x != $first) {
+                $second = $first;
+            }
             $first = $x;
-        } elseif ($second === null || $x > $second) {
-            $third = $second;
+        } elseif ($x < $first && ($second === null || $x > $second)) {
             $second = $x;
-        } elseif ($third === null || $x > $third) {
-            $third = $x;
         }
     }
-    return $third ?? -1;
+    return $second ?? -1;
 }
 
-$array = [1, 2, 3, 4, 5  ];
-echo "Third Largest Num is:" . findthird($array);
+$array = [12, 3, 4, 5, 6, 7];
+
+echo "The seconde largest Num is:" . findSecond($array);

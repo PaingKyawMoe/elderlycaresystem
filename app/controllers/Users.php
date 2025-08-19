@@ -55,7 +55,7 @@ class Users extends Controller
         }
     }
 
-    
+
 
 
 
@@ -63,10 +63,42 @@ class Users extends Controller
     // Register a new user
     public function register()
     {
-        // var_dump('paing');
-        // exit;
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            // session_start(); // for messages
+
+            // --- Step 1: Get reCAPTCHA response ---
+            $recaptcha_secret = "6LfTA6srAAAAACzlTnGsNzUvhK2ib6g2vd6b-JQY";
+            $recaptcha_response = $_POST['g-recaptcha-response'] ?? '';
+
+            if (empty($recaptcha_response)) {
+                $_SESSION['error_captcha'] = "Please verify that you are not a robot.";
+                $this->view('pages/signup');
+                return;
+            }
+
+            // --- Step 2: Verify with Google ---
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "https://www.google.com/recaptcha/api/siteverify");
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                'secret' => $recaptcha_secret,
+                'response' => $recaptcha_response
+            ]));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+            $verify = curl_exec($ch);
+            curl_close($ch);
+
+            $response_data = json_decode($verify);
+
+            if (!$response_data || !isset($response_data->success) || !$response_data->success) {
+                $_SESSION['error_captcha'] = "Captcha verification failed.";
+                $this->view('pages/signup');
+                return;
+            }
+
+            // --- Step 3: Validate form fields ---
             $name = $_POST['name'] ?? '';
             $email = $_POST['email'] ?? '';
             $password = $_POST['password'] ?? '';
@@ -77,47 +109,35 @@ class Users extends Controller
                 $this->view('pages/signup', $data);
                 return;
             }
-            // var_dump('paing');
-            // exit;
 
-            $emailExist = $this->db->columnFilter('users', 'email', $email);
-            if ($emailExist) {
-                // var_dump('paing');
-                // exit;
-                setMessage('error_email', 'This email is already registered !');
-                redirect('pages/register');
+            if ($this->db->columnFilter('users', 'email', $email)) {
+                $_SESSION['error_email'] = "This email is already registered!";
+                $this->view('pages/signup');
                 return;
             }
-            // var_dump('paing');
-            // exit;
 
             $validation = new UserValidator($_POST);
             $data = $validation->validateForm();
-
             if (count($data) > 0) {
                 $this->view('pages/signup', $data);
                 return;
             }
 
-            $this->userModel->name = $_POST['name'];
-            $this->userModel->email = $_POST['email'];
-            $this->userModel->roleid = User; // Not setRoleid()
+            // --- Step 4: Save user ---
+            $this->userModel->name = $name;
+            $this->userModel->email = $email;
+            $this->userModel->roleid = User;
             $this->userModel->password = password_hash($password, PASSWORD_DEFAULT);
-            // Not setPassword()
-            // $userData = $this->userModel->toArray();
-            // $userData = new UserModel($data);
 
-            // $appointment = new AppointmentModel($data);
-            // Save to DB
-            // $result = $this->db->create('users', $userData->toArray());
-            // var_dump('paing');
-            // die;
-            $result = $this->userModel->save();
-            if (!$result) {
-                echo "Something went wrong.";
-                return;
+            if ($this->userModel->save()) {
+                // $_SESSION['success'] = "Signup successful!";
+                redirect('pages/dashboard');
+            } else {
+                $_SESSION['error'] = "Something went wrong.";
+                $this->view('pages/signup');
             }
-            $this->view('pages/dash');
+        } else {
+            $this->view('pages/signup');
         }
     }
 }
