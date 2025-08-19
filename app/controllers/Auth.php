@@ -51,40 +51,76 @@ class Auth extends Controller
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Get form input
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
+            $ip = $_SERVER['REMOTE_ADDR'];
 
             if (empty($email) || empty($password)) {
                 setMessage('error', 'Please enter both email and password.');
                 redirect('pages/signin');
             }
 
-            // Fetch user by email from database
+            // --- Initialize session login attempts ---
+            if (!isset($_SESSION['login_attempts'])) {
+                $_SESSION['login_attempts'] = [];
+            }
+
+            if (!isset($_SESSION['login_attempts'][$ip])) {
+                $_SESSION['login_attempts'][$ip] = [
+                    'count' => 0,
+                    'first_attempt' => time(),
+                    'blocked_until' => null
+                ];
+            }
+
+            $attempt = &$_SESSION['login_attempts'][$ip];
+
+            // --- Check if IP is blocked ---
+            if ($attempt['blocked_until'] && $attempt['blocked_until'] > time()) {
+                $wait = $attempt['blocked_until'] - time();
+                setMessage('error', "Too many login attempts. Try again after $wait seconds.");
+                redirect('pages/signin');
+            }
+
+            // --- Reset window if older than 1 minute ---
+            if (time() - $attempt['first_attempt'] > 60) {
+                $attempt['count'] = 0;
+                $attempt['first_attempt'] = time();
+            }
+
+            // --- Fetch user ---
             $user = $this->db->getByEmail('users', $email);
 
-            // Check if user exists and verify password
             if ($user && password_verify($password, $user['password'])) {
-                // Store user info in session
+
+                $_SESSION['login_attempts'][$ip] = null;
+
                 $_SESSION['user'] = $user;
                 $_SESSION['user_role'] = $user['role_id'];
 
-                // Redirect based on role
                 if ($user['role_id'] == Admin) {
-                    redirect('Appointment/list'); // Admin dashboard
+                    redirect('Appointment/list');
                 } else {
-                    redirect('pages/dashboard'); // User dashboard
+                    redirect('pages/dashboard');
                 }
             } else {
-                // Invalid login
-                setMessage('error', 'Login failed! Invalid email or password.');
+
+                $attempt['count']++;
+
+                if ($attempt['count'] >= 5) {
+                    $attempt['blocked_until'] = time() + 300; // block for 5 minutes
+                    setMessage('error', "Too many login attempts. Your IP is blocked for 5 minutes.");
+                } else {
+                    setMessage('error', "Login failed! Invalid email or password.");
+                }
+
                 redirect('pages/signin');
             }
         } else {
-            // If accessed directly via GET, redirect to sign-in page
             redirect('pages/signin');
         }
     }
+
 
     public function logout()
     {
