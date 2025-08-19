@@ -19,7 +19,9 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
 // App bootstrap
 // ------------------------------------
 require_once '../app/class_loader.php';
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 // DO NOT start the session here
 // You will call session_start() only inside controllers/views where needed
 
