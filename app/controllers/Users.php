@@ -130,7 +130,9 @@ class Users extends Controller
             $this->userModel->password = password_hash($password, PASSWORD_DEFAULT);
 
             if ($this->userModel->save()) {
-                // $_SESSION['success'] = "Signup successful!";
+                $_SESSION['user_name'] = $name;
+                $_SESSION['user_email'] = $email;
+
                 redirect('pages/dashboard');
             } else {
                 $_SESSION['error'] = "Something went wrong.";

@@ -12,7 +12,6 @@
   <div class="dashboard-bg">
     <div class="dashboard-content">
       <div class="dashboard-title">For Your Health</div>
-
       <div class="dashboard-actions">
         <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/Activities/elderlyview';">
           <span class="action-icon">
@@ -37,10 +36,6 @@
           </span>
           View History
         </button>
-
-        <!-- <form action="<?= URLROOT ?>/users/logout" method="post" style="display:inline;">
-          <button type="submit" class="btn btn-danger">Logout</button>
-        </form> -->
 
         <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/pages/appointmentform';">
           <span class="action-icon">
