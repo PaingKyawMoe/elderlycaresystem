@@ -14,7 +14,6 @@ class Pages extends Controller
         $this->view('pages/home');
     }
 
-
     public function dashboard()
     {
         $this->view('pages/dash');

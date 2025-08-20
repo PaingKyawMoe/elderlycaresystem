@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/../libraries/Mailer.php';
 require_once __DIR__ . '/../interfaces/UserModelInterface.php';
 require_once __DIR__ . '/../models/UserModel.php';
 
@@ -132,6 +132,13 @@ class Users extends Controller
             if ($this->userModel->save()) {
                 $_SESSION['user_name'] = $name;
                 $_SESSION['user_email'] = $email;
+
+                $mailer = new Mail();
+                $mailer->sendWelcome($email, $name);
+
+                // Redirect or show thank you page
+                // header("Location: " . URLROOT . "/pages/dashboard");
+                // exit;
 
                 redirect('pages/dashboard');
             } else {
