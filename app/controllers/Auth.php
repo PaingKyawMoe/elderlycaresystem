@@ -128,12 +128,31 @@ class Auth extends Controller
             session_start();
         }
 
-        // Destroy session and redirect
+        // Clear session array
+        $_SESSION = [];
+
+        // Destroy session completely
         session_destroy();
 
-        header("Location: " . URLROOT . "/pages/signin");
+        // Also clear the session cookie for extra safety
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+
+        // Redirect to signin page
+        header("Location: " . URLROOT . "/pages/home");
         exit;
     }
+
 
 
 
