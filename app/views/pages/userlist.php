@@ -19,6 +19,18 @@
         <i class="fas fa-calendar-check header-icon"></i>
         <span class="header-title">Register Users</span>
       </h1>
+
+      <!-- Search Box -->
+      <div class="search-container">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search users by name or email...">
+          <button class="search-clear" id="clearSearch" style="display: none;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
       <div class="header-actions">
         <button class="btn btn-primary" onclick="window.location.href='<?= URLROOT; ?>/Appointment/list'">
           AppointmentData
@@ -156,6 +168,7 @@
     (() => {
       const users = <?= json_encode($data['users'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
       let userList = [...users];
+      let filteredUsers = [...users]; // New array for filtered results
       let currentPage = 1;
       const usersPerPage = 10;
       let userToDelete = null;
@@ -176,32 +189,69 @@
       const paginationContainer = document.getElementById('pagination');
       const saveUserBtn = document.getElementById('saveUserBtn');
 
+      // Search elements
+      const searchInput = document.getElementById('searchInput');
+      const clearSearch = document.getElementById('clearSearch');
+
       const userId = document.getElementById('editUserId');
       const name = document.getElementById('editName');
       const email = document.getElementById('editEmail');
       const password = document.getElementById('editPassword');
 
+      // Search functionality
+      function performSearch(searchTerm) {
+        const term = searchTerm.toLowerCase().trim();
+
+        if (term === '') {
+          filteredUsers = [...userList];
+          clearSearch.style.display = 'none';
+        } else {
+          filteredUsers = userList.filter(user =>
+            user.name.toLowerCase().includes(term) ||
+            user.email.toLowerCase().includes(term)
+          );
+          clearSearch.style.display = 'block';
+        }
+
+        currentPage = 1; // Reset to first page when searching
+        renderTable();
+      }
+
+      // Search input event listener
+      searchInput.addEventListener('input', (e) => {
+        performSearch(e.target.value);
+      });
+
+      // Clear search button
+      clearSearch.addEventListener('click', () => {
+        searchInput.value = '';
+        performSearch('');
+        searchInput.focus();
+      });
+
       function getTotalPages() {
-        return Math.ceil(userList.length / usersPerPage);
+        return Math.ceil(filteredUsers.length / usersPerPage);
       }
 
       function getCurrentPageUsers() {
         const startIndex = (currentPage - 1) * usersPerPage;
         const endIndex = startIndex + usersPerPage;
-        return userList.slice(startIndex, endIndex);
+        return filteredUsers.slice(startIndex, endIndex);
       }
 
       function renderTable() {
         const currentUsers = getCurrentPageUsers();
 
         if (currentUsers.length === 0) {
+          const isSearching = searchInput.value.trim() !== '';
           tbody.innerHTML = `
             <tr>
               <td colspan="4">
                 <div class="empty-state">
-                  <i class="fas fa-user-slash"></i>
-                  <h3>No users found</h3>
-                  <p>There are no users to display at the moment.</p>
+                  <i class="fas fa-${isSearching ? 'search' : 'user-slash'}"></i>
+                  <h3>${isSearching ? 'No search results' : 'No users found'}</h3>
+                  <p>${isSearching ? 'No users match your search criteria.' : 'There are no users to display at the moment.'}</p>
+                  ${isSearching ? '<p>Try adjusting your search terms.</p>' : ''}
                 </div>
               </td>
             </tr>
@@ -234,12 +284,16 @@
       function updatePagination() {
         const totalPages = getTotalPages();
         const startIndex = (currentPage - 1) * usersPerPage + 1;
-        const endIndex = Math.min(currentPage * usersPerPage, userList.length);
+        const endIndex = Math.min(currentPage * usersPerPage, filteredUsers.length);
 
         // Update pagination info
-        paginationInfo.textContent = userList.length === 0 ?
-          'No users found' :
-          `Showing ${startIndex}-${endIndex} of ${userList.length} users`;
+        const isSearching = searchInput.value.trim() !== '';
+        if (filteredUsers.length === 0) {
+          paginationInfo.textContent = isSearching ? 'No search results' : 'No users found';
+        } else {
+          const searchText = isSearching ? ' (filtered)' : '';
+          paginationInfo.textContent = `Showing ${startIndex}-${endIndex} of ${filteredUsers.length} users${searchText}`;
+        }
 
         // Generate pagination buttons
         let paginationHTML = '';
@@ -337,7 +391,6 @@
 
           closeDeleteModal();
 
-
           fetch(`<?= URLROOT ?>/users/delete/${id}`, {
               method: 'POST',
               headers: {
@@ -348,6 +401,8 @@
             .then(response => {
               if (response.status === 'success') {
                 userList = userList.filter(u => u.id !== id);
+                // Also update filtered list if search is active
+                filteredUsers = filteredUsers.filter(u => u.id !== id);
 
                 // Adjust current page if necessary
                 const totalPages = getTotalPages();
@@ -444,8 +499,15 @@
               const index = userList.findIndex(u => u.id === updated.id);
               if (index !== -1) {
                 userList[index] = updated;
-                renderTable();
               }
+
+              // Update filtered list if search is active
+              const filteredIndex = filteredUsers.findIndex(u => u.id === updated.id);
+              if (filteredIndex !== -1) {
+                filteredUsers[filteredIndex] = updated;
+              }
+
+              renderTable();
               showNotification('User updated successfully!', 'success');
               closeModal();
             } else {
@@ -524,6 +586,13 @@
             closeDeleteModal();
           }
         }
+
+        // Focus search with Ctrl+F or Cmd+F
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        }
       });
 
       // Initialize the table
@@ -533,6 +602,129 @@
   </script>
 
   <style>
+    /* Search box styles */
+    .search-container {
+      flex: 1;
+      max-width: 400px;
+      margin: 0 20px;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-box:focus-within {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      color: #6b7280;
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 40px 12px 40px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      background: transparent;
+      color: #374151;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .search-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+
+    .search-clear:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .search-container {
+        max-width: none;
+        margin: 0;
+        order: 2;
+      }
+
+      .header-actions {
+        order: 1;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .search-input {
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+        padding: 10px 35px 10px 35px;
+      }
+
+      .search-input::placeholder {
+        font-size: 14px;
+      }
+    }
+
+    /* Enhanced empty state for search */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6b7280;
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: #d1d5db;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #374151;
+      font-weight: 600;
+    }
+
+    .empty-state p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+
     /* Message styles */
     .message-container {
       position: fixed;

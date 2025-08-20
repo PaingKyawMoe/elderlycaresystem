@@ -26,7 +26,7 @@
         <a href="<?php echo URLROOT; ?>/pages/home" class="active">Home</a>
         <a href="<?php echo URLROOT; ?>/pages/donate"">Donate</a>
         <a href=" <?php echo URLROOT; ?>/pages/about">About Us</a>
-        <a href="<?php echo URLROOT; ?>/pages/signin">Admin</a>
+        <a href="<?php echo URLROOT; ?>/pages/signin">Login</a>
         <button class="call-now">Call Now</button>
       </nav>
     </div>
