@@ -22,7 +22,7 @@ require_once '../app/class_loader.php';
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-// DO NOT start the session here
-// You will call session_start() only inside controllers/views where needed
+
+
 
 $init = new Core();

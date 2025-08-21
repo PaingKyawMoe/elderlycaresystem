@@ -13,6 +13,14 @@ class Pages extends Controller
     {
         $this->view('pages/home');
     }
+    public function forgotPassword()
+    {
+        $this->view('pages/forgotPassword');
+    }
+    public function resetPassword()
+    {
+        $this->view('pages/resetPassword');
+    }
 
     public function dashboard()
     {

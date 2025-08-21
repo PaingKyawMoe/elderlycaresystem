@@ -231,6 +231,34 @@ class Database implements DatabaseInterface
         return $this->pdo;
     }
 
+    /**
+     * Get user by reset token and check expiration
+     *
+     * @param string $table Table name (usually 'users')
+     * @param string $token Reset token
+     * @return array|null User data or null if not found/expired
+     */
+    public function getByToken(string $table, string $token): ?array
+    {
+        try {
+            $sql = "SELECT * FROM {$table} 
+                WHERE reset_token = :token 
+                AND reset_expires > NOW()
+                LIMIT 1";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':token', $token);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+
+
 
 
     // public function resultSet()

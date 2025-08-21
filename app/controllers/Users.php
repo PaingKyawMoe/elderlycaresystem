@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../libraries/Mailer.php';
+require_once __DIR__ . '/../libraries/Mail.php';
 require_once __DIR__ . '/../interfaces/UserModelInterface.php';
 require_once __DIR__ . '/../models/UserModel.php';
 
