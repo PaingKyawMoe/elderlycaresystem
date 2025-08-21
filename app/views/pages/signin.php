@@ -188,7 +188,7 @@
         </div>
 
         <div class="forgot-password">
-          <a href="<?php echo URLROOT; ?>/pages/signin">Forgot Password?</a>
+          <a href="<?php echo URLROOT; ?>/pages/forgotPassword">Forgot Password?</a>
         </div>
 
         <button type="submit" class="submit-btn" id="submitBtn">

@@ -154,6 +154,84 @@ class Auth extends Controller
     }
 
 
+    public function forgotPassword()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'] ?? '';
+            if (empty($email)) {
+                setMessage('error', 'Please enter your email.');
+                redirect('pages/forgotPassword');
+            }
+
+            $user = $this->db->getByEmail('users', $email);
+            if (!$user) {
+                setMessage('error', 'Email not found.');
+                redirect('pages/forgotPassword');
+            }
+
+            $token = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', time() + 3600); // 1 hour
+
+            $this->db->update('users', $user['id'], [
+                'reset_token' => $token,
+                'reset_expires' => $expires
+            ]);
+
+            $mailer = new Mail();
+            if ($mailer->sendResetPassword($user['email'], $user['name'], $token)) {
+                // setMessage('success', 'Password reset link sent to your email.');
+            } else {
+                // setMessage('error', 'Failed to send email. Try again later.');
+            }
+
+            redirect('pages/forgotPassword');
+        } else {
+            $this->view('pages/forgotPassword');
+        }
+    }
+
+    public function resetPassword()
+    {
+        $token = $_GET['token'] ?? '';
+        if (!$token) {
+            setMessage('error', 'Invalid token.');
+            redirect('pages/signin');
+        }
+
+        $user = $this->db->multiColumnFilter('users', ['reset_token' => $token]);
+        if (!$user || strtotime($user['reset_expires']) < time()) {
+            // setMessage('error', 'Token expired or invalid.');
+            redirect('pages/signin');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $password = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+
+            if ($password !== $confirmPassword) {
+                // setMessage('error', 'Passwords do not match.');
+                $this->view('pages/resetPassword', ['token' => $token]);
+                return;
+            }
+
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
+            $this->db->update('users', $user['id'], [
+                'password' => $hashed,
+                'reset_token' => null,
+                'reset_expires' => null
+            ]);
+
+            // setMessage('success', 'Password updated successfully. You can now login.');
+            redirect('pages/signin');
+        } else {
+            $this->view('pages/resetPassword', ['token' => $token]);
+        }
+    }
+
+
+
+
+
 
 
 
