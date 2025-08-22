@@ -96,7 +96,7 @@ body {
   overflow: hidden;
   max-width: 900px;
   width: 90%;
-  min-height: 600px;
+  height: 650px;
   position: relative;
   z-index: 1;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -322,7 +322,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
   position: relative;
   overflow: hidden;
 }

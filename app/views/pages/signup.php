@@ -41,6 +41,7 @@
             justify-content: center;
             align-items: center;
             border-radius: 12px;
+            margin: -19px auto;
             transition: all 0.3s ease;
         }
 
