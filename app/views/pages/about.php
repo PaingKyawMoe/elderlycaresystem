@@ -203,44 +203,39 @@
   <script>
     // Header scroll effect
     const header = document.getElementById('header');
-    let lastScroll = 0;
 
     window.addEventListener('scroll', () => {
       const currentScroll = window.pageYOffset;
 
+      // Only add/remove scrolled class for styling
       if (currentScroll > 50) {
         header.classList.add('scrolled');
       } else {
         header.classList.remove('scrolled');
       }
 
-      // Hide/show header on scroll
-      if (currentScroll > lastScroll && currentScroll > 300) {
-        header.style.transform = 'translateY(-100%)';
-      } else {
-        header.style.transform = 'translateY(0)';
-      }
-
-      lastScroll = currentScroll;
+      // Remove the hide/show logic - header stays fixed
     });
 
     // Mobile menu toggle
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const nav = document.getElementById('nav');
 
-    mobileMenuBtn.addEventListener('click', () => {
-      nav.classList.toggle('active');
-      const isOpen = nav.classList.contains('active');
-      mobileMenuBtn.innerHTML = isOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-    });
+    if (mobileMenuBtn && nav) {
+      mobileMenuBtn.addEventListener('click', () => {
+        nav.classList.toggle('active');
+        const isOpen = nav.classList.contains('active');
+        mobileMenuBtn.innerHTML = isOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+      });
 
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-        nav.classList.remove('active');
-        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-      }
-    });
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+          nav.classList.remove('active');
+          mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+      });
+    }
 
     // Enhanced newsletter form
     document.getElementById('newsletter-form').addEventListener('submit', function(e) {

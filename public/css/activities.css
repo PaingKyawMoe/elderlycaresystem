@@ -5,7 +5,8 @@
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
   background: linear-gradient(to right, rgb(56, 189, 248), rgb(59, 130, 246));
   min-height: 100vh;
   padding: 20px;

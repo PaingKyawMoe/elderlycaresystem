@@ -102,9 +102,24 @@ body {
   box-shadow: var(--glass-shadow);
 }
 
-.header.scrolled {
-  background: var(--white);
-  box-shadow: var(--shadow-lg);
+/* Hide scrollbar completely */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* IE and Edge */
+body {
+  -ms-overflow-style: none;
 }
 
 .header-container {
