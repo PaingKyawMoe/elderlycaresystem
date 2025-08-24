@@ -272,18 +272,23 @@ class Database implements DatabaseInterface
     //     return $this->stmt->rowCount();
     // }
 
-    // public function verify($id)
-    // {
-    //     try {
-    //         $sql = "UPDATE users SET is_confirmed = 1 WHERE id = :id";
-    //         $stmt = $this->pdo->prepare($sql);
-    //         $stmt->bindValue(':id', $id);
-    //         return $stmt->execute();
-    //     } catch (PDOException $e) {
-    //         error_log($e->getMessage());
-    //         return false;
-    //     }
-    // }
+    public function verify($id)
+    {
+        try {
+            $sql = "UPDATE users SET is_verified = 1, status='active' WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                var_dump($stmt->errorInfo());
+                exit;
+            }
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            exit;
+        }
+    }
 
     // private function sumQuery($sql)
     // {
