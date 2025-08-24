@@ -21,6 +21,10 @@ class Pages extends Controller
     {
         $this->view('pages/resetPassword');
     }
+    public function verifyOtp()
+    {
+        $this->view('pages/verifyOtp');
+    }
 
     public function dashboard()
     {

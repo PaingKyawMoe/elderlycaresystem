@@ -64,89 +64,105 @@ class Users extends Controller
     public function register()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            // session_start(); // for messages
-
-            // --- Step 1: Get reCAPTCHA response ---
-            $recaptcha_secret = "6LfTA6srAAAAACzlTnGsNzUvhK2ib6g2vd6b-JQY";
-            $recaptcha_response = $_POST['g-recaptcha-response'] ?? '';
-
-            if (empty($recaptcha_response)) {
-                $_SESSION['error_captcha'] = "Please verify that you are not a robot.";
-                $this->view('pages/signup');
-                return;
-            }
-
-            // --- Step 2: Verify with Google ---
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://www.google.com/recaptcha/api/siteverify");
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'secret' => $recaptcha_secret,
-                'response' => $recaptcha_response
-            ]));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-            $verify = curl_exec($ch);
-            curl_close($ch);
-
-            $response_data = json_decode($verify);
-
-            if (!$response_data || !isset($response_data->success) || !$response_data->success) {
-                $_SESSION['error_captcha'] = "Captcha verification failed.";
-                $this->view('pages/signup');
-                return;
-            }
-
-            // --- Step 3: Validate form fields ---
             $name = $_POST['name'] ?? '';
             $email = $_POST['email'] ?? '';
             $password = $_POST['password'] ?? '';
             $confirmPassword = $_POST['confirm_password'] ?? '';
 
             if ($password !== $confirmPassword) {
-                $data['password-doesnotmatch'] = 'Passwords do not match.';
-                $this->view('pages/signup', $data);
+                $_SESSION['error'] = "Passwords do not match.";
+                $this->view('pages/signup');
                 return;
             }
 
             if ($this->db->columnFilter('users', 'email', $email)) {
-                $_SESSION['error_email'] = "This email is already registered!";
+                $_SESSION['error'] = "Email already registered.";
                 $this->view('pages/signup');
                 return;
             }
 
-            $validation = new UserValidator($_POST);
-            $data = $validation->validateForm();
-            if (count($data) > 0) {
-                $this->view('pages/signup', $data);
-                return;
-            }
+            $otp = rand(100000, 999999);
+            $expires = date('Y-m-d H:i:s', time() + 600); // 10 min
 
-            // --- Step 4: Save user ---
             $this->userModel->name = $name;
             $this->userModel->email = $email;
             $this->userModel->roleid = User;
             $this->userModel->password = password_hash($password, PASSWORD_DEFAULT);
+            $this->userModel->otp_code = $otp;
+            $this->userModel->otp_expires = $expires;
+            $this->userModel->status = 'pending';
 
             if ($this->userModel->save()) {
-                $_SESSION['user_name'] = $name;
-                $_SESSION['user_email'] = $email;
-
                 $mailer = new Mail();
-                $mailer->sendWelcome($email, $name);
+                $verifyLink = URLROOT . "/users/verifyEmail?email=" . urlencode($email) . "&otp=$otp";
+                $mailer->sendVerifyMail($email, $name, $otp, $verifyLink);
 
-                // Redirect or show thank you page
-                // header("Location: " . URLROOT . "/pages/dashboard");
-                // exit;
-
-                redirect('pages/dashboard');
+                // $_SESSION['success'] = "Registration successful! Please check your email to verify.";
+                redirect('pages/verifyOtp');
             } else {
-                $_SESSION['error'] = "Something went wrong.";
+                // $_SESSION['error'] = "Something went wrong.";
                 $this->view('pages/signup');
             }
         } else {
             $this->view('pages/signup');
+        }
+    }
+
+    // --- Email verification ---
+    public function verifyEmail()
+    {
+        $email = $_GET['email'] ?? '';
+        $otp = $_GET['otp'] ?? '';
+
+        $user = $this->db->multiColumnFilter('users', [
+            'email' => $email,
+            'otp_code' => $otp
+        ]);
+
+        if ($user && strtotime($user['otp_expires']) > time()) {
+            if ($this->db->verify($user['id'])) {
+                $this->db->update('users', $user['id'], [
+                    'otp_code' => null,
+                    'otp_expires' => null
+                ]);
+                $_SESSION['success'] = "Email verified! You can login now.";
+            } else {
+                $_SESSION['error'] = "Failed to verify. Try again later.";
+            }
+        } else {
+            $_SESSION['error'] = "Invalid or expired verification link.";
+        }
+
+        redirect('pages/signin');
+    }
+
+    // --- OTP verification (manual) ---
+    public function verifyOtp()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'] ?? '';
+            $otp = $_POST['otp'] ?? '';
+
+            $user = $this->db->multiColumnFilter('users', [
+                'email' => $email,
+                'otp_code' => $otp
+            ]);
+
+            if ($user && strtotime($user['otp_expires']) > time()) {
+                if ($this->db->verify($user['id'])) {
+                    $this->db->update('users', $user['id'], [
+                        'otp_code' => null,
+                        'otp_expires' => null
+                    ]);
+                    $_SESSION['success'] = "Account verified successfully!";
+                } else {
+                    $_SESSION['error'] = "Failed to verify. Try again later.";
+                }
+            } else {
+                $_SESSION['error'] = "Invalid or expired OTP.";
+            }
+
+            redirect('pages/signin');
         }
     }
 }
