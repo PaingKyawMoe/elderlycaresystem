@@ -76,7 +76,7 @@ class Users extends Controller
             }
 
             if ($this->db->columnFilter('users', 'email', $email)) {
-                $_SESSION['error'] = "Email already registered.";
+                $_SESSION['error_email'] = "This email is already registered!";
                 $this->view('pages/signup');
                 return;
             }
@@ -125,9 +125,9 @@ class Users extends Controller
                     'otp_code' => null,
                     'otp_expires' => null
                 ]);
-                $_SESSION['success'] = "Email verified! You can login now.";
+                // $_SESSION['success'] = "Email verified! You can login now.";
             } else {
-                $_SESSION['error'] = "Failed to verify. Try again later.";
+                // $_SESSION['error'] = "Failed to verify. Try again later.";
             }
         } else {
             $_SESSION['error'] = "Invalid or expired verification link.";
@@ -154,7 +154,7 @@ class Users extends Controller
                         'otp_code' => null,
                         'otp_expires' => null
                     ]);
-                    $_SESSION['success'] = "Account verified successfully!";
+                    // $_SESSION['success'] = "Account verified successfully!";
                 } else {
                     $_SESSION['error'] = "Failed to verify. Try again later.";
                 }
