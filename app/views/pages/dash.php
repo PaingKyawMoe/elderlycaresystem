@@ -7,12 +7,45 @@
   <title>For Your Health Dashboard</title>
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/dashboard.css?v=<?= time(); ?>">
 </head>
+<style>
+  .logout-btn {
+    background: #e74c3c;
+    /* red */
+    color: #fff;
+    border: none;
+    margin-top: 20px;
+    padding: 10px 18px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .logout-btn:hover {
+    background: #c0392b;
+    /* darker red on hover */
+    transform: translateY(-2px);
+  }
+
+  .logout-btn:active {
+    transform: scale(0.95);
+  }
+</style>
 
 <body>
+
+
   <div class="dashboard-bg">
     <div class="dashboard-content">
       <div class="dashboard-title">For Your Health</div>
+      <div style="position: absolute; top: 20px; right: 20px;">
+        <button class="logout-btn" onclick="location.href='<?= URLROOT ?>/Auth/logout';">
+          Logout
+        </button>
+      </div>
       <div class="dashboard-actions">
+
         <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/Activities/elderlyview';">
           <span class="action-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -27,27 +60,14 @@
         <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/pages/viewAppionment';">
           <span class="action-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="8" cy="4" r="2" />
-              <path d="M8 6v5l-2 5" />
-              <path d="M8 11l2 2 4-2 2 7" />
-              <path d="M16 19a2 2 0 1 0 0-4" />
-            </svg>
-          </span>
-          View Your Appointment
-        </button>
-
-        <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/pages/search';">
-          <span class="action-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="16" rx="2" />
               <path d="M7 8h10" />
               <path d="M7 12h10" />
               <path d="M7 16h6" />
             </svg>
           </span>
-          View History
+          Appointment History
         </button>
-
         <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/pages/appointmentform';">
           <span class="action-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -60,17 +80,18 @@
           Appointment
         </button>
 
-        <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/Auth/logout';">
+        <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/pages/search';">
           <span class="action-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" />
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <path d="M7 8h10" />
+              <path d="M7 12h10" />
+              <path d="M7 16h6" />
             </svg>
           </span>
-          Logout
+          Search History
         </button>
       </div>
-
       <div class="dashboard-lower">
         <div class="lower-img">
           <img src="https://plus.unsplash.com/premium_photo-1681995526481-fe0763f510cd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGVsZGVybHljYXJlfGVufDB8fDB8fHww" alt="Healthcare professionals providing care">
