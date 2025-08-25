@@ -31,6 +31,7 @@ class AppointmentService
 
         // Clean data array to expected keys only
         $appointmentData = [
+            'user_id' => $_POST['user_id'] ?? null,
             'name' => $data['name'],
             'dob' => $data['dob'],
             'phone' => $data['phone'],
@@ -54,7 +55,7 @@ class AppointmentService
 
     public function updateAppointment(int $id, array $data): bool
     {
-        
+
         $allowedFields = [
             'name',
             'phone',

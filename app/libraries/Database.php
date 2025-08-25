@@ -143,6 +143,20 @@ class Database implements DatabaseInterface
         }
     }
 
+    public function findByColumn($table, $column, $value)
+    {
+        try {
+            $sql = "SELECT * FROM {$table} WHERE {$column} = :value";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':value', $value);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC); // multiple appointments possible
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
+
     public function getByEmail($table, $email)
     {
         try {

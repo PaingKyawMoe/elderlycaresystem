@@ -111,6 +111,7 @@ class Appointment extends Controller
         }
 
         $data = [
+            
             'name' => trim($_POST['name'] ?? ''),
             'dob' => $_POST['dob'] ?? '',
             'phone' => trim($_POST['phone'] ?? ''),
@@ -122,6 +123,7 @@ class Appointment extends Controller
             'selectDoctor' => $_POST['selectDoctor'] ?? '',
             'reasonForAppointment' => trim($_POST['reasonforappointment'] ?? ''),
         ];
+
 
         $data['photo'] = null;
 
