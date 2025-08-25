@@ -66,6 +66,15 @@ class Pages extends Controller
         $this->view('pages/searchappointment');
     }
 
+    public function viewAppionment()
+    {
+        $appointmentData = $this->db->findByColumn('appointments', 'user_id', $_SESSION['user']['id']);
+        $data = [
+            'appointmentData' => $appointmentData
+        ];
+        $this->view('pages/viewappointment', $data);
+    }
+
     public function viewactivities()
     {
         redirect('Activities/elderlyView');

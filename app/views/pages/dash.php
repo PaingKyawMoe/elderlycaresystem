@@ -24,6 +24,17 @@
           </span>
           Activities
         </button>
+        <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/pages/viewAppionment';">
+          <span class="action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8" cy="4" r="2" />
+              <path d="M8 6v5l-2 5" />
+              <path d="M8 11l2 2 4-2 2 7" />
+              <path d="M16 19a2 2 0 1 0 0-4" />
+            </svg>
+          </span>
+          View Your Appointment
+        </button>
 
         <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/pages/search';">
           <span class="action-icon">

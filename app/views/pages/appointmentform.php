@@ -14,7 +14,8 @@
     <div class="wrapper">
         <div class="form-container">
             <h1>Appointment Form</h1>
-            <form id="appointmentForm" method="POST" action="<?= URLROOT ?>/Appointment/store" enctype="multipart/form-data">
+            <form method="POST" action="<?= URLROOT ?>/Appointment/store" enctype="multipart/form-data">
+                <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($_SESSION['user']['id']); ?>">
                 <div class="form-group">
                     <i class="fas fa-user"></i>
                     <input type="text" name="name" id="name" placeholder="Enter Your Name" required>
@@ -205,6 +206,7 @@
         // Function to submit form via AJAX
         async function submitFormAjax(formData) {
             try {
+                // console.log(formData);
                 const response = await fetch('<?= URLROOT ?>/Appointment/store', {
                     method: 'POST',
                     body: formData
