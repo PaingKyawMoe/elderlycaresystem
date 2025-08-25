@@ -49,14 +49,14 @@
           Appointment
         </button>
 
-        <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/pages/signin';">
+        <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/Auth/logout';">
           <span class="action-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="8" r="4" />
               <path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" />
             </svg>
           </span>
-          Admin
+          Logout
         </button>
       </div>
 
