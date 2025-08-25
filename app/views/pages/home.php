@@ -9,6 +9,455 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/home.css?v=<?= time(); ?>">
 
+  <style>
+    /* Services Section Styles */
+    .services {
+      padding: 80px 0;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .services::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    .services-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .services-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .services-header h2 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .services-header p {
+      font-size: 1.2rem;
+      color: #64748b;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .service-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .service-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.2);
+    }
+
+    .service-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .service-card:hover .service-icon {
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      transform: scale(1.1);
+    }
+
+    .service-icon i {
+      font-size: 2rem;
+      color: #3b82f6;
+      transition: all 0.4s ease;
+    }
+
+    .service-card:hover .service-icon i {
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .service-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 16px;
+      transition: color 0.3s ease;
+    }
+
+    .service-card:hover h3 {
+      color: #3b82f6;
+    }
+
+    .service-card p {
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .service-btn {
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .service-btn:hover::before {
+      left: 100%;
+    }
+
+    .service-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Statistics Section */
+    .stats {
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      padding: 60px 0;
+      margin-top: 0;
+    }
+
+    .stats-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+
+    .stat-item {
+      color: white;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Testimonials Section */
+    .testimonials {
+      padding: 80px 0;
+      background: #f8fafc;
+      position: relative;
+    }
+
+    .testimonials::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at top, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .testimonials-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .testimonials-header h2 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .testimonials-header p {
+      font-size: 1.2rem;
+      color: #64748b;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+    }
+
+    .testimonial-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .testimonial-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .testimonial-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15);
+    }
+
+    .testimonial-content {
+      position: relative;
+    }
+
+    .quote-icon {
+      position: absolute;
+      top: -10px;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover .quote-icon {
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+    }
+
+    .quote-icon i {
+      color: #3b82f6;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .testimonial-card:hover .quote-icon i {
+      color: white;
+    }
+
+    .testimonial-content p {
+      color: #4b5563;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 25px;
+      font-style: italic;
+      padding-right: 50px;
+    }
+
+    .patient-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .patient-avatar {
+      flex-shrink: 0;
+    }
+
+    .patient-avatar img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #e5e7eb;
+      transition: border-color 0.3s ease;
+    }
+
+    .testimonial-card:hover .patient-avatar img {
+      border-color: #3b82f6;
+    }
+
+    .patient-details h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+
+    .patient-details span {
+      color: #64748b;
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .rating {
+      display: flex;
+      gap: 2px;
+    }
+
+    .rating i {
+      color: #fbbf24;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .services {
+        padding: 60px 0;
+      }
+
+      .services-header h2,
+      .testimonials-header h2 {
+        font-size: 2.2rem;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .service-card {
+        padding: 30px 20px;
+      }
+
+      .testimonials {
+        padding: 60px 0;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .testimonial-card {
+        padding: 25px;
+      }
+
+      .testimonial-content p {
+        font-size: 1rem;
+        padding-right: 40px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+      }
+    }
+
+    /* Animation for scroll reveal */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-in-up.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 
 <body>
@@ -54,6 +503,258 @@
           <img src="https://images.unsplash.com/photo-1588991837648-9f380f70dde9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGVsZGVybHljYXJlfGVufDB8MXwwfHx8MA%3D%3D"
             loading="lazy">
           <div class="image-overlay"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services">
+    <div class="services-container">
+      <div class="services-header fade-in-up">
+        <h2>Our Care Services</h2>
+        <p>Comprehensive healthcare solutions designed specifically for elderly care with modern technology and compassionate professionals</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card fade-in-up">
+          <div class="service-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <h3>Home Care</h3>
+          <p>Professional in-home care services providing personalized assistance with daily activities, medication management, and companionship in the comfort of your loved one's home.</p>
+          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
+        </div>
+
+        <div class="service-card fade-in-up">
+          <div class="service-icon">
+            <i class="fas fa-stethoscope"></i>
+          </div>
+          <h3>Medical Care</h3>
+          <p>Comprehensive medical services including regular health monitoring, specialist consultations, and coordination with healthcare providers for optimal health management.</p>
+          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
+        </div>
+
+        <div class="service-card fade-in-up">
+          <div class="service-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Safety Monitoring</h3>
+          <p>Advanced monitoring systems and emergency response services ensuring 24/7 safety and peace of mind for both seniors and their families.</p>
+          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
+        </div>
+
+        <div class="service-card fade-in-up">
+          <div class="service-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Social Activities</h3>
+          <p>Engaging social programs and activities designed to maintain mental wellness, foster connections, and provide meaningful experiences for active aging.</p>
+          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
+        </div>
+
+        <div class="service-card fade-in-up">
+          <div class="service-icon">
+            <i class="fas fa-utensils"></i>
+          </div>
+          <h3>Nutrition Support</h3>
+          <p>Customized meal planning and nutrition services ensuring proper dietary needs are met with delicious, healthy meals tailored to individual preferences.</p>
+          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
+        </div>
+
+        <div class="service-card fade-in-up">
+          <div class="service-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3>24/7 Support</h3>
+          <p>Round-the-clock support services with trained professionals available at any time to provide assistance, answer questions, and handle emergencies.</p>
+          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials">
+    <div class="testimonials-container">
+      <div class="testimonials-header fade-in-up">
+        <h2>Trusted by Notable Families</h2>
+        <p>Hear from distinguished patients and their families who have experienced our exceptional care services</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-in-up">
+          <div class="testimonial-content">
+            <div class="quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <p>"The level of care and attention my father received was exceptional. The staff treated him like family, and we always felt confident in their professional expertise."</p>
+            <div class="patient-info">
+              <div class="patient-avatar">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
+              </div>
+              <div class="patient-details">
+                <h4>Dr. Robert Johnson</h4>
+                <span>Former University Professor</span>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-in-up">
+          <div class="testimonial-content">
+            <div class="quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <p>"Outstanding medical care combined with genuine compassion. The 24/7 monitoring system gave our family peace of mind during mother's recovery period."</p>
+            <div class="patient-info">
+              <div class="patient-avatar">
+                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
+              </div>
+              <div class="patient-details">
+                <h4>Margaret Thompson</h4>
+                <span>Former Business Executive</span>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-in-up">
+          <div class="testimonial-content">
+            <div class="quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <p>"The personalized care plan and dedicated staff made all the difference. I'm grateful for the dignity and respect shown throughout my treatment."</p>
+            <div class="patient-info">
+              <div class="patient-avatar">
+                <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
+              </div>
+              <div class="patient-details">
+                <h4>James Mitchell</h4>
+                <span>Retired Judge</span>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-in-up">
+          <div class="testimonial-content">
+            <div class="quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <p>"Exceptional service that goes beyond medical care. The social activities and nutritional support helped my husband maintain his quality of life."</p>
+            <div class="patient-info">
+              <div class="patient-avatar">
+                <img src="https://plus.unsplash.com/premium_photo-1661400600986-b7493240cae2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fG1lbnxlbnwwfHwwfHx8MA%3D%3D" alt="Patient" loading="lazy">
+              </div>
+              <div class="patient-details">
+                <h4>Eleanor Davis</h4>
+                <span>Former School Principal</span>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-in-up">
+          <div class="testimonial-content">
+            <div class="quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <p>"The technology integration and professional staff created a seamless care experience. I felt safe and well-cared for throughout my stay."</p>
+            <div class="patient-info">
+              <div class="patient-avatar">
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
+              </div>
+              <div class="patient-details">
+                <h4>Mg Mg</h4>
+                <span>Former Engineer</span>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-in-up">
+          <div class="testimonial-content">
+            <div class="quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <p>"The care team's attention to detail and genuine concern for my well-being made a difficult time much more manageable for both me and my family."</p>
+            <div class="patient-info">
+              <div class="patient-avatar">
+                <img src="https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
+              </div>
+              <div class="patient-details">
+                <h4>Mg Paing</h4>
+                <span>Former Nurse Administrator</span>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="stats">
+    <div class="stats-container">
+      <div class="stats-grid">
+        <div class="stat-item fade-in-up">
+          <span class="stat-number" data-target="2500">0</span>
+          <span class="stat-label">Happy Families</span>
+        </div>
+        <div class="stat-item fade-in-up">
+          <span class="stat-number" data-target="150">0</span>
+          <span class="stat-label">Care Professionals</span>
+        </div>
+        <div class="stat-item fade-in-up">
+          <span class="stat-number" data-target="10">0</span>
+          <span class="stat-label">Years Experience</span>
+        </div>
+        <div class="stat-item fade-in-up">
+          <span class="stat-number" data-target="24">0</span>
+          <span class="stat-label">Hours Service</span>
         </div>
       </div>
     </div>
@@ -271,7 +972,7 @@
         }
       }
       
-      .register-btn, .call-now, .newsletter-form button {
+      .register-btn, .call-now, .newsletter-form button, .service-btn {
         position: relative;
         overflow: hidden;
       }
@@ -279,7 +980,7 @@
     document.head.appendChild(style);
 
     // Apply ripple effect to buttons
-    document.querySelectorAll('.register-btn, .call-now, .newsletter-form button').forEach(button => {
+    document.querySelectorAll('.register-btn, .call-now, .newsletter-form button, .service-btn').forEach(button => {
       button.addEventListener('click', createRipple);
 
       button.addEventListener('mouseenter', function() {
@@ -302,6 +1003,64 @@
       });
     });
 
+    // Scroll reveal animation
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements for scroll animations
+    document.querySelectorAll('.fade-in-up').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Animated counters for statistics
+    function animateCounter(element, target, duration = 2000) {
+      let start = 0;
+      const increment = target / (duration / 16);
+
+      const updateCounter = () => {
+        start += increment;
+        if (start < target) {
+          element.textContent = Math.floor(start);
+          requestAnimationFrame(updateCounter);
+        } else {
+          element.textContent = target;
+        }
+      };
+
+      updateCounter();
+    }
+
+    // Start counter animations when stats section is visible
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const counters = entry.target.querySelectorAll('.stat-number');
+          counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            animateCounter(counter, target);
+          });
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    const statsSection = document.querySelector('.stats');
+    if (statsSection) {
+      statsObserver.observe(statsSection);
+    }
+
     // Parallax effect for hero background elements
     window.addEventListener('scroll', () => {
       const scrolled = window.pageYOffset;
@@ -318,7 +1077,7 @@
       // Handle keyboard navigation for accessibility
       if (e.key === 'Enter' || e.key === ' ') {
         const focused = document.activeElement;
-        if (focused.classList.contains('call-now') || focused.classList.contains('register-btn')) {
+        if (focused.classList.contains('call-now') || focused.classList.contains('register-btn') || focused.classList.contains('service-btn')) {
           focused.click();
         }
       }
@@ -333,29 +1092,6 @@
 
     document.addEventListener('mousedown', function() {
       document.body.classList.remove('user-is-tabbing');
-    });
-
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, observerOptions);
-
-    // Observe footer sections for scroll animations
-    document.querySelectorAll('.footer-section').forEach(section => {
-      section.style.opacity = '0';
-      section.style.transform = 'translateY(30px)';
-      section.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-      observer.observe(section);
     });
 
     // Initialize page
