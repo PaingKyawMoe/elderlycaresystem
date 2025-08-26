@@ -507,6 +507,40 @@
       </div>
     </div>
   </section>
+  <div class="review-section">
+    <h2>User Reviews</h2>
+
+    <!-- Add Review Form -->
+    <?php if (isset($_SESSION['user'])): ?>
+      <form action="<?= URLROOT ?>/reviews/add" method="POST" class="review-form">
+        <textarea name="comment" placeholder="Write your review..." required></textarea>
+        <select name="rating" required>
+          <option value="">Rate</option>
+          <option value="5">⭐⭐⭐⭐⭐</option>
+          <option value="4">⭐⭐⭐⭐</option>
+          <option value="3">⭐⭐⭐</option>
+          <option value="2">⭐⭐</option>
+          <option value="1">⭐</option>
+        </select>
+        <button type="submit">Submit Review</button>
+      </form>
+    <?php else: ?>
+      <p><a href="<?= URLROOT ?>/pages/signin">Login</a> to leave a review.</p>
+    <?php endif; ?>
+
+    <!-- Show Reviews -->
+    <div class="review-list">
+      <?php foreach ($data['reviews'] as $review): ?>
+        <div class="review-card">
+          <strong><?= htmlspecialchars($review['name']) ?></strong>
+          <span><?= str_repeat("⭐", $review['rating']) ?></span>
+          <p><?= htmlspecialchars($review['comment']) ?></p>
+          <small><?= $review['created_at'] ?></small>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
+
 
   <!-- Services Section -->
   <section class="services">
@@ -569,168 +603,6 @@
           <h3>24/7 Support</h3>
           <p>Round-the-clock support services with trained professionals available at any time to provide assistance, answer questions, and handle emergencies.</p>
           <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials Section -->
-  <section class="testimonials">
-    <div class="testimonials-container">
-      <div class="testimonials-header fade-in-up">
-        <h2>Trusted by Notable Families</h2>
-        <p>Hear from distinguished patients and their families who have experienced our exceptional care services</p>
-      </div>
-
-      <div class="testimonials-grid">
-        <div class="testimonial-card fade-in-up">
-          <div class="testimonial-content">
-            <div class="quote-icon">
-              <i class="fas fa-quote-left"></i>
-            </div>
-            <p>"The level of care and attention my father received was exceptional. The staff treated him like family, and we always felt confident in their professional expertise."</p>
-            <div class="patient-info">
-              <div class="patient-avatar">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
-              </div>
-              <div class="patient-details">
-                <h4>Dr. Robert Johnson</h4>
-                <span>Former University Professor</span>
-                <div class="rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card fade-in-up">
-          <div class="testimonial-content">
-            <div class="quote-icon">
-              <i class="fas fa-quote-left"></i>
-            </div>
-            <p>"Outstanding medical care combined with genuine compassion. The 24/7 monitoring system gave our family peace of mind during mother's recovery period."</p>
-            <div class="patient-info">
-              <div class="patient-avatar">
-                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
-              </div>
-              <div class="patient-details">
-                <h4>Margaret Thompson</h4>
-                <span>Former Business Executive</span>
-                <div class="rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card fade-in-up">
-          <div class="testimonial-content">
-            <div class="quote-icon">
-              <i class="fas fa-quote-left"></i>
-            </div>
-            <p>"The personalized care plan and dedicated staff made all the difference. I'm grateful for the dignity and respect shown throughout my treatment."</p>
-            <div class="patient-info">
-              <div class="patient-avatar">
-                <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
-              </div>
-              <div class="patient-details">
-                <h4>James Mitchell</h4>
-                <span>Retired Judge</span>
-                <div class="rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card fade-in-up">
-          <div class="testimonial-content">
-            <div class="quote-icon">
-              <i class="fas fa-quote-left"></i>
-            </div>
-            <p>"Exceptional service that goes beyond medical care. The social activities and nutritional support helped my husband maintain his quality of life."</p>
-            <div class="patient-info">
-              <div class="patient-avatar">
-                <img src="https://plus.unsplash.com/premium_photo-1661400600986-b7493240cae2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fG1lbnxlbnwwfHwwfHx8MA%3D%3D" alt="Patient" loading="lazy">
-              </div>
-              <div class="patient-details">
-                <h4>Eleanor Davis</h4>
-                <span>Former School Principal</span>
-                <div class="rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card fade-in-up">
-          <div class="testimonial-content">
-            <div class="quote-icon">
-              <i class="fas fa-quote-left"></i>
-            </div>
-            <p>"The technology integration and professional staff created a seamless care experience. I felt safe and well-cared for throughout my stay."</p>
-            <div class="patient-info">
-              <div class="patient-avatar">
-                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
-              </div>
-              <div class="patient-details">
-                <h4>Mg Mg</h4>
-                <span>Former Engineer</span>
-                <div class="rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card fade-in-up">
-          <div class="testimonial-content">
-            <div class="quote-icon">
-              <i class="fas fa-quote-left"></i>
-            </div>
-            <p>"The care team's attention to detail and genuine concern for my well-being made a difficult time much more manageable for both me and my family."</p>
-            <div class="patient-info">
-              <div class="patient-avatar">
-                <img src="https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?w=150&h=150&fit=crop&crop=face&auto=format" alt="Patient" loading="lazy">
-              </div>
-              <div class="patient-details">
-                <h4>Mg Paing</h4>
-                <span>Former Nurse Administrator</span>
-                <div class="rating">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

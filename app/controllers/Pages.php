@@ -11,7 +11,13 @@ class Pages extends Controller
 
     public function index()
     {
-        $this->view('pages/home');
+        $reviewModel = $this->model('ReviewModel');
+        $reviews = $reviewModel->getAllReviews();
+
+        $data = [
+            'reviews' => $reviews
+        ];
+        $this->view('pages/home', $data);;
     }
     public function forgotPassword()
     {
