@@ -275,16 +275,16 @@ class Database implements DatabaseInterface
 
 
 
-    // public function resultSet()
-    // {
-    //     $this->execute();
-    //     return $this->stmt->fetchAll();
-    // }
+    public function resultSet()
+    {
+        $this->execute();
+        return $this->stmt->fetchAll();
+    }
 
-    // public function rowCount()
-    // {
-    //     return $this->stmt->rowCount();
-    // }
+    public function rowCount()
+    {
+        return $this->stmt->rowCount();
+    }
 
     public function verify($id)
     {
