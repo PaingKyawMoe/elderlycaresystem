@@ -184,6 +184,247 @@
       box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
     }
 
+    /* Review Section Styles */
+    .review-section {
+      padding: 80px 0;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .review-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .review-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .review-section h2 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      margin-bottom: 50px;
+      line-height: 1.2;
+    }
+
+    .review-form {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      margin-bottom: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .review-form::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+    }
+
+    .review-form textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 20px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      resize: vertical;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+      box-sizing: border-box;
+    }
+
+    .review-form textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .review-form textarea::placeholder {
+      color: #9ca3af;
+    }
+
+    .review-form-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .review-form select {
+      flex: 1;
+      min-width: 200px;
+      padding: 15px 20px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      background: #f8fafc;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .review-form select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .review-form button {
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .review-form button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .review-form button:hover::before {
+      left: 100%;
+    }
+
+    .review-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    }
+
+    .review-form button:active {
+      transform: translateY(0);
+    }
+
+    .review-form p {
+      text-align: center;
+      font-size: 1.1rem;
+      color: #64748b;
+      margin: 0;
+    }
+
+    .review-form p a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .review-form p a:hover {
+      color: #1e40af;
+      text-decoration: underline;
+    }
+
+    .review-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .review-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .review-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .review-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .review-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15);
+    }
+
+    .review-card strong {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1e293b;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .review-card span {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .review-card p {
+      color: #4b5563;
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .review-card small {
+      color: #9ca3af;
+      font-size: 0.9rem;
+      display: block;
+      text-align: right;
+      font-weight: 500;
+    }
+
     /* Statistics Section */
     .stats {
       background: linear-gradient(135deg, #1e40af, #3b82f6);
@@ -399,14 +640,68 @@
     }
 
     /* Responsive Design */
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
+      .review-section {
+        padding: 60px 15px;
+      }
+
+      .review-list {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 25px;
+      }
+    }
+
+    @media (max-width: 992px) {
       .services {
         padding: 60px 0;
       }
 
       .services-header h2,
-      .testimonials-header h2 {
+      .testimonials-header h2,
+      .review-section h2 {
+        font-size: 2.5rem;
+      }
+
+      .services-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+      }
+
+      .review-form {
+        padding: 30px;
+      }
+
+      .review-form-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .review-form select {
+        min-width: 100%;
+        margin-bottom: 15px;
+      }
+
+      .review-form button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .services {
+        padding: 50px 0;
+      }
+
+      .services-header h2,
+      .testimonials-header h2,
+      .review-section h2 {
         font-size: 2.2rem;
+        margin-bottom: 30px;
+      }
+
+      .services-header p,
+      .testimonials-header p {
+        font-size: 1.1rem;
       }
 
       .services-grid {
@@ -444,6 +739,182 @@
       .stat-number {
         font-size: 2.5rem;
       }
+
+      /* Review Section Mobile Styles */
+      .review-section {
+        padding: 50px 15px;
+      }
+
+      .review-section h2 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+      }
+
+      .review-form {
+        padding: 25px 20px;
+        margin-bottom: 40px;
+      }
+
+      .review-form textarea {
+        min-height: 100px;
+        padding: 15px;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+      }
+
+      .review-form select {
+        padding: 12px 15px;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+      }
+
+      .review-form button {
+        padding: 12px 25px;
+        font-size: 0.95rem;
+      }
+
+      .review-list {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .review-card {
+        padding: 20px;
+      }
+
+      .review-card strong {
+        font-size: 1.1rem;
+        margin-bottom: 6px;
+      }
+
+      .review-card span {
+        font-size: 1rem;
+        margin-bottom: 12px;
+      }
+
+      .review-card p {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .review-card small {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+
+      .services-header h2,
+      .testimonials-header h2,
+      .review-section h2 {
+        font-size: 1.8rem;
+      }
+
+      .services-header p,
+      .testimonials-header p {
+        font-size: 1rem;
+      }
+
+      .service-card {
+        padding: 25px 15px;
+      }
+
+      .service-icon {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 20px;
+      }
+
+      .service-icon i {
+        font-size: 1.8rem;
+      }
+
+      .service-card h3 {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+      }
+
+      .service-card p {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+
+      .service-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+
+      .stat-number {
+        font-size: 2.2rem;
+      }
+
+      .stat-label {
+        font-size: 1rem;
+      }
+
+      /* Review Section Small Mobile Styles */
+      .review-section {
+        padding: 40px 10px;
+      }
+
+      .review-section h2 {
+        font-size: 1.6rem;
+        margin-bottom: 25px;
+      }
+
+      .review-form {
+        padding: 20px 15px;
+        margin-bottom: 30px;
+      }
+
+      .review-form textarea {
+        min-height: 90px;
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+
+      .review-form select {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+      }
+
+      .review-form button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+      }
+
+      .review-form p {
+        font-size: 1rem;
+      }
+
+      .review-card {
+        padding: 15px;
+        border-radius: 15px;
+      }
+
+      .review-card strong {
+        font-size: 1rem;
+      }
+
+      .review-card span {
+        font-size: 0.95rem;
+      }
+
+      .review-card p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .review-card small {
+        font-size: 0.8rem;
+      }
     }
 
     /* Animation for scroll reveal */
@@ -456,6 +927,65 @@
     .fade-in-up.revealed {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    /* Focus styles for accessibility */
+    .review-form textarea:focus,
+    .review-form select:focus,
+    .review-form button:focus {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+
+    /* High contrast support */
+    @media (prefers-contrast: high) {
+      .review-form {
+        border: 2px solid #1e293b;
+      }
+
+      .review-card {
+        border: 2px solid #e5e7eb;
+      }
+
+      .review-form textarea,
+      .review-form select {
+        border-width: 2px;
+      }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+
+      .review-card,
+      .review-form,
+      .service-card,
+      .testimonial-card {
+        transition: none;
+      }
+
+      .review-card:hover,
+      .service-card:hover,
+      .testimonial-card:hover {
+        transform: none;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      .review-form {
+        display: none;
+      }
+
+      .review-section {
+        padding: 20px 0;
+      }
+
+      .review-card {
+        box-shadow: none;
+        border: 1px solid #000;
+        break-inside: avoid;
+        margin-bottom: 20px;
+      }
     }
   </style>
 </head>
@@ -473,8 +1003,8 @@
 
       <nav id="nav">
         <a href="<?php echo URLROOT; ?>/pages/home" class="active">Home</a>
-        <a href="<?php echo URLROOT; ?>/pages/donate"">Donate</a>
-        <a href=" <?php echo URLROOT; ?>/pages/about">About Us</a>
+        <a href="<?php echo URLROOT; ?>/pages/donate">Donate</a>
+        <a href="<?php echo URLROOT; ?>/pages/about">About Us</a>
         <a href="<?php echo URLROOT; ?>/pages/signin">Login</a>
         <button class="call-now">Call Now</button>
       </nav>
@@ -507,6 +1037,8 @@
       </div>
     </div>
   </section>
+
+  <!-- Review Section -->
   <div class="review-section">
     <h2>User Reviews</h2>
 
@@ -514,24 +1046,28 @@
     <?php if (isset($_SESSION['user'])): ?>
       <form action="<?= URLROOT ?>/reviews/add" method="POST" class="review-form">
         <textarea name="comment" placeholder="Write your review..." required></textarea>
-        <select name="rating" required>
-          <option value="">Rate</option>
-          <option value="5">⭐⭐⭐⭐⭐</option>
-          <option value="4">⭐⭐⭐⭐</option>
-          <option value="3">⭐⭐⭐</option>
-          <option value="2">⭐⭐</option>
-          <option value="1">⭐</option>
-        </select>
-        <button type="submit">Submit Review</button>
+        <div class="review-form-row">
+          <select name="rating" required>
+            <option value="">Rate our service</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Very Good</option>
+            <option value="3">⭐⭐⭐ Good</option>
+            <option value="2">⭐⭐ Fair</option>
+            <option value="1">⭐ Poor</option>
+          </select>
+          <button type="submit">Submit Review</button>
+        </div>
       </form>
     <?php else: ?>
-      <p><a href="<?= URLROOT ?>/pages/signin">Login</a> to leave a review.</p>
+      <div class="review-form">
+        <p><a href="<?= URLROOT ?>/pages/signin">Login</a> to leave a review and share your experience with our elderly care services.</p>
+      </div>
     <?php endif; ?>
 
     <!-- Show Reviews -->
     <div class="review-list">
       <?php foreach ($data['reviews'] as $review): ?>
-        <div class="review-card">
+        <div class="review-card fade-in-up">
           <strong><?= htmlspecialchars($review['name']) ?></strong>
           <span><?= str_repeat("⭐", $review['rating']) ?></span>
           <p><?= htmlspecialchars($review['comment']) ?></p>
@@ -541,72 +1077,8 @@
     </div>
   </div>
 
-
   <!-- Services Section -->
-  <section class="services">
-    <div class="services-container">
-      <div class="services-header fade-in-up">
-        <h2>Our Care Services</h2>
-        <p>Comprehensive healthcare solutions designed specifically for elderly care with modern technology and compassionate professionals</p>
-      </div>
 
-      <div class="services-grid">
-        <div class="service-card fade-in-up">
-          <div class="service-icon">
-            <i class="fas fa-home"></i>
-          </div>
-          <h3>Home Care</h3>
-          <p>Professional in-home care services providing personalized assistance with daily activities, medication management, and companionship in the comfort of your loved one's home.</p>
-          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
-        </div>
-
-        <div class="service-card fade-in-up">
-          <div class="service-icon">
-            <i class="fas fa-stethoscope"></i>
-          </div>
-          <h3>Medical Care</h3>
-          <p>Comprehensive medical services including regular health monitoring, specialist consultations, and coordination with healthcare providers for optimal health management.</p>
-          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
-        </div>
-
-        <div class="service-card fade-in-up">
-          <div class="service-icon">
-            <i class="fas fa-shield-alt"></i>
-          </div>
-          <h3>Safety Monitoring</h3>
-          <p>Advanced monitoring systems and emergency response services ensuring 24/7 safety and peace of mind for both seniors and their families.</p>
-          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
-        </div>
-
-        <div class="service-card fade-in-up">
-          <div class="service-icon">
-            <i class="fas fa-users"></i>
-          </div>
-          <h3>Social Activities</h3>
-          <p>Engaging social programs and activities designed to maintain mental wellness, foster connections, and provide meaningful experiences for active aging.</p>
-          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
-        </div>
-
-        <div class="service-card fade-in-up">
-          <div class="service-icon">
-            <i class="fas fa-utensils"></i>
-          </div>
-          <h3>Nutrition Support</h3>
-          <p>Customized meal planning and nutrition services ensuring proper dietary needs are met with delicious, healthy meals tailored to individual preferences.</p>
-          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
-        </div>
-
-        <div class="service-card fade-in-up">
-          <div class="service-icon">
-            <i class="fas fa-clock"></i>
-          </div>
-          <h3>24/7 Support</h3>
-          <p>Round-the-clock support services with trained professionals available at any time to provide assistance, answer questions, and handle emergencies.</p>
-          <a href='<?= URLROOT; ?>/pages/donate' class="service-btn">Learn More</a>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Statistics Section -->
   <section class="stats">
@@ -659,10 +1131,10 @@
         <div class="footer-section">
           <h4>Service</h4>
           <ul>
-            <li><a href="dashboard.php">HomeCare</a></li>
-            <li><a href="dashboard.php">ModernMachine</a></li>
-            <li><a href="dashboard.php">Reliability</a></li>
-            <li><a href="dashboard.php">24/7 Support</a></li>
+            <li><a href="#">HomeCare</a></li>
+            <li><a href="#">ModernMachine</a></li>
+            <li><a href="#">Reliability</a></li>
+            <li><a href="#">24/7 Support</a></li>
           </ul>
         </div>
 
@@ -724,7 +1196,7 @@
       setTimeout(() => {
         // Show success state
         button.innerHTML = '<i class="fas fa-check"></i> Subscribed!';
-        button.style.background = 'linear-gradient(135deg, var(--button-green), var(--button-green-light))';
+        button.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
 
         // Reset form
         input.value = '';
@@ -742,33 +1214,94 @@
       }, 1500);
     });
 
+    // Review form enhancements
+    const reviewForm = document.querySelector('.review-form form');
+    if (reviewForm) {
+      const textarea = reviewForm.querySelector('textarea');
+      const select = reviewForm.querySelector('select');
+      const button = reviewForm.querySelector('button');
+
+      // Character counter for textarea
+      const charCounter = document.createElement('div');
+      charCounter.style.cssText = `
+        text-align: right;
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: -15px;
+        margin-bottom: 15px;
+      `;
+      textarea.parentNode.insertBefore(charCounter, textarea.nextSibling);
+
+      textarea.addEventListener('input', function() {
+        const length = this.value.length;
+        charCounter.textContent = `${length}/500 characters`;
+
+        if (length > 500) {
+          charCounter.style.color = '#ef4444';
+          this.style.borderColor = '#ef4444';
+        } else if (length > 450) {
+          charCounter.style.color = '#f59e0b';
+          this.style.borderColor = '#f59e0b';
+        } else {
+          charCounter.style.color = '#6b7280';
+          this.style.borderColor = '#e5e7eb';
+        }
+      });
+
+      // Form validation and submission
+      reviewForm.addEventListener('submit', function(e) {
+        if (textarea.value.length > 500) {
+          e.preventDefault();
+          showNotification('Review is too long. Please keep it under 500 characters.', 'error');
+          return;
+        }
+
+        // Show loading state
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        button.disabled = true;
+        textarea.disabled = true;
+        select.disabled = true;
+      });
+
+      // Auto-resize textarea
+      textarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+      });
+    }
+
     // Custom notification system
     function showNotification(message, type = 'info') {
       const notification = document.createElement('div');
       notification.className = `notification ${type}`;
+
+      const bgColor = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6';
+
       notification.style.cssText = `
         position: fixed;
         top: 100px;
         right: 20px;
-        background: var(--white);
-        color: var(--gray-800);
+        background: white;
+        color: #1f2937;
         padding: 1rem 1.5rem;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-xl);
-        border-left: 4px solid var(--button-green);
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid ${bgColor};
         z-index: 10000;
         max-width: 400px;
         transform: translateX(100%);
-        transition: var(--transition);
+        transition: all 0.3s ease;
         font-weight: 500;
       `;
 
+      const icon = type === 'error' ? 'fa-exclamation-circle' : type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+
       notification.innerHTML = `
         <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <i class="fas fa-check-circle" style="color: var(--button-green); font-size: 1.25rem;"></i>
+          <i class="fas ${icon}" style="color: ${bgColor}; font-size: 1.25rem;"></i>
           <span>${message}</span>
           <button onclick="this.parentElement.parentElement.remove()" 
-                  style="background: none; border: none; color: var(--gray-400); cursor: pointer; font-size: 1.25rem; margin-left: auto;">
+                  style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.25rem; margin-left: auto;">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -844,7 +1377,7 @@
         }
       }
       
-      .register-btn, .call-now, .newsletter-form button, .service-btn {
+      .register-btn, .call-now, .newsletter-form button, .service-btn, .review-form button {
         position: relative;
         overflow: hidden;
       }
@@ -852,11 +1385,13 @@
     document.head.appendChild(style);
 
     // Apply ripple effect to buttons
-    document.querySelectorAll('.register-btn, .call-now, .newsletter-form button, .service-btn').forEach(button => {
+    document.querySelectorAll('.register-btn, .call-now, .newsletter-form button, .service-btn, .review-form button').forEach(button => {
       button.addEventListener('click', createRipple);
 
       button.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-3px) scale(1.02)';
+        if (!this.disabled) {
+          this.style.transform = 'translateY(-3px) scale(1.02)';
+        }
       });
 
       button.addEventListener('mouseleave', function() {
@@ -940,7 +1475,9 @@
 
       heroElements.forEach((element, index) => {
         const speed = 0.5 + (index * 0.1);
-        element.style.transform = `translateY(${scrolled * speed}px)`;
+        if (element && element.style) {
+          element.style.transform = `translateY(${scrolled * speed}px)`;
+        }
       });
     });
 
@@ -949,7 +1486,10 @@
       // Handle keyboard navigation for accessibility
       if (e.key === 'Enter' || e.key === ' ') {
         const focused = document.activeElement;
-        if (focused.classList.contains('call-now') || focused.classList.contains('register-btn') || focused.classList.contains('service-btn')) {
+        if (focused.classList.contains('call-now') ||
+          focused.classList.contains('register-btn') ||
+          focused.classList.contains('service-btn') ||
+          (focused.tagName === 'BUTTON' && focused.closest('.review-form'))) {
           focused.click();
         }
       }
@@ -972,8 +1512,10 @@
       const animatedElements = document.querySelectorAll('.hero-content, .hero-image');
       animatedElements.forEach((element, index) => {
         setTimeout(() => {
-          element.style.opacity = '1';
-          element.style.transform = 'translateX(0)';
+          if (element && element.style) {
+            element.style.opacity = '1';
+            element.style.transform = 'translateX(0)';
+          }
         }, index * 200);
       });
 
@@ -991,11 +1533,10 @@
 
     if (prefersReducedMotion.matches) {
       // Disable animations for users who prefer reduced motion
-      document.documentElement.style.setProperty('--transition', 'none');
-      document.documentElement.style.setProperty('--transition-smooth', 'none');
-
-      const animations = document.getAnimations();
-      animations.forEach(animation => animation.cancel());
+      const animatedElements = document.querySelectorAll('.review-card, .review-form, .service-card, .testimonial-card');
+      animatedElements.forEach(element => {
+        element.style.transition = 'none';
+      });
     }
 
     // Performance optimization: Throttle scroll events
@@ -1027,11 +1568,11 @@
     // Console branding
     console.log(
       '%c🏥 Elderly Care System',
-      'background: linear-gradient(135deg, #10B981, #34D399); color: white; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);'
+      'background: linear-gradient(135deg, #3b82f6, #1e40af); color: white; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);'
     );
     console.log(
-      '%c✨ Modern responsive design with beautiful blue & white theme loaded successfully!',
-      'color: #0066FF; font-size: 14px; font-weight: 500;'
+      '%c✨ Modern responsive design with beautiful blue & white theme and review section loaded successfully!',
+      'color: #3b82f6; font-size: 14px; font-weight: 500;'
     );
   </script>
 </body>
