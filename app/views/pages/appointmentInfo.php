@@ -9,11 +9,226 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/info.css?v=<?= time(); ?>">
 
+    <style>
+        /* Additional navbar styles only */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            /* margin-bottom: 1rem; */
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 70px;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .navbar-brand .header-icon {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link.logout {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-left: 0.5rem;
+        }
+
+        .nav-link.logout:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .mobile-menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Mobile responsive for navbar only */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+                box-shadow: var(--shadow-lg);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+                z-index: 99;
+            }
+
+            .navbar-nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-link {
+                width: 100%;
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .nav-link.logout {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+        }
+
+        /* Remove old header styles and adjust container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: var(--info-color);
+        }
+
+        /* Hide the old header */
+        .header {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
+    <!-- New Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-content">
+                <a href="#" class="navbar-brand">
+                    <i class="fas fa-calendar-check header-icon"></i>
+                    <span>Appointment Management</span>
+                </a>
+
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <ul class="navbar-nav" id="navbarNav">
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="window.location.href='<?= URLROOT; ?>/Users/userlist'">
+                            <i class="fas fa-users"></i>
+                            <span>ViewUsers</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="window.location.href='<?= URLROOT; ?>/Donations/donationDash'">
+                            <i class="fas fa-heart"></i>
+                            <span>DonationData</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" onclick="window.location.href='<?= URLROOT; ?>/Activities/index'">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>ActivitiesData</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= URLROOT ?>/Auth/logout" class="nav-link logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <!-- Header -->
+        <!-- Original Header (Hidden) -->
         <div class="header">
             <h1>
                 <i class="fas fa-calendar-check header-icon"></i>
@@ -322,6 +537,35 @@
     <div id="messageContainer" class="message-container"></div>
 
     <script>
+        // Mobile menu toggle function for navbar
+        function toggleMobileMenu() {
+            const navbarNav = document.getElementById('navbarNav');
+            const toggleBtn = document.querySelector('.mobile-menu-toggle i');
+
+            navbarNav.classList.toggle('active');
+
+            // Toggle icon
+            if (navbarNav.classList.contains('active')) {
+                toggleBtn.className = 'fas fa-times';
+            } else {
+                toggleBtn.className = 'fas fa-bars';
+            }
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navbar = document.querySelector('.navbar');
+            const navbarNav = document.getElementById('navbarNav');
+            const toggleBtn = document.querySelector('.mobile-menu-toggle');
+
+            if (!navbar.contains(event.target)) {
+                navbarNav.classList.remove('active');
+                if (toggleBtn) {
+                    toggleBtn.querySelector('i').className = 'fas fa-bars';
+                }
+            }
+        });
+
         // Define URLROOT for JavaScript if not already defined
         const URLROOT = '<?= URLROOT ?>';
 

@@ -144,6 +144,7 @@
                 padding: 0.4rem 0.6rem;
             }
         }
+        
     </style>
 
 </head>
@@ -281,7 +282,64 @@
             </div>
         </div>
     </div>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-main">
+                <div class="footer-section">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="#">Our Story</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
 
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">Cookie Statement</a></li>
+                        <li><a href="#">Terms Of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Service</h4>
+                    <ul>
+                        <li><a href="#">HomeCare</a></li>
+                        <li><a href="#">ModernMachine</a></li>
+                        <li><a href="#">Reliability</a></li>
+                        <li><a href="#">24/7 Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="newsletter">
+                    <h4>Stay Updated</h4>
+                    <form class="newsletter-form" id="newsletter-form">
+                        <input type="email" id="newsletter-email" placeholder="Enter your email" required
+                            autocomplete="email">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
     <script>
         // Modern alert function
         function showModal(title, message, type = 'error') {

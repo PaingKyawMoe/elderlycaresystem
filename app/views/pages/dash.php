@@ -195,7 +195,7 @@
               <path d="M7 16h6" />
             </svg>
           </span>
-          Appointment History
+          History
         </button>
         <button class="action-card" tabindex="0" onclick="location.href='<?= URLROOT ?>/pages/appointmentform';">
           <span class="action-icon">
@@ -218,7 +218,7 @@
               <path d="M7 16h6" />
             </svg>
           </span>
-          Appointment Search
+          Search
         </button>
       </div>
       <div class="dashboard-lower">
