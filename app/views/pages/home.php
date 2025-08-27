@@ -10,6 +10,112 @@
   <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/home.css?v=<?= time(); ?>">
 
   <style>
+    /* Image Slider Section */
+    .photo-slider-section {
+      padding: 80px 0;
+      background: #f8fafc;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .photo-slider-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+    }
+
+    .slider-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 40px;
+    }
+
+    .photo-slider {
+      display: flex;
+      overflow: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .photo-slide {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      position: relative;
+    }
+
+    .photo-slide img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      height: 500px;
+      /* Adjust height as needed */
+    }
+
+    .prev-btn,
+    .next-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      padding: 15px;
+      cursor: pointer;
+      z-index: 10;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      color: #3b82f6;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .prev-btn:hover,
+    .next-btn:hover {
+      background: #3b82f6;
+      color: white;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .prev-btn {
+      left: 20px;
+    }
+
+    .next-btn {
+      right: 20px;
+    }
+
+    .dots-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #cbd5e1;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: #3b82f6;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .photo-slide img {
+        height: 300px;
+      }
+    }
+
     /* Services Section Styles */
     .services {
       padding: 80px 0;
@@ -1037,6 +1143,28 @@
       </div>
     </div>
   </section>
+  <section class="photo-slider-section">
+    <div class="photo-slider-container">
+      <h3 class="slider-title">Our Happy Community</h3>
+      <div class="photo-slider">
+        <div class="photo-slide fade-in-up">
+          <img src="https://plus.unsplash.com/premium_photo-1722686448514-e56bbe4120d5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZWxkZXJseSUyMHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D" alt="A happy elderly man smiling" loading="lazy">
+        </div>
+        <div class="photo-slide fade-in-up">
+          <img src="https://images.unsplash.com/photo-1513159446162-54eb8bdaa79b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZWxkZXJseSUyMHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D" alt="An elderly woman laughing with a caregiver" loading="lazy">
+        </div>
+        <div class="photo-slide fade-in-up">
+          <img src="https://plus.unsplash.com/premium_photo-1663036898193-b072c8b24b39?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGVsZGVybHklMjBwZW9wbGV8ZW58MHx8MHx8fDA%3D" alt="A friendly elderly couple holding hands" loading="lazy">
+        </div>
+        <div class="photo-slide fade-in-up">
+          <img src="https://media.istockphoto.com/id/2162741471/photo/group-of-asian-elderly-woman-relaxing-together-at-home.webp?a=1&b=1&s=612x612&w=0&k=20&c=52WPfn1oMVR6FFGjm_oUc9hCwU_s7JEeiDx6b2kNclk=" alt="A thoughtful elderly man looking out a window" loading="lazy">
+        </div>
+      </div>
+      <button class="prev-btn" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
+      <button class="next-btn" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
+      <div class="dots-container"></div>
+    </div>
+  </section>
 
   <!-- Review Section -->
   <div class="review-section">
@@ -1574,6 +1702,62 @@
       '%c✨ Modern responsive design with beautiful blue & white theme and review section loaded successfully!',
       'color: #3b82f6; font-size: 14px; font-weight: 500;'
     );
+
+    // Image Slider functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const slider = document.querySelector('.photo-slider');
+      const slides = document.querySelectorAll('.photo-slide');
+      const prevBtn = document.querySelector('.prev-btn');
+      const nextBtn = document.querySelector('.next-btn');
+      const dotsContainer = document.querySelector('.dots-container');
+      let currentIndex = 0;
+
+      // Create navigation dots
+      slides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        dot.addEventListener('click', () => {
+          goToSlide(index);
+        });
+        dotsContainer.appendChild(dot);
+      });
+
+      const dots = document.querySelectorAll('.dot');
+
+      function goToSlide(index) {
+        if (index < 0) {
+          currentIndex = slides.length - 1;
+        } else if (index >= slides.length) {
+          currentIndex = 0;
+        } else {
+          currentIndex = index;
+        }
+
+        slider.scrollLeft = slides[currentIndex].offsetLeft;
+        updateDots();
+      }
+
+      function updateDots() {
+        dots.forEach(dot => dot.classList.remove('active'));
+        dots[currentIndex].classList.add('active');
+      }
+
+      prevBtn.addEventListener('click', () => {
+        goToSlide(currentIndex - 1);
+      });
+
+      nextBtn.addEventListener('click', () => {
+        goToSlide(currentIndex + 1);
+      });
+
+      // Auto-slide functionality
+      setInterval(() => {
+        goToSlide(currentIndex + 1);
+      }, 5000); // Change image every 5 seconds
+
+      // Initial state
+      goToSlide(0);
+    });
   </script>
 </body>
 
