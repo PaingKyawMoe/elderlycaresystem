@@ -18,3 +18,5 @@ define('SITENAME', 'Elderly Care');
 // Define Roles
 define('Admin', 1);
 define('User', 2);
+
+define('OPENAI_API_KEY', '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');
