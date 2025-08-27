@@ -5,7 +5,7 @@
   --success-color: #10b981;
   --danger-color: #ef4444;
   --warning-color: #f59e0b;
-  --info-color: #3b82f6;
+  --info-color: #f2f4f6;
 
   --text-primary: #111827;
   --text-secondary: #6b7280;
@@ -466,10 +466,10 @@ body {
 
 .pagination-btn {
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(to right, rgb(243, 244, 246), rgb(209, 213, 219));
+  border: 2px solid rgba(175, 173, 173, 0.2);
   border-radius: 12px;
-  color: white;
+  color: rgb(6, 61, 240);
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;

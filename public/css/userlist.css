@@ -34,7 +34,7 @@ body {
 }
 
 .container {
-  background-color: var(--info-color);
+  /* background-color: var(--info-color); */
   max-width: 1400px;
   margin: 0 auto;
   padding: 1rem;
@@ -42,16 +42,16 @@ body {
 
 /* Header Styles */
 :root {
-  --primary-color: #1460da;
+  /* --primary-color: #1460da; */
   --primary-hover: #4338ca;
   --secondary-color: #6b7280;
   --success-color: #10b981;
   --danger-color: #ef4444;
   --warning-color: #f59e0b;
-  --info-color: #3b82f6;
+  --info-color: #eceef1;
 
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
+  /* --text-primary: #111827; */
+  /* --text-secondary: #6b7280; */
   --text-tertiary: #9ca3af;
 
   --bg-primary: #ffffff;

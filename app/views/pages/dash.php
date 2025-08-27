@@ -228,7 +228,7 @@
         <div class="lower-text">
           <div class="subtitle">Specialist Doctors and Modern Technology</div>
           <div class="desc">
-            Experience comprehensive healthcare with our team of specialist doctors equipped with cutting-edge medical technology. We provide personalized care tailored to your unique health needs, ensuring the highest standards of medical excellence and patient satisfaction.
+            Experience comprehensive healthcare with our team of specialist doctors equipped with cutting-edge medical technology. We provide personalized care tailored to your unique health needs, ensuring the highest standards of medical excellence and patient satisfaction.Experience comprehensive healthcare with our team of specialist doctors equipped with cutting-edge medical technology. We provide personalized care tailored to your unique health needs, ensuring the highest standards of medical excellence and patient satisfaction.
           </div>
         </div>
       </div>
