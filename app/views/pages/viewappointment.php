@@ -492,10 +492,10 @@
         </div>
     </nav>
     <div class="container">
-        <div class="header">
+        <!-- <div class="header">
             <h1>My Appointments</h1>
             <p class="subtitle">Manage and view your medical appointments</p>
-        </div>
+        </div> -->
 
         <?php if (!empty($data['appointmentData'])): ?>
             <div class="table-container">
