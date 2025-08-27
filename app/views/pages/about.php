@@ -53,7 +53,7 @@
         <!-- Statistics -->
         <div class="about-stats">
           <div class="stat-item">
-            <span class="stat-number">500+</span>
+            <span class="stat-number">2500+</span>
             <span class="stat-label">Happy Clients</span>
           </div>
           <div class="stat-item">

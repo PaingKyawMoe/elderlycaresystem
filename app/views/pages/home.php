@@ -57,6 +57,7 @@
       /* Adjust height as needed */
     }
 
+
     .prev-btn,
     .next-btn {
       position: absolute;
@@ -1148,21 +1149,20 @@
       <h3 class="slider-title">Our Happy Community</h3>
       <div class="photo-slider">
         <div class="photo-slide fade-in-up">
-          <img src="https://plus.unsplash.com/premium_photo-1722686448514-e56bbe4120d5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZWxkZXJseSUyMHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D" alt="A happy elderly man smiling" loading="lazy">
+          <iframe width="100%" height="500" src="https://www.youtube.com/embed/x39GvuEloBY" title="Kendal Care Home introduces Balloon Tennis" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         <div class="photo-slide fade-in-up">
-          <img src="https://images.unsplash.com/photo-1513159446162-54eb8bdaa79b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZWxkZXJseSUyMHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D" alt="An elderly woman laughing with a caregiver" loading="lazy">
+          <iframe width="100%" height="500" src="https://www.youtube.com/embed/https://youtu.be/yxWm49zICNI?list=PLvZFAnypQAcUUnR0QyXY7fPjxhCLmlRCL" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
         </div>
         <div class="photo-slide fade-in-up">
-          <img src="https://plus.unsplash.com/premium_photo-1663036898193-b072c8b24b39?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGVsZGVybHklMjBwZW9wbGV8ZW58MHx8MHx8fDA%3D" alt="A friendly elderly couple holding hands" loading="lazy">
+          <iframe width="100%" height="500" src="https://www.youtube.com/embed/dK_P3o0lILQ" title="Meaningful Activities and Dementia Care" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
-        <div class="photo-slide fade-in-up">
-          <img src="https://media.istockphoto.com/id/2162741471/photo/group-of-asian-elderly-woman-relaxing-together-at-home.webp?a=1&b=1&s=612x612&w=0&k=20&c=52WPfn1oMVR6FFGjm_oUc9hCwU_s7JEeiDx6b2kNclk=" alt="A thoughtful elderly man looking out a window" loading="lazy">
-        </div>
+        <iframe width="100%" height="500" src="https://www.youtube.com/embed/sYGtMbCxjMs" title="Elderly Residents Play With Balloons Video 2017 | Daily Heart Beat" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
-      <button class="prev-btn" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
-      <button class="next-btn" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
-      <div class="dots-container"></div>
+    </div>
+    <button class="prev-btn" aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
+    <button class="next-btn" aria-label="Next image"><i class="fas fa-chevron-right"></i></button>
+    <div class="dots-container"></div>
     </div>
   </section>
 
@@ -1213,15 +1213,15 @@
     <div class="stats-container">
       <div class="stats-grid">
         <div class="stat-item fade-in-up">
-          <span class="stat-number" data-target="2500">0</span>
+          <span class="stat-number" data-target="500">0</span>
           <span class="stat-label">Happy Families</span>
         </div>
         <div class="stat-item fade-in-up">
-          <span class="stat-number" data-target="150">0</span>
+          <span class="stat-number" data-target="2500">0</span>
           <span class="stat-label">Care Professionals</span>
         </div>
         <div class="stat-item fade-in-up">
-          <span class="stat-number" data-target="10">0</span>
+          <span class="stat-number" data-target="15">0</span>
           <span class="stat-label">Years Experience</span>
         </div>
         <div class="stat-item fade-in-up">
