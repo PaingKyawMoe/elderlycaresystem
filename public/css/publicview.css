@@ -6,7 +6,7 @@
 
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(rgb(56, 189, 248), rgb(186, 230, 253));
+  background: #f2f4f6;
   /* min-height: 80vh; */
   /* padding: 20px 0; */
 }
@@ -14,7 +14,7 @@ body {
 .header {
   text-align: center;
   padding: 40px 20px;
-  color: white;
+  color: rgb(17, 17, 17);
   /* margin-bottom: 30px; */
 }
 
@@ -89,7 +89,7 @@ body {
 
 .search-stats {
   margin-top: 15px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(15, 15, 15, 0.8);
   font-size: 0.9rem;
   transition: all 0.3s ease;
 }
@@ -341,7 +341,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 0;
+  padding: -2px 0;
 }
 
 .detail-icon {

@@ -59,8 +59,9 @@ body {
   border-radius: 16px;
   padding: 2rem 1.5rem;
   display: flex;
+  text-align: center;
   align-items: center;
-  gap: 1rem;
+  gap: 2.5rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 1.1rem;

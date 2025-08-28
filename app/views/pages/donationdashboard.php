@@ -197,7 +197,7 @@ if (!isset($_SESSION['csrf_token'])) {
             <div class="navbar-content">
                 <a href="#" class="navbar-brand">
                     <i class="fas fa-calendar-check header-icon"></i>
-                    <span>Appointment Management</span>
+                    <span>Donation Management</span>
                 </a>
 
                 <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
