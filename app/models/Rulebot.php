@@ -18,6 +18,7 @@ class RuleBot
 
         // Care services
         'about' => "My system provides appointment and care for elderly people but they must be over 50 years old 😊",
+        'yes tell me' => "Firstly , You need to register and then go to appointment form and submit your infromation.",
         'appointment' => "Firstly , You need to register and then go to appointment form and submit your infromation.",
         'need help' => "Sure, I’m here to help. Do you need assistance with meals, medicines, or appointments?",
         'help' => "I can answer basic questions. Try asking about meals, medicine reminders, or activities.",
