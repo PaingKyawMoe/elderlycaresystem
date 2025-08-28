@@ -318,186 +318,14 @@
                 <i class="fas fa-user-circle"></i>
                 <span>Welcome, <?php echo htmlspecialchars($_SESSION['user']['name'] ?? 'User'); ?></span>
             </div>
-            <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
+            <!-- <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 Back
-            </a>
+            </a> -->
         </div>
     </nav>
     <!-- Hero Video Section -->
-    <div class="hero-video-section">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1>Active Aging Adventures</h1>
-                <p>Discover inspiring activities and wellness programs designed for active seniors</p>
-            </div>
 
-            <div class="video-carousel-container">
-                <div class="video-carousel" id="videoCarousel">
-                    <!-- Slide 1 - YouTube Videos -->
-                    <div class="video-slide">
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/8BcPHWGQO44" title="Seated Exercises for Older Adults" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Chair Exercises for Seniors</div>
-                                <div class="video-description">20-minute gentle seated exercises for strength and mobility</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed"
-                                src="https://www.youtube.com/embed/oBu-pQG6sTY"
-                                title="Senior Yoga for Beginners"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                            </iframe>
-                            <div class="video-info">
-                                <div class="video-title">Gentle Yoga for Seniors</div>
-                                <div class="video-description">Easy yoga poses perfect for beginners and older adults</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/uJZk7jafw-o" title="10 Exercises for Balance and Fall Prevention // Full Follow Along Workout" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Balance & Fall Prevention</div>
-                                <div class="video-description">Simple exercises to improve balance and prevent falls</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 2 - Vimeo Videos -->
-                    <div class="video-slide">
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/E2YqFYFLSbE" title="Gentle Range of Motion Chair Exercises for SENIORS (Arthritis/Limited Mobility/True Beginners)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Chair Yoga Flow</div>
-                                <div class="video-description">Gentle stretching and movement from your chair</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/0UaHYhBX6Rw" title="20 Min Strength Training for Seniors and Beginners | Gentle Exercises" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Gentle Strength Training</div>
-                                <div class="video-description">Safe resistance exercises for seniors</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/Uo1Umx4kABA" title="30 MINUTE WALKING WORKOUT | For Seniors and Beginners" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Indoor Walking Workout</div>
-                                <div class="video-description">30-minute walking workout you can do at home</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 3 - Dailymotion & Mixed Platforms -->
-                    <div class="video-slide">
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/uth_9K3EmDI" title="10 Minute Balance Exercises - To Do Everyday for Improved Balance!" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Tai Chi for Beginners</div>
-                                <div class="video-description">Gentle movements for balance and relaxation</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/JEsZo3aRo50" title="The Best 4 Pool Exercises to Strengthen Your Core &amp; Tone Up" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Water Aerobics Fun</div>
-                                <div class="video-description">Low-impact water exercises for joint health</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/ihba9Lw0tv4" title="10 Minute Morning Stretch for every day | Simple routine to wake up &amp; feel good" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Morning Stretches</div>
-                                <div class="video-description">10-minute morning routine to start your day</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 4 - SilverSneakers & Health Platform Videos -->
-                    <div class="video-slide">
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/NqFHwtxTPnE?list=RDNqFHwtxTPnE" title="Dynamite - Chair One Fitness Exclusive Choreo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Chair Dancing Workout</div>
-                                <div class="video-description">Fun seated dance moves for cardio and joy</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/pwwISeTzCc4" title="Seated Core Workout for Seniors, Beginners" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Gentle Pilates</div>
-                                <div class="video-description">Core strengthening with gentle movements</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/a4bQBXj0a0Y" title="10 Minute Guided Breathwork For Stress &amp; Anxiety I Feel Calm and Focused" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Relaxation & Meditation</div>
-                                <div class="video-description">Guided breathing for stress relief and calm</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 5 - Health Organizations & Educational Content -->
-                    <div class="video-slide">
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/90DKrNwwnzA" title="Daily Exercise Routine for JOINT PAIN RELIEF | Full Body Workout | Saurabh Bothra Yoga" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Arthritis-Friendly Exercises</div>
-                                <div class="video-description">Joint-friendly movements for pain relief</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/SzbVLVxXO0s" title="How To Improve Your Balance - Home Exercises For Balance And Stability" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Advanced Balance Training</div>
-                                <div class="video-description">Progressive exercises for stability improvement</div>
-                            </div>
-                        </div>
-
-                        <div class="video-item">
-                            <iframe class="video-embed" src="https://www.youtube.com/embed/KVm5QuXSxxA" title="5 Brain Exercises to Improve Memory and Concentration | Jim Kwik" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                            <div class="video-info">
-                                <div class="video-title">Memory & Brain Games</div>
-                                <div class="video-description">Cognitive exercises to keep mind sharp</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="carousel-controls">
-                    <button class="carousel-btn" onclick="prevSlide()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="15,18 9,12 15,6"></polyline>
-                        </svg>
-                    </button>
-                    <button class="carousel-btn" onclick="nextSlide()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9,18 15,12 9,6"></polyline>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="carousel-indicators">
-                    <div class="indicator active" onclick="goToSlide(0)"></div>
-                    <div class="indicator" onclick="goToSlide(1)"></div>
-                    <div class="indicator" onclick="goToSlide(2)"></div>
-                    <div class="indicator" onclick="goToSlide(3)"></div>
-                    <div class="indicator" onclick="goToSlide(4)"></div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="header">
         <h2>Discover Amazing Activities</h2>
@@ -617,6 +445,64 @@
             </div>
         <?php endif; ?>
     </div>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-main">
+                <div class="footer-section">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="#">Our Story</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">Cookie Statement</a></li>
+                        <li><a href="#">Terms Of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Service</h4>
+                    <ul>
+                        <li><a href="#">HomeCare</a></li>
+                        <li><a href="#">ModernMachine</a></li>
+                        <li><a href="#">Reliability</a></li>
+                        <li><a href="#">24/7 Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="newsletter">
+                    <h4>Stay Updated</h4>
+                    <form class="newsletter-form" id="newsletter-form">
+                        <input type="email" id="newsletter-email" placeholder="Enter your email" required
+                            autocomplete="email">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // Video Carousel Functionality
