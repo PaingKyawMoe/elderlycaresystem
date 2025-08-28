@@ -189,7 +189,7 @@
       <div class="navbar-content">
         <a href="#" class="navbar-brand">
           <i class="fas fa-calendar-check header-icon"></i>
-          <span>Appointment Management</span>
+          <span>User Management</span>
         </a>
 
         <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
