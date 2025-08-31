@@ -161,10 +161,10 @@
                 <i class="fas fa-user-circle"></i>
                 <span>Welcome, <?php echo htmlspecialchars($_SESSION['user']['name'] ?? 'User'); ?></span>
             </div>
-            <!-- <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
+            <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 Back
-            </a> -->
+            </a>
         </div>
     </nav>
     <div class="wrapper">
@@ -200,7 +200,9 @@
 
                 <div class="form-group">
                     <i class="fas fa-calendar-alt"></i>
-                    <input type="text" name="preferredDate" id="preferredDate" placeholder="Preferred Date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+                    <input type="text" name="preferredDate" id="preferredDate" placeholder="Preferred Date"
+                        onfocus="setMinDate(this)" onblur="(this.type='text')" required>
+
                 </div>
                 <div class="form-group">
                     <div class="custom-select-wrapper">
@@ -232,10 +234,10 @@
                         <select name="selectDoctor" id="selectDoctor" required>
                             <option value="" disabled selected>Select Doctor</option>
                             <option value="Dr-Paing">Dr. Paing</option>
-                            <option value="dr-kyaw">Dr. Kyaw</option>
-                            <option value="dr-moe">Dr. Moe</option>
-                            <option value="dr-phyoe">Dr. Phyoe</option>
-                            <option value="dr-mya">Dr. Mya</option>
+                            <option value="Dr-Kyaw">Dr. Kyaw</option>
+                            <option value="Dr-Moe">Dr. Moe</option>
+                            <option value="Dr-Phyoe">Dr. Phyoe</option>
+                            <option value="Dr-Mya">Dr. Mya</option>
                         </select>
                         <i class="fas fa-chevron-down select-arrow"></i>
                     </div>
@@ -340,6 +342,20 @@
         </div>
     </footer>
     <script>
+        function setMinDate(input) {
+            input.type = 'date'; // switch to date picker
+
+            // Get today's date in yyyy-mm-dd format
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const minDate = `${yyyy}-${mm}-${dd}`;
+
+            // Set minimum date to today
+            input.min = minDate;
+        }
+
         // Modern alert function
         function showModal(title, message, type = 'error') {
             const overlay = document.getElementById('modalOverlay');
