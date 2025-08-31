@@ -26,10 +26,10 @@
                     <i class="fas fa-user-circle"></i>
                     <span>Welcome, <?php echo htmlspecialchars($_SESSION['user']['name'] ?? 'User'); ?></span>
                 </div>
-                <!-- <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
+                <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
                     Back
-                </a> -->
+                </a>
             </div>
         </nav>
 

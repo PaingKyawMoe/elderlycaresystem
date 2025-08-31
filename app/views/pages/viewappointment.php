@@ -77,21 +77,23 @@
             width: 100%;
             border-collapse: collapse;
             background: #fff;
-            border-radius: 15px;
+            /* border-radius: 15px; */
+
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             margin-bottom: 20px;
         }
 
         th {
-            background: linear-gradient(to right, rgb(56, 189, 248), rgb(59, 130, 246));
-            color: #fff;
+            /* background: linear-gradient(to right, rgb(56, 189, 248), rgb(59, 130, 246)); */
+            border: 1px solid #000000ff;
+            color: #000000ff;
             padding: 20px 15px;
             font-weight: 600;
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border: none;
+            /* border: none; */
             position: sticky;
             top: 0;
             z-index: 10;
@@ -488,10 +490,10 @@
                 <i class="fas fa-user-circle"></i>
                 <span>Welcome, <?php echo htmlspecialchars($_SESSION['user']['name'] ?? 'User'); ?></span>
             </div>
-            <!-- <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
+            <a href="<?= URLROOT ?>/pages/dashboard" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 Back
-            </a> -->
+            </a>
         </div>
     </nav>
     <div class="container">
