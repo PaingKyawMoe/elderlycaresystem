@@ -70,7 +70,7 @@
 
         .table-container {
             padding: 30px;
-            overflow-x: auto;
+            overflow-x: hidden;
         }
 
         table {
