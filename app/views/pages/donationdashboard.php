@@ -279,17 +279,21 @@ if (!isset($_SESSION['csrf_token'])) {
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                     </svg>
                 </div>
-                <div class="stat-value">
+                <div class="stat-value" id="totalAmountDisplay">
                     <?php
                     if (!empty($data['Donation'])) {
-                        $total = array_sum(array_column($data['Donation'], 'amount'));
+                        // Only count completed donations for total amount
+                        $completedDonations = array_filter($data['Donation'], function ($donation) {
+                            return isset($donation['status']) && $donation['status'] === 'complete';
+                        });
+                        $total = array_sum(array_column($completedDonations, 'amount'));
                         echo '$' . number_format($total, 2);
                     } else {
                         echo '$0';
                     }
                     ?>
                 </div>
-                <div class="stat-label">Total Amount</div>
+                <div class="stat-label">Total Amount (Completed Only)</div>
             </div>
 
             <div class="stat-card fade-in" style="animation-delay: 0.2s">
@@ -298,19 +302,27 @@ if (!isset($_SESSION['csrf_token'])) {
                         <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
                     </svg>
                 </div>
-                <div class="stat-value">
+                <div class="stat-value" id="averageAmountDisplay">
                     <?php
                     if (!empty($data['Donation'])) {
-                        $total = array_sum(array_column($data['Donation'], 'amount'));
-                        $count = count($data['Donation']);
-                        $average = $total / $count;
-                        echo '$' . number_format($average, 2);
+                        // Only count completed donations for average
+                        $completedDonations = array_filter($data['Donation'], function ($donation) {
+                            return isset($donation['status']) && $donation['status'] === 'complete';
+                        });
+                        if (count($completedDonations) > 0) {
+                            $total = array_sum(array_column($completedDonations, 'amount'));
+                            $count = count($completedDonations);
+                            $average = $total / $count;
+                            echo '$' . number_format($average, 2);
+                        } else {
+                            echo '$0';
+                        }
                     } else {
                         echo '$0';
                     }
                     ?>
                 </div>
-                <div class="stat-label">Average Donation</div>
+                <div class="stat-label">Average Donation (Completed)</div>
             </div>
         </div>
 
@@ -348,6 +360,17 @@ if (!isset($_SESSION['csrf_token'])) {
         const itemsPerPage = 10;
         let currentPage = 1;
         const totalPages = Math.ceil(donationData.length / itemsPerPage);
+
+        // Function to calculate stats based on completed donations only
+        function updateStats() {
+            const completedDonations = donationData.filter(donation => donation.status === 'complete');
+            const totalAmount = completedDonations.reduce((sum, donation) => sum + parseFloat(donation.amount), 0);
+            const averageAmount = completedDonations.length > 0 ? totalAmount / completedDonations.length : 0;
+
+            // Update the display
+            document.getElementById('totalAmountDisplay').textContent = '$' + totalAmount.toFixed(2);
+            document.getElementById('averageAmountDisplay').textContent = '$' + averageAmount.toFixed(2);
+        }
 
         function getPaymentMethodIcon(paymentMethod) {
             const method = paymentMethod.toLowerCase();
@@ -464,6 +487,8 @@ if (!isset($_SESSION['csrf_token'])) {
                         if (donationIndex !== -1) {
                             donationData[donationIndex].status = newStatus;
                             displayTable(currentPage);
+                            // Update stats when status changes
+                            updateStats();
                         }
                     } else {
                         alert('Error updating status: ' + data.message);
@@ -474,7 +499,6 @@ if (!isset($_SESSION['csrf_token'])) {
                     alert('Error updating status');
                 });
         }
-
 
         function createStatusButtons(donation) {
             const statusButtonsHtml = `
@@ -650,10 +674,17 @@ if (!isset($_SESSION['csrf_token'])) {
                 .replace(/'/g, "&#039;");
         }
 
+        function toggleMobileMenu() {
+            const navbarNav = document.getElementById('navbarNav');
+            navbarNav.classList.toggle('active');
+        }
+
         // Initialize table and pagination
         if (donationData.length > 0) {
             displayTable(currentPage);
             displayPagination();
+            // Initialize stats
+            updateStats();
         } else {
             // Show empty state
             const tableBody = document.getElementById('tableBody');
