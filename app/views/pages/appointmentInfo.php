@@ -893,7 +893,7 @@
             function populateDoctorFilter() {
                 const doctors = [...new Set(appointmentList.map(a => a.selectDoctor))].filter(Boolean);
                 doctorFilter.innerHTML = '<option value="">All Doctors</option>' +
-                    doctors.map(doctor => `<option value="${doctor}">${doctor}</option>`).join('');
+                    doctors.map(selectDoctor => `<option value="${selectDoctor}">${selectDoctor}</option>`).join('');
             }
 
             // Make functions globally available
